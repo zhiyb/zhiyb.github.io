@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Restricted Shells</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="Subshells"
+HREF="subshells.html"><LINK
+REL="NEXT"
+TITLE="Process Substitution"
+HREF="process-sub.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="subshells.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="process-sub.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="RESTRICTED-SH"
+>第21章. 受限shell(Restricted Shells)</A
+></H1
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="DISABLEDCOMMREF"
+></A
+>在受限shell中禁用的命令</B
+></P
+>
+    <DL
+>
+      <DT
+></DT
+>
+      <DD
+> 
+        <DIV
+CLASS="FORMALPARA"
+> 在受限shell中运行的脚本或脚本的个代码断会禁用一些正常shell中可以执行的命令.这是限制脚本用户的权限和最小化运行脚本导致的破坏的安全措施.</DIV
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+>
+        <DIV
+CLASS="FORMALPARA"
+> 
+          <P
+><B
+> </B
+>使用<TT
+CLASS="REPLACEABLE"
+><I
+>cd</I
+></TT
+> 命令更改工作目录.</P
+>
+        </DIV
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+> 
+        <P
+>更改<a
+href="othertypesv.html#ENVREF"
+>环境变量</a
+><TT
+CLASS="REPLACEABLE"
+><I
+>$PATH</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>$SHELL</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>$BASH_ENV</I
+></TT
+>,或<TT
+CLASS="REPLACEABLE"
+><I
+>$ENV</I
+></TT
+> 的值.</P
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+>
+        <P
+>读或更改shell环境选项变量<TT
+CLASS="REPLACEABLE"
+><I
+>$SHELLOPTS</I
+></TT
+>的值.</P
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+>
+        <P
+>输出重定向.</P
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+>
+        <P
+>调用的命令路径中包括有一个或更多个<SPAN
+CLASS="TOKEN"
+>/字符</SPAN
+>.</P
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+>
+        <P
+>调用<I
+CLASS="EMPHASIS"
+>exec</I
+>来把当前的受限shell替换成另外一个不同的进程.</P
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+>
+        <P
+>脚本中许多其他无意中能破坏或捣乱的命令.</P
+>
+      </DD
+>
+      <DT
+></DT
+>
+      <DD
+>
+        <P
+>在脚本中企图脱离受限shell模式的操作.</P
+>
+      </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RESTRICTED"
+></A
+>
+    <P
+><B
+>例子 21-1. 在受限的情况下运行脚本</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  脚本开头以"#!/bin/bash -r"来调用
+   4&nbsp;#+ 会使整个脚本在受限模式下运行.
+   5&nbsp;
+   6&nbsp;echo
+   7&nbsp;
+   8&nbsp;echo "Changing directory."
+   9&nbsp;cd /usr/local
+  10&nbsp;echo "Now in `pwd`"
+  11&nbsp;echo "Coming back home."
+  12&nbsp;cd
+  13&nbsp;echo "Now in `pwd`"
+  14&nbsp;echo
+  15&nbsp;
+  16&nbsp;# 不受限的模式下，所有操作都能正常成功.
+  17&nbsp;
+  18&nbsp;set -r
+  19&nbsp;# set --restricted    也能起相同的作用.
+  20&nbsp;echo "==&#62; Now in restricted mode. &#60;=="
+  21&nbsp;
+  22&nbsp;echo
+  23&nbsp;echo
+  24&nbsp;
+  25&nbsp;echo "Attempting directory change in restricted mode."
+  26&nbsp;cd ..
+  27&nbsp;echo "Still in `pwd`"
+  28&nbsp;
+  29&nbsp;echo
+  30&nbsp;echo
+  31&nbsp;
+  32&nbsp;echo "\$SHELL = $SHELL"
+  33&nbsp;echo "Attempting to change shell in restricted mode."
+  34&nbsp;SHELL="/bin/ash"
+  35&nbsp;echo
+  36&nbsp;echo "\$SHELL= $SHELL"
+  37&nbsp;
+  38&nbsp;echo
+  39&nbsp;echo
+  40&nbsp;
+  41&nbsp;echo "Attempting to redirect output in restricted mode."
+  42&nbsp;ls -l /usr/bin &#62; bin.files
+  43&nbsp;ls -l bin.files    # 尝试列出刚才创建的文件.
+  44&nbsp;
+  45&nbsp;echo
+  46&nbsp;
+  47&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="subshells.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="process-sub.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Subshells</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Process Substitution</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

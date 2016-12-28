@@ -1,0 +1,1717 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Contributed Scripts</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Bibliography"
+HREF="biblio.html"><LINK
+REL="NEXT"
+TITLE="Reference Cards"
+HREF="refcards.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="APPENDIX"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="biblio.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="refcards.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="APPENDIX"
+><H1
+><A
+NAME="CONTRIBUTED-SCRIPTS"
+>Appendix A. Contributed Scripts</A
+></H1
+><P
+>These scripts, while not fitting into the text of this document, do
+    illustrate some interesting shell programming techniques. They are useful,
+    too. Have fun analyzing and running them.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="MAILFORMAT"
+></A
+><P
+><B
+>Example A-1. <B
+CLASS="COMMAND"
+>mailformat</B
+>: Formatting an e-mail message</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# mail-format.sh (ver. 1.1): Format e-mail messages.
+   3&nbsp;
+   4&nbsp;# Gets rid of carets, tabs, and also folds excessively long lines.
+   5&nbsp;
+   6&nbsp;# =================================================================
+   7&nbsp;#                 Standard Check for Script Argument(s)
+   8&nbsp;ARGS=1
+   9&nbsp;E_BADARGS=65
+  10&nbsp;E_NOFILE=66
+  11&nbsp;
+  12&nbsp;if [ $# -ne $ARGS ]  # Correct number of arguments passed to script?
+  13&nbsp;then
+  14&nbsp;  echo "Usage: `basename $0` filename"
+  15&nbsp;  exit $E_BADARGS
+  16&nbsp;fi
+  17&nbsp;
+  18&nbsp;if [ -f "$1" ]       # Check if file exists.
+  19&nbsp;then
+  20&nbsp;    file_name=$1
+  21&nbsp;else
+  22&nbsp;    echo "File \"$1\" does not exist."
+  23&nbsp;    exit $E_NOFILE
+  24&nbsp;fi
+  25&nbsp;# =================================================================
+  26&nbsp;
+  27&nbsp;MAXWIDTH=70          # Width to fold excessively long lines to.
+  28&nbsp;
+  29&nbsp;# ---------------------------------
+  30&nbsp;# A variable can hold a sed script.
+  31&nbsp;sedscript='s/^&#62;//
+  32&nbsp;s/^  *&#62;//
+  33&nbsp;s/^  *//
+  34&nbsp;s/		*//'
+  35&nbsp;# ---------------------------------
+  36&nbsp;
+  37&nbsp;#  Delete carets and tabs at beginning of lines,
+  38&nbsp;#+ then fold lines to $MAXWIDTH characters.
+  39&nbsp;sed "$sedscript" $1 | fold -s --width=$MAXWIDTH
+  40&nbsp;                        #  -s option to "fold"
+  41&nbsp;                        #+ breaks lines at whitespace, if possible.
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;#  This script was inspired by an article in a well-known trade journal
+  45&nbsp;#+ extolling a 164K MS Windows utility with similar functionality.
+  46&nbsp;#
+  47&nbsp;#  An nice set of text processing utilities and an efficient
+  48&nbsp;#+ scripting language provide an alternative to bloated executables.
+  49&nbsp;
+  50&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RN"
+></A
+><P
+><B
+>Example A-2. <B
+CLASS="COMMAND"
+>rn</B
+>: A simple-minded file rename utility</B
+></P
+><P
+>This script is a modification of <A
+HREF="textproc.html#LOWERCASE"
+>Example 12-19</A
+>.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;#
+   3&nbsp;# Very simpleminded filename "rename" utility (based on "lowercase.sh").
+   4&nbsp;#
+   5&nbsp;#  The "ren" utility, by Vladimir Lanin (lanin@csd2.nyu.edu),
+   6&nbsp;#+ does a much better job of this.
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;ARGS=2
+  10&nbsp;E_BADARGS=65
+  11&nbsp;ONE=1                     # For getting singular/plural right (see below).
+  12&nbsp;
+  13&nbsp;if [ $# -ne "$ARGS" ]
+  14&nbsp;then
+  15&nbsp;  echo "Usage: `basename $0` old-pattern new-pattern"
+  16&nbsp;  # As in "rn gif jpg", which renames all gif files in working directory to jpg.
+  17&nbsp;  exit $E_BADARGS
+  18&nbsp;fi
+  19&nbsp;
+  20&nbsp;number=0                  # Keeps track of how many files actually renamed.
+  21&nbsp;
+  22&nbsp;
+  23&nbsp;for filename in *$1*      #Traverse all matching files in directory.
+  24&nbsp;do
+  25&nbsp;   if [ -f "$filename" ]  # If finds match...
+  26&nbsp;   then
+  27&nbsp;     fname=`basename $filename`            # Strip off path.
+  28&nbsp;     n=`echo $fname | sed -e "s/$1/$2/"`   # Substitute new for old in filename.
+  29&nbsp;     mv $fname $n                          # Rename.
+  30&nbsp;     let "number += 1"
+  31&nbsp;   fi
+  32&nbsp;done   
+  33&nbsp;
+  34&nbsp;if [ "$number" -eq "$ONE" ]                # For correct grammar.
+  35&nbsp;then
+  36&nbsp; echo "$number file renamed."
+  37&nbsp;else 
+  38&nbsp; echo "$number files renamed."
+  39&nbsp;fi 
+  40&nbsp;
+  41&nbsp;exit 0
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;# Exercises:
+  45&nbsp;# ---------
+  46&nbsp;# What type of files will this not work on?
+  47&nbsp;# How can this be fixed?
+  48&nbsp;#
+  49&nbsp;#  Rewrite this script to process all the files in a directory
+  50&nbsp;#+ containing spaces in their names, and to rename them,
+  51&nbsp;#+ substituting an underscore for each space.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BLANKRENAME"
+></A
+><P
+><B
+>Example A-3. <B
+CLASS="COMMAND"
+>blank-rename</B
+>: renames filenames containing
+        blanks</B
+></P
+><P
+>This is an even simpler-minded version of previous script.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;# blank-rename.sh
+   3&nbsp;#
+   4&nbsp;# Substitutes underscores for blanks in all the filenames in a directory.
+   5&nbsp;
+   6&nbsp;ONE=1                     # For getting singular/plural right (see below).
+   7&nbsp;number=0                  # Keeps track of how many files actually renamed.
+   8&nbsp;FOUND=0                   # Successful return value.
+   9&nbsp;
+  10&nbsp;for filename in *         #Traverse all files in directory.
+  11&nbsp;do
+  12&nbsp;     echo "$filename" | grep -q " "         #  Check whether filename
+  13&nbsp;     if [ $? -eq $FOUND ]                   #+ contains space(s).
+  14&nbsp;     then
+  15&nbsp;       fname=$filename                      # Strip off path.
+  16&nbsp;       n=`echo $fname | sed -e "s/ /_/g"`   # Substitute underscore for blank.
+  17&nbsp;       mv "$fname" "$n"                     # Do the actual renaming.
+  18&nbsp;       let "number += 1"
+  19&nbsp;     fi
+  20&nbsp;done   
+  21&nbsp;
+  22&nbsp;if [ "$number" -eq "$ONE" ]                 # For correct grammar.
+  23&nbsp;then
+  24&nbsp; echo "$number file renamed."
+  25&nbsp;else 
+  26&nbsp; echo "$number files renamed."
+  27&nbsp;fi 
+  28&nbsp;
+  29&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ENCRYPTEDPW"
+></A
+><P
+><B
+>Example A-4. <B
+CLASS="COMMAND"
+>encryptedpw</B
+>: Uploading to an ftp site,
+      using a locally encrypted password</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# Example "ex72.sh" modified to use encrypted password.
+   4&nbsp;
+   5&nbsp;#  Note that this is still rather insecure,
+   6&nbsp;#+ since the decrypted password is sent in the clear.
+   7&nbsp;#  Use something like "ssh" if this is a concern.
+   8&nbsp;
+   9&nbsp;E_BADARGS=65
+  10&nbsp;
+  11&nbsp;if [ -z "$1" ]
+  12&nbsp;then
+  13&nbsp;  echo "Usage: `basename $0` filename"
+  14&nbsp;  exit $E_BADARGS
+  15&nbsp;fi  
+  16&nbsp;
+  17&nbsp;Username=bozo           # Change to suit.
+  18&nbsp;pword=/home/bozo/secret/password_encrypted.file
+  19&nbsp;# File containing encrypted password.
+  20&nbsp;
+  21&nbsp;Filename=`basename $1`  # Strips pathname out of file name.
+  22&nbsp;
+  23&nbsp;Server="XXX"
+  24&nbsp;Directory="YYY"         # Change above to actual server name &#38; directory.
+  25&nbsp;
+  26&nbsp;
+  27&nbsp;Password=`cruft &#60;$pword`          # Decrypt password.
+  28&nbsp;#  Uses the author's own "cruft" file encryption package,
+  29&nbsp;#+ based on the classic "onetime pad" algorithm,
+  30&nbsp;#+ and obtainable from:
+  31&nbsp;#+ Primary-site:   ftp://ibiblio.org/pub/Linux/utils/file
+  32&nbsp;#+                 cruft-0.2.tar.gz [16k]
+  33&nbsp;
+  34&nbsp;
+  35&nbsp;ftp -n $Server &#60;&#60;End-Of-Session
+  36&nbsp;user $Username $Password
+  37&nbsp;binary
+  38&nbsp;bell
+  39&nbsp;cd $Directory
+  40&nbsp;put $Filename
+  41&nbsp;bye
+  42&nbsp;End-Of-Session
+  43&nbsp;# -n option to "ftp" disables auto-logon.
+  44&nbsp;# Note that "bell" rings 'bell' after each file transfer.
+  45&nbsp;
+  46&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COPYCD"
+></A
+><P
+><B
+>Example A-5. <B
+CLASS="COMMAND"
+>copy-cd</B
+>: Copying a data CD</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# copy-cd.sh: copying a data CD
+   3&nbsp;
+   4&nbsp;CDROM=/dev/cdrom                           # CD ROM device
+   5&nbsp;OF=/home/bozo/projects/cdimage.iso         # output file
+   6&nbsp;#       /xxxx/xxxxxxx/                     Change to suit your system.
+   7&nbsp;BLOCKSIZE=2048
+   8&nbsp;SPEED=2                                    # May use higher speed if supported.
+   9&nbsp;DEVICE=cdrom
+  10&nbsp;# DEVICE="0,0"    on older versions of cdrecord.
+  11&nbsp;
+  12&nbsp;echo; echo "Insert source CD, but do *not* mount it."
+  13&nbsp;echo "Press ENTER when ready. "
+  14&nbsp;read ready                                 # Wait for input, $ready not used.
+  15&nbsp;
+  16&nbsp;echo; echo "Copying the source CD to $OF."
+  17&nbsp;echo "This may take a while. Please be patient."
+  18&nbsp;
+  19&nbsp;dd if=$CDROM of=$OF bs=$BLOCKSIZE          # Raw device copy.
+  20&nbsp;
+  21&nbsp;
+  22&nbsp;echo; echo "Remove data CD."
+  23&nbsp;echo "Insert blank CDR."
+  24&nbsp;echo "Press ENTER when ready. "
+  25&nbsp;read ready                                 # Wait for input, $ready not used.
+  26&nbsp;
+  27&nbsp;echo "Copying $OF to CDR."
+  28&nbsp;
+  29&nbsp;cdrecord -v -isosize speed=$SPEED dev=$DEVICE $OF
+  30&nbsp;# Uses Joerg Schilling's "cdrecord" package (see its docs).
+  31&nbsp;# http://www.fokus.gmd.de/nthp/employees/schilling/cdrecord.html
+  32&nbsp;
+  33&nbsp;
+  34&nbsp;echo; echo "Done copying $OF to CDR on device $CDROM."
+  35&nbsp;
+  36&nbsp;echo "Do you want to erase the image file (y/n)? "  # Probably a huge file.
+  37&nbsp;read answer
+  38&nbsp;
+  39&nbsp;case "$answer" in
+  40&nbsp;[yY]) rm -f $OF
+  41&nbsp;      echo "$OF erased."
+  42&nbsp;      ;;
+  43&nbsp;*)    echo "$OF not erased.";;
+  44&nbsp;esac
+  45&nbsp;
+  46&nbsp;echo
+  47&nbsp;
+  48&nbsp;# Exercise:
+  49&nbsp;# Change the above "case" statement to also accept "yes" and "Yes" as input.
+  50&nbsp;
+  51&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COLLATZ"
+></A
+><P
+><B
+>Example A-6. Collatz series</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# collatz.sh
+   3&nbsp;
+   4&nbsp;#  The notorious "hailstone" or Collatz series.
+   5&nbsp;#  -------------------------------------------
+   6&nbsp;#  1) Get the integer "seed" from the command line.
+   7&nbsp;#  2) NUMBER &#60;--- seed
+   8&nbsp;#  3) Print NUMBER.
+   9&nbsp;#  4)  If NUMBER is even, divide by 2, or
+  10&nbsp;#  5)+ if odd, multiply by 3 and add 1.
+  11&nbsp;#  6) NUMBER &#60;--- result 
+  12&nbsp;#  7) Loop back to step 3 (for specified number of iterations).
+  13&nbsp;#
+  14&nbsp;#  The theory is that every sequence,
+  15&nbsp;#+ no matter how large the initial value,
+  16&nbsp;#+ eventually settles down to repeating "4,2,1..." cycles,
+  17&nbsp;#+ even after fluctuating through a wide range of values.
+  18&nbsp;#
+  19&nbsp;#  This is an instance of an "iterate",
+  20&nbsp;#+ an operation that feeds its output back into the input.
+  21&nbsp;#  Sometimes the result is a "chaotic" series.
+  22&nbsp;
+  23&nbsp;
+  24&nbsp;MAX_ITERATIONS=200
+  25&nbsp;# For large seed numbers (&#62;32000), increase MAX_ITERATIONS.
+  26&nbsp;
+  27&nbsp;h=${1:-$$}                      #  Seed
+  28&nbsp;                                #  Use $PID as seed,
+  29&nbsp;                                #+ if not specified as command-line arg.
+  30&nbsp;
+  31&nbsp;echo
+  32&nbsp;echo "C($h) --- $MAX_ITERATIONS Iterations"
+  33&nbsp;echo
+  34&nbsp;
+  35&nbsp;for ((i=1; i&#60;=MAX_ITERATIONS; i++))
+  36&nbsp;do
+  37&nbsp;
+  38&nbsp;echo -n "$h	"
+  39&nbsp;#          ^^^^^
+  40&nbsp;#           tab
+  41&nbsp;
+  42&nbsp;  let "remainder = h % 2"
+  43&nbsp;  if [ "$remainder" -eq 0 ]   # Even?
+  44&nbsp;  then
+  45&nbsp;    let "h /= 2"              # Divide by 2.
+  46&nbsp;  else
+  47&nbsp;    let "h = h*3 + 1"         # Multiply by 3 and add 1.
+  48&nbsp;  fi
+  49&nbsp;
+  50&nbsp;
+  51&nbsp;COLUMNS=10                    # Output 10 values per line.
+  52&nbsp;let "line_break = i % $COLUMNS"
+  53&nbsp;if [ "$line_break" -eq 0 ]
+  54&nbsp;then
+  55&nbsp;  echo
+  56&nbsp;fi  
+  57&nbsp;
+  58&nbsp;done
+  59&nbsp;
+  60&nbsp;echo
+  61&nbsp;
+  62&nbsp;#  For more information on this mathematical function,
+  63&nbsp;#+ see "Computers, Pattern, Chaos, and Beauty", by Pickover, p. 185 ff.,
+  64&nbsp;#+ as listed in the bibliography.
+  65&nbsp;
+  66&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="DAYSBETWEEN"
+></A
+><P
+><B
+>Example A-7. <B
+CLASS="COMMAND"
+>days-between</B
+>: Calculate number of days
+        between two dates</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# days-between.sh:    Number of days between two dates.
+   3&nbsp;# Usage: ./days-between.sh [M]M/[D]D/YYYY [M]M/[D]D/YYYY
+   4&nbsp;#
+   5&nbsp;# Note: Script modified to account for changes in Bash 2.05b
+   6&nbsp;#+      that closed the loophole permitting large negative
+   7&nbsp;#+      integer return values.
+   8&nbsp;
+   9&nbsp;ARGS=2                # Two command line parameters expected.
+  10&nbsp;E_PARAM_ERR=65        # Param error.
+  11&nbsp;
+  12&nbsp;REFYR=1600            # Reference year.
+  13&nbsp;CENTURY=100
+  14&nbsp;DIY=365
+  15&nbsp;ADJ_DIY=367           # Adjusted for leap year + fraction.
+  16&nbsp;MIY=12
+  17&nbsp;DIM=31
+  18&nbsp;LEAPCYCLE=4
+  19&nbsp;
+  20&nbsp;MAXRETVAL=255         #  Largest permissable
+  21&nbsp;                      #+ positive return value from a function.
+  22&nbsp;
+  23&nbsp;diff=                 # Declare global variable for date difference.
+  24&nbsp;value=                # Declare global variable for absolute value.
+  25&nbsp;day=                  # Declare globals for day, month, year.
+  26&nbsp;month=
+  27&nbsp;year=
+  28&nbsp;
+  29&nbsp;
+  30&nbsp;Param_Error ()        # Command line parameters wrong.
+  31&nbsp;{
+  32&nbsp;  echo "Usage: `basename $0` [M]M/[D]D/YYYY [M]M/[D]D/YYYY"
+  33&nbsp;  echo "       (date must be after 1/3/1600)"
+  34&nbsp;  exit $E_PARAM_ERR
+  35&nbsp;}  
+  36&nbsp;
+  37&nbsp;
+  38&nbsp;Parse_Date ()                 # Parse date from command line params.
+  39&nbsp;{
+  40&nbsp;  month=${1%%/**}
+  41&nbsp;  dm=${1%/**}                 # Day and month.
+  42&nbsp;  day=${dm#*/}
+  43&nbsp;  let "year = `basename $1`"  # Not a filename, but works just the same.
+  44&nbsp;}  
+  45&nbsp;
+  46&nbsp;
+  47&nbsp;check_date ()                 # Checks for invalid date(s) passed.
+  48&nbsp;{
+  49&nbsp;  [ "$day" -gt "$DIM" ] || [ "$month" -gt "$MIY" ] || [ "$year" -lt "$REFYR" ] &#38;&#38; Param_Error
+  50&nbsp;  # Exit script on bad value(s).
+  51&nbsp;  # Uses "or-list / and-list".
+  52&nbsp;  #
+  53&nbsp;  # Exercise: Implement more rigorous date checking.
+  54&nbsp;}
+  55&nbsp;
+  56&nbsp;
+  57&nbsp;strip_leading_zero () #  Better to strip possible leading zero(s)
+  58&nbsp;{                     #+ from day and/or month
+  59&nbsp;  return ${1#0}       #+ since otherwise Bash will interpret them
+  60&nbsp;}                     #+ as octal values (POSIX.2, sect 2.9.2.1).
+  61&nbsp;
+  62&nbsp;
+  63&nbsp;day_index ()          # Gauss' Formula:
+  64&nbsp;{                     # Days from Jan. 3, 1600 to date passed as param.
+  65&nbsp;
+  66&nbsp;  day=$1
+  67&nbsp;  month=$2
+  68&nbsp;  year=$3
+  69&nbsp;
+  70&nbsp;  let "month = $month - 2"
+  71&nbsp;  if [ "$month" -le 0 ]
+  72&nbsp;  then
+  73&nbsp;    let "month += 12"
+  74&nbsp;    let "year -= 1"
+  75&nbsp;  fi  
+  76&nbsp;
+  77&nbsp;  let "year -= $REFYR"
+  78&nbsp;  let "indexyr = $year / $CENTURY"
+  79&nbsp;
+  80&nbsp;
+  81&nbsp;  let "Days = $DIY*$year + $year/$LEAPCYCLE - $indexyr + $indexyr/$LEAPCYCLE + $ADJ_DIY*$month/$MIY + $day - $DIM"
+  82&nbsp;  #  For an in-depth explanation of this algorithm, see
+  83&nbsp;  #+ http://home.t-online.de/home/berndt.schwerdtfeger/cal.htm
+  84&nbsp;
+  85&nbsp;
+  86&nbsp;  echo $Days
+  87&nbsp;
+  88&nbsp;}  
+  89&nbsp;
+  90&nbsp;
+  91&nbsp;calculate_difference ()            # Difference between to day indices.
+  92&nbsp;{
+  93&nbsp;  let "diff = $1 - $2"             # Global variable.
+  94&nbsp;}  
+  95&nbsp;
+  96&nbsp;
+  97&nbsp;abs ()                             #  Absolute value
+  98&nbsp;{                                  #  Uses global "value" variable.
+  99&nbsp;  if [ "$1" -lt 0 ]                #  If negative
+ 100&nbsp;  then                             #+ then
+ 101&nbsp;    let "value = 0 - $1"           #+ change sign,
+ 102&nbsp;  else                             #+ else
+ 103&nbsp;    let "value = $1"               #+ leave it alone.
+ 104&nbsp;  fi
+ 105&nbsp;}
+ 106&nbsp;
+ 107&nbsp;
+ 108&nbsp;
+ 109&nbsp;if [ $# -ne "$ARGS" ]              # Require two command line params.
+ 110&nbsp;then
+ 111&nbsp;  Param_Error
+ 112&nbsp;fi  
+ 113&nbsp;
+ 114&nbsp;Parse_Date $1
+ 115&nbsp;check_date $day $month $year       #  See if valid date.
+ 116&nbsp;
+ 117&nbsp;strip_leading_zero $day            #  Remove any leading zeroes
+ 118&nbsp;day=$?                             #+ on day and/or month.
+ 119&nbsp;strip_leading_zero $month
+ 120&nbsp;month=$?
+ 121&nbsp;
+ 122&nbsp;let "date1 = `day_index $day $month $year`"
+ 123&nbsp;
+ 124&nbsp;
+ 125&nbsp;Parse_Date $2
+ 126&nbsp;check_date $day $month $year
+ 127&nbsp;
+ 128&nbsp;strip_leading_zero $day
+ 129&nbsp;day=$?
+ 130&nbsp;strip_leading_zero $month
+ 131&nbsp;month=$?
+ 132&nbsp;
+ 133&nbsp;date2=$(day_index $day $month $year) # Command substitution.
+ 134&nbsp;
+ 135&nbsp;
+ 136&nbsp;calculate_difference $date1 $date2
+ 137&nbsp;
+ 138&nbsp;abs $diff                            # Make sure it's positive.
+ 139&nbsp;diff=$value
+ 140&nbsp;
+ 141&nbsp;echo $diff
+ 142&nbsp;
+ 143&nbsp;exit 0
+ 144&nbsp;#  Compare this script with
+ 145&nbsp;#+ the implementation of Gauss' Formula in a C program at:
+ 146&nbsp;#+    http://buschencrew.hypermart.net/software/datedif</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="MAKEDICT"
+></A
+><P
+><B
+>Example A-8. Make a <SPAN
+CLASS="QUOTE"
+>"dictionary"</SPAN
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# makedict.sh  [make dictionary]
+   3&nbsp;
+   4&nbsp;# Modification of /usr/sbin/mkdict script.
+   5&nbsp;# Original script copyright 1993, by Alec Muffett.
+   6&nbsp;#
+   7&nbsp;#  This modified script included in this document in a manner
+   8&nbsp;#+ consistent with the "LICENSE" document of the "Crack" package
+   9&nbsp;#+ that the original script is a part of.
+  10&nbsp;
+  11&nbsp;#  This script processes text files to produce a sorted list
+  12&nbsp;#+ of words found in the files.
+  13&nbsp;#  This may be useful for compiling dictionaries
+  14&nbsp;#+ and for lexicographic research.
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;E_BADARGS=65
+  18&nbsp;
+  19&nbsp;if [ ! -r "$1" ]                     #  Need at least one
+  20&nbsp;then                                 #+ valid file argument.
+  21&nbsp;  echo "Usage: $0 files-to-process"
+  22&nbsp;  exit $E_BADARGS
+  23&nbsp;fi  
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;# SORT="sort"                        #  No longer necessary to define options
+  27&nbsp;                                     #+ to sort. Changed from original script.
+  28&nbsp;
+  29&nbsp;cat $* |                             # Contents of specified files to stdout.
+  30&nbsp;        tr A-Z a-z |                 # Convert to lowercase.
+  31&nbsp;        tr ' ' '\012' |              # New: change spaces to newlines.
+  32&nbsp;#       tr -cd '\012[a-z][0-9]' |    #  Get rid of everything non-alphanumeric
+  33&nbsp;                                     #+ (original script).
+  34&nbsp;        tr -c '\012a-z'  '\012' |    #  Rather than deleting
+  35&nbsp;                                     #+ now change non-alpha to newlines.
+  36&nbsp;        sort |                       # $SORT options unnecessary now.
+  37&nbsp;        uniq |                       # Remove duplicates.
+  38&nbsp;        grep -v '^#' |               # Delete lines beginning with a hashmark.
+  39&nbsp;        grep -v '^$'                 # Delete blank lines.
+  40&nbsp;
+  41&nbsp;exit 0	</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SOUNDEX"
+></A
+><P
+><B
+>Example A-9. Soundex conversion</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# soundex.sh: Calculate "soundex" code for names
+   3&nbsp;
+   4&nbsp;# =======================================================
+   5&nbsp;#        Soundex script
+   6&nbsp;#              by
+   7&nbsp;#         Mendel Cooper
+   8&nbsp;#     thegrendel@theriver.com
+   9&nbsp;#       23 January, 2002
+  10&nbsp;#
+  11&nbsp;#   Placed in the Public Domain.
+  12&nbsp;#
+  13&nbsp;# A slightly different version of this script appeared in
+  14&nbsp;#+ Ed Schaefer's July, 2002 "Shell Corner" column
+  15&nbsp;#+ in "Unix Review" on-line,
+  16&nbsp;#+ http://www.unixreview.com/documents/uni1026336632258/
+  17&nbsp;# =======================================================
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;ARGCOUNT=1                     # Need name as argument.
+  21&nbsp;E_WRONGARGS=70
+  22&nbsp;
+  23&nbsp;if [ $# -ne "$ARGCOUNT" ]
+  24&nbsp;then
+  25&nbsp;  echo "Usage: `basename $0` name"
+  26&nbsp;  exit $E_WRONGARGS
+  27&nbsp;fi  
+  28&nbsp;
+  29&nbsp;
+  30&nbsp;assign_value ()                #  Assigns numerical value
+  31&nbsp;{                              #+ to letters of name.
+  32&nbsp;
+  33&nbsp;  val1=bfpv                    # 'b,f,p,v' = 1
+  34&nbsp;  val2=cgjkqsxz                # 'c,g,j,k,q,s,x,z' = 2
+  35&nbsp;  val3=dt                      #  etc.
+  36&nbsp;  val4=l
+  37&nbsp;  val5=mn
+  38&nbsp;  val6=r
+  39&nbsp;
+  40&nbsp;# Exceptionally clever use of 'tr' follows.
+  41&nbsp;# Try to figure out what is going on here.
+  42&nbsp;
+  43&nbsp;value=$( echo "$1" \
+  44&nbsp;| tr -d wh \
+  45&nbsp;| tr $val1 1 | tr $val2 2 | tr $val3 3 \
+  46&nbsp;| tr $val4 4 | tr $val5 5 | tr $val6 6 \
+  47&nbsp;| tr -s 123456 \
+  48&nbsp;| tr -d aeiouy )
+  49&nbsp;
+  50&nbsp;# Assign letter values.
+  51&nbsp;# Remove duplicate numbers, except when separated by vowels.
+  52&nbsp;# Ignore vowels, except as separators, so delete them last.
+  53&nbsp;# Ignore 'w' and 'h', even as separators, so delete them first.
+  54&nbsp;#
+  55&nbsp;# The above command substitution lays more pipe than a plumber &#60;g&#62;.
+  56&nbsp;
+  57&nbsp;}  
+  58&nbsp;
+  59&nbsp;
+  60&nbsp;input_name="$1"
+  61&nbsp;echo
+  62&nbsp;echo "Name = $input_name"
+  63&nbsp;
+  64&nbsp;
+  65&nbsp;# Change all characters of name input to lowercase.
+  66&nbsp;# ------------------------------------------------
+  67&nbsp;name=$( echo $input_name | tr A-Z a-z )
+  68&nbsp;# ------------------------------------------------
+  69&nbsp;# Just in case argument to script is mixed case.
+  70&nbsp;
+  71&nbsp;
+  72&nbsp;# Prefix of soundex code: first letter of name.
+  73&nbsp;# --------------------------------------------
+  74&nbsp;
+  75&nbsp;
+  76&nbsp;char_pos=0                     # Initialize character position. 
+  77&nbsp;prefix0=${name:$char_pos:1}
+  78&nbsp;prefix=`echo $prefix0 | tr a-z A-Z`
+  79&nbsp;                               # Uppercase 1st letter of soundex.
+  80&nbsp;
+  81&nbsp;let "char_pos += 1"            # Bump character position to 2nd letter of name.
+  82&nbsp;name1=${name:$char_pos}
+  83&nbsp;
+  84&nbsp;
+  85&nbsp;# ++++++++++++++++++++++++++ Exception Patch +++++++++++++++++++++++++++++++++
+  86&nbsp;#  Now, we run both the input name and the name shifted one char to the right
+  87&nbsp;#+ through the value-assigning function.
+  88&nbsp;#  If we get the same value out, that means that the first two characters
+  89&nbsp;#+ of the name have the same value assigned, and that one should cancel.
+  90&nbsp;#  However, we also need to test whether the first letter of the name
+  91&nbsp;#+ is a vowel or 'w' or 'h', because otherwise this would bollix things up.
+  92&nbsp;
+  93&nbsp;char1=`echo $prefix | tr A-Z a-z`    # First letter of name, lowercased.
+  94&nbsp;
+  95&nbsp;assign_value $name
+  96&nbsp;s1=$value
+  97&nbsp;assign_value $name1
+  98&nbsp;s2=$value
+  99&nbsp;assign_value $char1
+ 100&nbsp;s3=$value
+ 101&nbsp;s3=9$s3                              #  If first letter of name is a vowel
+ 102&nbsp;                                     #+ or 'w' or 'h',
+ 103&nbsp;                                     #+ then its "value" will be null (unset).
+ 104&nbsp;				     #+ Therefore, set it to 9, an otherwise
+ 105&nbsp;				     #+ unused value, which can be tested for.
+ 106&nbsp;
+ 107&nbsp;
+ 108&nbsp;if [[ "$s1" -ne "$s2" || "$s3" -eq 9 ]]
+ 109&nbsp;then
+ 110&nbsp;  suffix=$s2
+ 111&nbsp;else  
+ 112&nbsp;  suffix=${s2:$char_pos}
+ 113&nbsp;fi  
+ 114&nbsp;# ++++++++++++++++++++++ end Exception Patch +++++++++++++++++++++++++++++++++
+ 115&nbsp;
+ 116&nbsp;
+ 117&nbsp;padding=000                    # Use at most 3 zeroes to pad.
+ 118&nbsp;
+ 119&nbsp;
+ 120&nbsp;soun=$prefix$suffix$padding    # Pad with zeroes.
+ 121&nbsp;
+ 122&nbsp;MAXLEN=4                       # Truncate to maximum of 4 chars.
+ 123&nbsp;soundex=${soun:0:$MAXLEN}
+ 124&nbsp;
+ 125&nbsp;echo "Soundex = $soundex"
+ 126&nbsp;
+ 127&nbsp;echo
+ 128&nbsp;
+ 129&nbsp;#  The soundex code is a method of indexing and classifying names
+ 130&nbsp;#+ by grouping together the ones that sound alike.
+ 131&nbsp;#  The soundex code for a given name is the first letter of the name,
+ 132&nbsp;#+ followed by a calculated three-number code.
+ 133&nbsp;#  Similar sounding names should have almost the same soundex codes.
+ 134&nbsp;
+ 135&nbsp;#   Examples:
+ 136&nbsp;#   Smith and Smythe both have a "S-530" soundex.
+ 137&nbsp;#   Harrison = H-625
+ 138&nbsp;#   Hargison = H-622
+ 139&nbsp;#   Harriman = H-655
+ 140&nbsp;
+ 141&nbsp;#  This works out fairly well in practice, but there are numerous anomalies.
+ 142&nbsp;#
+ 143&nbsp;#
+ 144&nbsp;#  The U.S. Census and certain other governmental agencies use soundex,
+ 145&nbsp;#  as do genealogical researchers.
+ 146&nbsp;#
+ 147&nbsp;#  For more information,
+ 148&nbsp;#+ see the "National Archives and Records Administration home page",
+ 149&nbsp;#+ http://www.nara.gov/genealogy/soundex/soundex.html
+ 150&nbsp;
+ 151&nbsp;
+ 152&nbsp;
+ 153&nbsp;# Exercise:
+ 154&nbsp;# --------
+ 155&nbsp;# Simplify the "Exception Patch" section of this script.
+ 156&nbsp;
+ 157&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="LIFESLOW"
+></A
+><P
+><B
+>Example A-10. <SPAN
+CLASS="QUOTE"
+>"Game of Life"</SPAN
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# life.sh: "Life in the Slow Lane"
+   3&nbsp;# Version 2: Patched by Daniel Albers
+   4&nbsp;#+           to allow non-square grids as input.
+   5&nbsp;
+   6&nbsp;# ##################################################################### #
+   7&nbsp;# This is the Bash script version of John Conway's "Game of Life".      #
+   8&nbsp;# "Life" is a simple implementation of cellular automata.               #
+   9&nbsp;# --------------------------------------------------------------------- #
+  10&nbsp;# On a rectangular grid, let each "cell" be either "living" or "dead".  #
+  11&nbsp;# Designate a living cell with a dot, and a dead one with a blank space.#
+  12&nbsp;#  Begin with an arbitrarily drawn dot-and-blank grid,                  #
+  13&nbsp;#+ and let this be the starting generation, "generation 0".             #
+  14&nbsp;# Determine each successive generation by the following rules:          #
+  15&nbsp;# 1) Each cell has 8 neighbors, the adjoining cells                     #
+  16&nbsp;#+   left, right, top, bottom, and the 4 diagonals.                     #
+  17&nbsp;#                       123                                             #
+  18&nbsp;#                       4*5                                             #
+  19&nbsp;#                       678                                             #
+  20&nbsp;#                                                                       #
+  21&nbsp;# 2) A living cell with either 2 or 3 living neighbors remains alive.   #
+  22&nbsp;# 3) A dead cell with 3 living neighbors becomes alive (a "birth").     #
+  23&nbsp;SURVIVE=2                                                               #
+  24&nbsp;BIRTH=3                                                                 #
+  25&nbsp;# 4) All other cases result in a dead cell for the next generation.     #
+  26&nbsp;# ##################################################################### #
+  27&nbsp;
+  28&nbsp;
+  29&nbsp;startfile=gen0   # Read the starting generation from the file "gen0".
+  30&nbsp;                 # Default, if no other file specified when invoking script.
+  31&nbsp;                 #
+  32&nbsp;if [ -n "$1" ]   # Specify another "generation 0" file.
+  33&nbsp;then
+  34&nbsp;  if [ -e "$1" ] # Check for existence.
+  35&nbsp;  then
+  36&nbsp;    startfile="$1"
+  37&nbsp;  fi  
+  38&nbsp;fi  
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;ALIVE1=.
+  42&nbsp;DEAD1=_
+  43&nbsp;                 # Represent living and "dead" cells in the start-up file.
+  44&nbsp;
+  45&nbsp;#  ---------------------------------------------------------- #
+  46&nbsp;#  This script uses a 10 x 10 grid (may be increased,
+  47&nbsp;#+ but a large grid will will cause very slow execution).
+  48&nbsp;ROWS=10
+  49&nbsp;COLS=10
+  50&nbsp;#  Change above two variables to match grid size, if necessary.
+  51&nbsp;#  ---------------------------------------------------------- #
+  52&nbsp;
+  53&nbsp;GENERATIONS=10          #  How many generations to cycle through.
+  54&nbsp;                        #  Adjust this upwards,
+  55&nbsp;                        #+ if you have time on your hands.
+  56&nbsp;
+  57&nbsp;NONE_ALIVE=80           #  Exit status on premature bailout,
+  58&nbsp;                        #+ if no cells left alive.
+  59&nbsp;TRUE=0
+  60&nbsp;FALSE=1
+  61&nbsp;ALIVE=0
+  62&nbsp;DEAD=1
+  63&nbsp;
+  64&nbsp;avar=                   # Global; holds current generation.
+  65&nbsp;generation=0            # Initialize generation count.
+  66&nbsp;
+  67&nbsp;# =================================================================
+  68&nbsp;
+  69&nbsp;
+  70&nbsp;let "cells = $ROWS * $COLS"
+  71&nbsp;                        # How many cells.
+  72&nbsp;
+  73&nbsp;declare -a initial      # Arrays containing "cells".
+  74&nbsp;declare -a current
+  75&nbsp;
+  76&nbsp;display ()
+  77&nbsp;{
+  78&nbsp;
+  79&nbsp;alive=0                 # How many cells "alive" at any given time.
+  80&nbsp;                        # Initially zero.
+  81&nbsp;
+  82&nbsp;declare -a arr
+  83&nbsp;arr=( `echo "$1"` )     # Convert passed arg to array.
+  84&nbsp;
+  85&nbsp;element_count=${#arr[*]}
+  86&nbsp;
+  87&nbsp;local i
+  88&nbsp;local rowcheck
+  89&nbsp;
+  90&nbsp;for ((i=0; i&#60;$element_count; i++))
+  91&nbsp;do
+  92&nbsp;
+  93&nbsp;  # Insert newline at end of each row.
+  94&nbsp;  let "rowcheck = $i % COLS"
+  95&nbsp;  if [ "$rowcheck" -eq 0 ]
+  96&nbsp;  then
+  97&nbsp;    echo                # Newline.
+  98&nbsp;    echo -n "      "    # Indent.
+  99&nbsp;  fi  
+ 100&nbsp;
+ 101&nbsp;  cell=${arr[i]}
+ 102&nbsp;
+ 103&nbsp;  if [ "$cell" = . ]
+ 104&nbsp;  then
+ 105&nbsp;    let "alive += 1"
+ 106&nbsp;  fi  
+ 107&nbsp;
+ 108&nbsp;  echo -n "$cell" | sed -e 's/_/ /g'
+ 109&nbsp;  # Print out array and change underscores to spaces.
+ 110&nbsp;done  
+ 111&nbsp;
+ 112&nbsp;return
+ 113&nbsp;
+ 114&nbsp;}
+ 115&nbsp;
+ 116&nbsp;IsValid ()                            # Test whether cell coordinate valid.
+ 117&nbsp;{
+ 118&nbsp;
+ 119&nbsp;  if [ -z "$1"  -o -z "$2" ]          # Mandatory arguments missing?
+ 120&nbsp;  then
+ 121&nbsp;    return $FALSE
+ 122&nbsp;  fi
+ 123&nbsp;
+ 124&nbsp;local row
+ 125&nbsp;local lower_limit=0                   # Disallow negative coordinate.
+ 126&nbsp;local upper_limit
+ 127&nbsp;local left
+ 128&nbsp;local right
+ 129&nbsp;
+ 130&nbsp;let "upper_limit = $ROWS * $COLS - 1" # Total number of cells.
+ 131&nbsp;
+ 132&nbsp;
+ 133&nbsp;if [ "$1" -lt "$lower_limit" -o "$1" -gt "$upper_limit" ]
+ 134&nbsp;then
+ 135&nbsp;  return $FALSE                       # Out of array bounds.
+ 136&nbsp;fi  
+ 137&nbsp;
+ 138&nbsp;row=$2
+ 139&nbsp;let "left = $row * $COLS"             # Left limit.
+ 140&nbsp;let "right = $left + $COLS - 1"       # Right limit.
+ 141&nbsp;
+ 142&nbsp;if [ "$1" -lt "$left" -o "$1" -gt "$right" ]
+ 143&nbsp;then
+ 144&nbsp;  return $FALSE                       # Beyond row boundary.
+ 145&nbsp;fi  
+ 146&nbsp;
+ 147&nbsp;return $TRUE                          # Valid coordinate.
+ 148&nbsp;
+ 149&nbsp;}  
+ 150&nbsp;
+ 151&nbsp;
+ 152&nbsp;IsAlive ()              # Test whether cell is alive.
+ 153&nbsp;                        # Takes array, cell number, state of cell as arguments.
+ 154&nbsp;{
+ 155&nbsp;  GetCount "$1" $2      # Get alive cell count in neighborhood.
+ 156&nbsp;  local nhbd=$?
+ 157&nbsp;
+ 158&nbsp;
+ 159&nbsp;  if [ "$nhbd" -eq "$BIRTH" ]  # Alive in any case.
+ 160&nbsp;  then
+ 161&nbsp;    return $ALIVE
+ 162&nbsp;  fi
+ 163&nbsp;
+ 164&nbsp;  if [ "$3" = "." -a "$nhbd" -eq "$SURVIVE" ]
+ 165&nbsp;  then                  # Alive only if previously alive.
+ 166&nbsp;    return $ALIVE
+ 167&nbsp;  fi  
+ 168&nbsp;
+ 169&nbsp;  return $DEAD          # Default.
+ 170&nbsp;
+ 171&nbsp;}  
+ 172&nbsp;
+ 173&nbsp;
+ 174&nbsp;GetCount ()             # Count live cells in passed cell's neighborhood.
+ 175&nbsp;                        # Two arguments needed:
+ 176&nbsp;			# $1) variable holding array
+ 177&nbsp;			# $2) cell number
+ 178&nbsp;{
+ 179&nbsp;  local cell_number=$2
+ 180&nbsp;  local array
+ 181&nbsp;  local top
+ 182&nbsp;  local center
+ 183&nbsp;  local bottom
+ 184&nbsp;  local r
+ 185&nbsp;  local row
+ 186&nbsp;  local i
+ 187&nbsp;  local t_top
+ 188&nbsp;  local t_cen
+ 189&nbsp;  local t_bot
+ 190&nbsp;  local count=0
+ 191&nbsp;  local ROW_NHBD=3
+ 192&nbsp;
+ 193&nbsp;  array=( `echo "$1"` )
+ 194&nbsp;
+ 195&nbsp;  let "top = $cell_number - $COLS - 1"    # Set up cell neighborhood.
+ 196&nbsp;  let "center = $cell_number - 1"
+ 197&nbsp;  let "bottom = $cell_number + $COLS - 1"
+ 198&nbsp;  let "r = $cell_number / $COLS"
+ 199&nbsp;
+ 200&nbsp;  for ((i=0; i&#60;$ROW_NHBD; i++))           # Traverse from left to right. 
+ 201&nbsp;  do
+ 202&nbsp;    let "t_top = $top + $i"
+ 203&nbsp;    let "t_cen = $center + $i"
+ 204&nbsp;    let "t_bot = $bottom + $i"
+ 205&nbsp;
+ 206&nbsp;
+ 207&nbsp;    let "row = $r"                        # Count center row of neighborhood.
+ 208&nbsp;    IsValid $t_cen $row                   # Valid cell position?
+ 209&nbsp;    if [ $? -eq "$TRUE" ]
+ 210&nbsp;    then
+ 211&nbsp;      if [ ${array[$t_cen]} = "$ALIVE1" ] # Is it alive?
+ 212&nbsp;      then                                # Yes?
+ 213&nbsp;        let "count += 1"                  # Increment count.
+ 214&nbsp;      fi	
+ 215&nbsp;    fi  
+ 216&nbsp;
+ 217&nbsp;    let "row = $r - 1"                    # Count top row.          
+ 218&nbsp;    IsValid $t_top $row
+ 219&nbsp;    if [ $? -eq "$TRUE" ]
+ 220&nbsp;    then
+ 221&nbsp;      if [ ${array[$t_top]} = "$ALIVE1" ] 
+ 222&nbsp;      then
+ 223&nbsp;        let "count += 1"
+ 224&nbsp;      fi	
+ 225&nbsp;    fi  
+ 226&nbsp;
+ 227&nbsp;    let "row = $r + 1"                    # Count bottom row.
+ 228&nbsp;    IsValid $t_bot $row
+ 229&nbsp;    if [ $? -eq "$TRUE" ]
+ 230&nbsp;    then
+ 231&nbsp;      if [ ${array[$t_bot]} = "$ALIVE1" ] 
+ 232&nbsp;      then
+ 233&nbsp;        let "count += 1"
+ 234&nbsp;      fi	
+ 235&nbsp;    fi  
+ 236&nbsp;
+ 237&nbsp;  done  
+ 238&nbsp;
+ 239&nbsp;
+ 240&nbsp;  if [ ${array[$cell_number]} = "$ALIVE1" ]
+ 241&nbsp;  then
+ 242&nbsp;    let "count -= 1"        #  Make sure value of tested cell itself
+ 243&nbsp;  fi                        #+ is not counted.
+ 244&nbsp;
+ 245&nbsp;
+ 246&nbsp;  return $count
+ 247&nbsp;  
+ 248&nbsp;}
+ 249&nbsp;
+ 250&nbsp;next_gen ()               # Update generation array.
+ 251&nbsp;{
+ 252&nbsp;
+ 253&nbsp;local array
+ 254&nbsp;local i=0
+ 255&nbsp;
+ 256&nbsp;array=( `echo "$1"` )     # Convert passed arg to array.
+ 257&nbsp;
+ 258&nbsp;while [ "$i" -lt "$cells" ]
+ 259&nbsp;do
+ 260&nbsp;  IsAlive "$1" $i ${array[$i]}   # Is cell alive?
+ 261&nbsp;  if [ $? -eq "$ALIVE" ]
+ 262&nbsp;  then                           #  If alive, then
+ 263&nbsp;    array[$i]=.                  #+ represent the cell as a period.
+ 264&nbsp;  else  
+ 265&nbsp;    array[$i]="_"                #  Otherwise underscore
+ 266&nbsp;   fi                            #+ (which will later be converted to space).  
+ 267&nbsp;  let "i += 1" 
+ 268&nbsp;done   
+ 269&nbsp;
+ 270&nbsp;
+ 271&nbsp;# let "generation += 1"   # Increment generation count.
+ 272&nbsp;# Why was the above line commented out?
+ 273&nbsp;
+ 274&nbsp;
+ 275&nbsp;# Set variable to pass as parameter to "display" function.
+ 276&nbsp;avar=`echo ${array[@]}`   # Convert array back to string variable.
+ 277&nbsp;display "$avar"           # Display it.
+ 278&nbsp;echo; echo
+ 279&nbsp;echo "Generation $generation  -  $alive alive"
+ 280&nbsp;
+ 281&nbsp;if [ "$alive" -eq 0 ]
+ 282&nbsp;then
+ 283&nbsp;  echo
+ 284&nbsp;  echo "Premature exit: no more cells alive!"
+ 285&nbsp;  exit $NONE_ALIVE        #  No point in continuing
+ 286&nbsp;fi                        #+ if no live cells.
+ 287&nbsp;
+ 288&nbsp;}
+ 289&nbsp;
+ 290&nbsp;
+ 291&nbsp;# =========================================================
+ 292&nbsp;
+ 293&nbsp;# main ()
+ 294&nbsp;
+ 295&nbsp;# Load initial array with contents of startup file.
+ 296&nbsp;initial=( `cat "$startfile" | sed -e '/#/d' | tr -d '\n' |\
+ 297&nbsp;sed -e 's/\./\. /g' -e 's/_/_ /g'` )
+ 298&nbsp;# Delete lines containing '#' comment character.
+ 299&nbsp;# Remove linefeeds and insert space between elements.
+ 300&nbsp;
+ 301&nbsp;clear          # Clear screen.
+ 302&nbsp;
+ 303&nbsp;echo #         Title
+ 304&nbsp;echo "======================="
+ 305&nbsp;echo "    $GENERATIONS generations"
+ 306&nbsp;echo "           of"
+ 307&nbsp;echo "\"Life in the Slow Lane\""
+ 308&nbsp;echo "======================="
+ 309&nbsp;
+ 310&nbsp;
+ 311&nbsp;# -------- Display first generation. --------
+ 312&nbsp;Gen0=`echo ${initial[@]}`
+ 313&nbsp;display "$Gen0"           # Display only.
+ 314&nbsp;echo; echo
+ 315&nbsp;echo "Generation $generation  -  $alive alive"
+ 316&nbsp;# -------------------------------------------
+ 317&nbsp;
+ 318&nbsp;
+ 319&nbsp;let "generation += 1"     # Increment generation count.
+ 320&nbsp;echo
+ 321&nbsp;
+ 322&nbsp;# ------- Display second generation. -------
+ 323&nbsp;Cur=`echo ${initial[@]}`
+ 324&nbsp;next_gen "$Cur"          # Update &#38; display.
+ 325&nbsp;# ------------------------------------------
+ 326&nbsp;
+ 327&nbsp;let "generation += 1"     # Increment generation count.
+ 328&nbsp;
+ 329&nbsp;# ------ Main loop for displaying subsequent generations ------
+ 330&nbsp;while [ "$generation" -le "$GENERATIONS" ]
+ 331&nbsp;do
+ 332&nbsp;  Cur="$avar"
+ 333&nbsp;  next_gen "$Cur"
+ 334&nbsp;  let "generation += 1"
+ 335&nbsp;done
+ 336&nbsp;# ==============================================================
+ 337&nbsp;
+ 338&nbsp;echo
+ 339&nbsp;
+ 340&nbsp;exit 0
+ 341&nbsp;
+ 342&nbsp;# --------------------------------------------------------------
+ 343&nbsp;
+ 344&nbsp;# The grid in this script has a "boundary problem."
+ 345&nbsp;# The the top, bottom, and sides border on a void of dead cells.
+ 346&nbsp;# Exercise: Change the script to have the grid wrap around,
+ 347&nbsp;# +         so that the left and right sides will "touch,"      
+ 348&nbsp;# +         as will the top and bottom.
+ 349&nbsp;#
+ 350&nbsp;# Exercise: Create a new "gen0" file to seed this script.
+ 351&nbsp;#           Use a 12 x 16 grid, instead of the original 10 x 10 one.
+ 352&nbsp;#           Make the necessary changes to the script,
+ 353&nbsp;#+          so it will run with the altered file.
+ 354&nbsp;#
+ 355&nbsp;# Exercise: Modify this script so that it can determine the grid size
+ 356&nbsp;#+          from the "gen0" file, and set any variables necessary
+ 357&nbsp;#+          for the script to run.
+ 358&nbsp;#           This would make unnecessary any changes to variables
+ 359&nbsp;#+          in the script for an altered grid size.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="GEN0DATA"
+></A
+><P
+><B
+>Example A-11. Data file for <SPAN
+CLASS="QUOTE"
+>"Game of Life"</SPAN
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# This is an example "generation 0" start-up file for "life.sh".
+   2&nbsp;# --------------------------------------------------------------
+   3&nbsp;#  The "gen0" file is a 10 x 10 grid using a period (.) for live cells,
+   4&nbsp;#+ and an underscore (_) for dead ones. We cannot simply use spaces
+   5&nbsp;#+ for dead cells in this file because of a peculiarity in Bash arrays.
+   6&nbsp;#  [Exercise for the reader: explain this.]
+   7&nbsp;#
+   8&nbsp;# Lines beginning with a '#' are comments, and the script ignores them.
+   9&nbsp;__.__..___
+  10&nbsp;___._.____
+  11&nbsp;____.___..
+  12&nbsp;_._______.
+  13&nbsp;____._____
+  14&nbsp;..__...___
+  15&nbsp;____._____
+  16&nbsp;___...____
+  17&nbsp;__.._..___
+  18&nbsp;_..___..__</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>+++</P
+><P
+>The following two scripts are by Mark Moraes of the University
+    of Toronto. See the enclosed file <SPAN
+CLASS="QUOTE"
+>"Moraes-COPYRIGHT"</SPAN
+>
+    for permissions and restrictions.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BEHEAD"
+></A
+><P
+><B
+>Example A-12. <B
+CLASS="COMMAND"
+>behead</B
+>: Removing mail and news message headers
+      </B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/sh
+   2&nbsp;# Strips off the header from a mail/News message i.e. till the first
+   3&nbsp;# empty line
+   4&nbsp;# Mark Moraes, University of Toronto
+   5&nbsp;
+   6&nbsp;# ==&#62; These comments added by author of this document.
+   7&nbsp;
+   8&nbsp;if [ $# -eq 0 ]; then
+   9&nbsp;# ==&#62; If no command line args present, then works on file redirected to stdin.
+  10&nbsp;	sed -e '1,/^$/d' -e '/^[ 	]*$/d'
+  11&nbsp;	# --&#62; Delete empty lines and all lines until 
+  12&nbsp;	# --&#62; first one beginning with white space.
+  13&nbsp;else
+  14&nbsp;# ==&#62; If command line args present, then work on files named.
+  15&nbsp;	for i do
+  16&nbsp;		sed -e '1,/^$/d' -e '/^[ 	]*$/d' $i
+  17&nbsp;		# --&#62; Ditto, as above.
+  18&nbsp;	done
+  19&nbsp;fi
+  20&nbsp;
+  21&nbsp;# ==&#62; Exercise: Add error checking and other options.
+  22&nbsp;# ==&#62;
+  23&nbsp;# ==&#62; Note that the small sed script repeats, except for the arg passed.
+  24&nbsp;# ==&#62; Does it make sense to embed it in a function? Why or why not?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FTPGET"
+></A
+><P
+><B
+>Example A-13. <B
+CLASS="COMMAND"
+>ftpget</B
+>: Downloading files via ftp
+      </B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/sh 
+   2&nbsp;# $Id: ftpget,v 1.2 91/05/07 21:15:43 moraes Exp $ 
+   3&nbsp;# Script to perform batch anonymous ftp. Essentially converts a list of
+   4&nbsp;# of command line arguments into input to ftp.
+   5&nbsp;# ==&#62; This script is nothing but a shell wrapper around "ftp" . . .
+   6&nbsp;# Simple, and quick - written as a companion to ftplist 
+   7&nbsp;# -h specifies the remote host (default prep.ai.mit.edu) 
+   8&nbsp;# -d specifies the remote directory to cd to - you can provide a sequence 
+   9&nbsp;# of -d options - they will be cd'ed to in turn. If the paths are relative, 
+  10&nbsp;# make sure you get the sequence right. Be careful with relative paths - 
+  11&nbsp;# there are far too many symlinks nowadays.  
+  12&nbsp;# (default is the ftp login directory)
+  13&nbsp;# -v turns on the verbose option of ftp, and shows all responses from the 
+  14&nbsp;# ftp server.  
+  15&nbsp;# -f remotefile[:localfile] gets the remote file into localfile 
+  16&nbsp;# -m pattern does an mget with the specified pattern. Remember to quote 
+  17&nbsp;# shell characters.  
+  18&nbsp;# -c does a local cd to the specified directory
+  19&nbsp;# For example, 
+  20&nbsp;# 	ftpget -h expo.lcs.mit.edu -d contrib -f xplaces.shar:xplaces.sh \
+  21&nbsp;#		-d ../pub/R3/fixes -c ~/fixes -m 'fix*' 
+  22&nbsp;# will get xplaces.shar from ~ftp/contrib on expo.lcs.mit.edu, and put it in
+  23&nbsp;# xplaces.sh in the current working directory, and get all fixes from
+  24&nbsp;# ~ftp/pub/R3/fixes and put them in the ~/fixes directory. 
+  25&nbsp;# Obviously, the sequence of the options is important, since the equivalent
+  26&nbsp;# commands are executed by ftp in corresponding order
+  27&nbsp;#
+  28&nbsp;# Mark Moraes &#60;moraes@csri.toronto.edu&#62;, Feb 1, 1989 
+  29&nbsp;#
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;# ==&#62; These comments added by author of this document.
+  33&nbsp;
+  34&nbsp;# PATH=/local/bin:/usr/ucb:/usr/bin:/bin
+  35&nbsp;# export PATH
+  36&nbsp;# ==&#62; Above 2 lines from original script probably superfluous.
+  37&nbsp;
+  38&nbsp;E_BADARGS=65
+  39&nbsp;
+  40&nbsp;TMPFILE=/tmp/ftp.$$
+  41&nbsp;# ==&#62; Creates temp file, using process id of script ($$)
+  42&nbsp;# ==&#62; to construct filename.
+  43&nbsp;
+  44&nbsp;SITE=`domainname`.toronto.edu
+  45&nbsp;# ==&#62; 'domainname' similar to 'hostname'
+  46&nbsp;# ==&#62; May rewrite this to parameterize this for general use.
+  47&nbsp;
+  48&nbsp;usage="Usage: $0 [-h remotehost] [-d remotedirectory]... [-f remfile:localfile]... \
+  49&nbsp;		[-c localdirectory] [-m filepattern] [-v]"
+  50&nbsp;ftpflags="-i -n"
+  51&nbsp;verbflag=
+  52&nbsp;set -f 		# So we can use globbing in -m
+  53&nbsp;set x `getopt vh:d:c:m:f: $*`
+  54&nbsp;if [ $? != 0 ]; then
+  55&nbsp;	echo $usage
+  56&nbsp;	exit $E_BADARGS
+  57&nbsp;fi
+  58&nbsp;shift
+  59&nbsp;trap 'rm -f ${TMPFILE} ; exit' 0 1 2 3 15
+  60&nbsp;# ==&#62; Delete tempfile in case of abnormal exit from script.
+  61&nbsp;echo "user anonymous ${USER-gnu}@${SITE} &#62; ${TMPFILE}"
+  62&nbsp;# ==&#62; Added quotes (recommended in complex echoes).
+  63&nbsp;echo binary &#62;&#62; ${TMPFILE}
+  64&nbsp;for i in $*   # ==&#62; Parse command line args.
+  65&nbsp;do
+  66&nbsp;	case $i in
+  67&nbsp;	-v) verbflag=-v; echo hash &#62;&#62; ${TMPFILE}; shift;;
+  68&nbsp;	-h) remhost=$2; shift 2;;
+  69&nbsp;	-d) echo cd $2 &#62;&#62; ${TMPFILE}; 
+  70&nbsp;	    if [ x${verbflag} != x ]; then
+  71&nbsp;	        echo pwd &#62;&#62; ${TMPFILE};
+  72&nbsp;	    fi;
+  73&nbsp;	    shift 2;;
+  74&nbsp;	-c) echo lcd $2 &#62;&#62; ${TMPFILE}; shift 2;;
+  75&nbsp;	-m) echo mget "$2" &#62;&#62; ${TMPFILE}; shift 2;;
+  76&nbsp;	-f) f1=`expr "$2" : "\([^:]*\).*"`; f2=`expr "$2" : "[^:]*:\(.*\)"`;
+  77&nbsp;	    echo get ${f1} ${f2} &#62;&#62; ${TMPFILE}; shift 2;;
+  78&nbsp;	--) shift; break;;
+  79&nbsp;	esac
+  80&nbsp;        # ==&#62; 'lcd' and 'mget' are ftp commands. See "man ftp" . . .
+  81&nbsp;done
+  82&nbsp;if [ $# -ne 0 ]; then
+  83&nbsp;	echo $usage
+  84&nbsp;	exit $E_BADARGS
+  85&nbsp;        # ==&#62; Changed from "exit 2" to conform with style standard.
+  86&nbsp;fi
+  87&nbsp;if [ x${verbflag} != x ]; then
+  88&nbsp;	ftpflags="${ftpflags} -v"
+  89&nbsp;fi
+  90&nbsp;if [ x${remhost} = x ]; then
+  91&nbsp;	remhost=prep.ai.mit.edu
+  92&nbsp;	# ==&#62; Change to match appropriate ftp site.
+  93&nbsp;fi
+  94&nbsp;echo quit &#62;&#62; ${TMPFILE}
+  95&nbsp;# ==&#62; All commands saved in tempfile.
+  96&nbsp;
+  97&nbsp;ftp ${ftpflags} ${remhost} &#60; ${TMPFILE}
+  98&nbsp;# ==&#62; Now, tempfile batch processed by ftp.
+  99&nbsp;
+ 100&nbsp;rm -f ${TMPFILE}
+ 101&nbsp;# ==&#62; Finally, tempfile deleted (you may wish to copy it to a logfile).
+ 102&nbsp;
+ 103&nbsp;
+ 104&nbsp;# ==&#62; Exercises:
+ 105&nbsp;# ==&#62; ---------
+ 106&nbsp;# ==&#62; 1) Add error checking.
+ 107&nbsp;# ==&#62; 2) Add bells &#38; whistles.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>+</P
+><P
+>Antek Sawicki contributed the following script, which makes very
+      clever use of the parameter substitution operators discussed in
+      <A
+HREF="parameter-substitution.html"
+>Section 9.3</A
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PW"
+></A
+><P
+><B
+>Example A-14. <B
+CLASS="COMMAND"
+>password</B
+>: Generating random
+      8-character passwords</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# May need to be invoked with  #!/bin/bash2  on older machines.
+   3&nbsp;#
+   4&nbsp;# Random password generator for Bash 2.x by Antek Sawicki &#60;tenox@tenox.tc&#62;,
+   5&nbsp;# who generously gave permission to the document author to use it here.
+   6&nbsp;#
+   7&nbsp;# ==&#62; Comments added by document author ==&#62;
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;MATRIX="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+  11&nbsp;# ==&#62; Password will consist of alphanumeric characters.
+  12&nbsp;LENGTH="8"
+  13&nbsp;# ==&#62; May change 'LENGTH' for longer password.
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;while [ "${n:=1}" -le "$LENGTH" ]
+  17&nbsp;# ==&#62; Recall that := is "default substitution" operator.
+  18&nbsp;# ==&#62; So, if 'n' has not been initialized, set it to 1.
+  19&nbsp;do
+  20&nbsp;	PASS="$PASS${MATRIX:$(($RANDOM%${#MATRIX})):1}"
+  21&nbsp;	# ==&#62; Very clever, but tricky.
+  22&nbsp;
+  23&nbsp;	# ==&#62; Starting from the innermost nesting...
+  24&nbsp;	# ==&#62; ${#MATRIX} returns length of array MATRIX.
+  25&nbsp;
+  26&nbsp;	# ==&#62; $RANDOM%${#MATRIX} returns random number between 1
+  27&nbsp;	# ==&#62; and [length of MATRIX] - 1.
+  28&nbsp;
+  29&nbsp;	# ==&#62; ${MATRIX:$(($RANDOM%${#MATRIX})):1}
+  30&nbsp;	# ==&#62; returns expansion of MATRIX at random position, by length 1. 
+  31&nbsp;	# ==&#62; See {var:pos:len} parameter substitution in Chapter 9.
+  32&nbsp;	# ==&#62; and the associated examples.
+  33&nbsp;
+  34&nbsp;	# ==&#62; PASS=... simply pastes this result onto previous PASS (concatenation).
+  35&nbsp;
+  36&nbsp;	# ==&#62; To visualize this more clearly, uncomment the following line
+  37&nbsp;	#                 echo "$PASS"
+  38&nbsp;	# ==&#62; to see PASS being built up,
+  39&nbsp;	# ==&#62; one character at a time, each iteration of the loop.
+  40&nbsp;
+  41&nbsp;	let n+=1
+  42&nbsp;	# ==&#62; Increment 'n' for next pass.
+  43&nbsp;done
+  44&nbsp;
+  45&nbsp;echo "$PASS"      # ==&#62; Or, redirect to a file, as desired.
+  46&nbsp;
+  47&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>+</P
+><P
+><A
+NAME="ZFIFO"
+></A
+>James R. Van Zandt contributed this script,
+      which uses named pipes and, in his words, <SPAN
+CLASS="QUOTE"
+>"really exercises
+      quoting and escaping"</SPAN
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FIFO"
+></A
+><P
+><B
+>Example A-15. <B
+CLASS="COMMAND"
+>fifo</B
+>: Making daily backups, using named pipes</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ==&#62; Script by James R. Van Zandt, and used here with his permission.
+   3&nbsp;
+   4&nbsp;# ==&#62; Comments added by author of this document.
+   5&nbsp;
+   6&nbsp;  
+   7&nbsp;  HERE=`uname -n`    # ==&#62; hostname
+   8&nbsp;  THERE=bilbo
+   9&nbsp;  echo "starting remote backup to $THERE at `date +%r`"
+  10&nbsp;  # ==&#62; `date +%r` returns time in 12-hour format, i.e. "08:08:34 PM".
+  11&nbsp;  
+  12&nbsp;  # make sure /pipe really is a pipe and not a plain file
+  13&nbsp;  rm -rf /pipe
+  14&nbsp;  mkfifo /pipe       # ==&#62; Create a "named pipe", named "/pipe".
+  15&nbsp;  
+  16&nbsp;  # ==&#62; 'su xyz' runs commands as user "xyz".
+  17&nbsp;  # ==&#62; 'ssh' invokes secure shell (remote login client).
+  18&nbsp;  su xyz -c "ssh $THERE \"cat &#62;/home/xyz/backup/${HERE}-daily.tar.gz\" &#60; /pipe"&#38;
+  19&nbsp;  cd /
+  20&nbsp;  tar -czf - bin boot dev etc home info lib man root sbin share usr var &#62;/pipe
+  21&nbsp;  # ==&#62; Uses named pipe, /pipe, to communicate between processes:
+  22&nbsp;  # ==&#62; 'tar/gzip' writes to /pipe and 'ssh' reads from /pipe.
+  23&nbsp;
+  24&nbsp;  # ==&#62; The end result is this backs up the main directories, from / on down.
+  25&nbsp;
+  26&nbsp;  # ==&#62;  What are the advantages of a "named pipe" in this situation,
+  27&nbsp;  # ==&#62;+ as opposed to an "anonymous pipe", with |?
+  28&nbsp;  # ==&#62;  Will an anonymous pipe even work here?
+  29&nbsp;
+  30&nbsp;
+  31&nbsp;  exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>+</P
+><P
+>St

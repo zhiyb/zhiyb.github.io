@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Recursion</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Tests and Comparisons: Alternatives"
+HREF="testsandcomparisons.html"><LINK
+REL="NEXT"
+TITLE="Colorizing Scripts"
+HREF="colorizing.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="testsandcomparisons.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 33. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="colorizing.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="RECURSIONSCT"
+>33.4. </A
+>递归</H1
+>
+  <P
+>脚本是否能 <A
+HREF="localvar.html#RECURSIONREF"
+>递归地</A
+>
+	  调用自己本身? 当然可以.</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RECURSE"
+></A
+>
+  <P
+><B
+>例子 33-8. 递归调用自己本身的（无用）脚本</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# recurse.sh
+   3&nbsp;
+   4&nbsp;#  脚本能否递归地调用自己?
+   5&nbsp;#  是的, 但这有什么实际的用处吗?
+   6&nbsp;#  (看下面的.)
+   7&nbsp;
+   8&nbsp;RANGE=10
+   9&nbsp;MAXVAL=9
+  10&nbsp;
+  11&nbsp;i=$RANDOM
+  12&nbsp;let "i %= $RANGE"  # 产生一个从 0 到 $RANGE - 1 之间的随机数.
+  13&nbsp;
+  14&nbsp;if [ "$i" -lt "$MAXVAL" ]
+  15&nbsp;then
+  16&nbsp;  echo "i = $i"
+  17&nbsp;  ./$0             #  脚本递归地调用再生成一个和自己一样的实例.
+  18&nbsp;fi                 #  每个子脚本做的事都一样,
+  19&nbsp;                   #+ 直到产生的变量 $i 和变量 $MAXVAL 相等.
+  20&nbsp;
+  21&nbsp;#  用"while"循环代替"if/then"测试会引起错误.
+  22&nbsp;#  解释为什么会这样.
+  23&nbsp;
+  24&nbsp;exit 0
+  25&nbsp;
+  26&nbsp;# 注:
+  27&nbsp;# ----
+  28&nbsp;# 脚本要正确地工作必须有执行权限.
+  29&nbsp;# 这是指用"sh"命令来调用这个脚本而没有设置正确权限导致的问题.
+  30&nbsp;# 请解释原因.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PBOOK"
+></A
+>
+  <P
+><B
+>例子 33-9. 递归调用自己本身的（有用）脚本</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# pb.sh: 电话本（phone book）
+   3&nbsp;
+   4&nbsp;# 由Rick Boivie编写,已得到使用许可.
+   5&nbsp;# 由ABS文档作者修改.
+   6&nbsp;
+   7&nbsp;MINARGS=1     #  脚本需要至少一个参数.
+   8&nbsp;DATAFILE=./phonebook
+   9&nbsp;              #  在当前目录下名为"phonebook"的数据文件必须存在
+  10&nbsp;              #
+  11&nbsp;PROGNAME=$0
+  12&nbsp;E_NOARGS=70   #  没有参数的错误值.
+  13&nbsp;
+  14&nbsp;if [ $# -lt $MINARGS ]; then
+  15&nbsp;      echo "Usage: "$PROGNAME" data"
+  16&nbsp;      exit $E_NOARGS
+  17&nbsp;fi      
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;if [ $# -eq $MINARGS ]; then
+  21&nbsp;      grep $1 "$DATAFILE"
+  22&nbsp;      #  如果$DATAFILE文件不存在，'grep' 会打印一个错误信息.
+  23&nbsp;else
+  24&nbsp;      ( shift; "$PROGNAME" $* ) | grep $1
+  25&nbsp;      # 脚本递归调用本身.
+  26&nbsp;fi
+  27&nbsp;
+  28&nbsp;exit 0        #  脚本在这儿退出.
+  29&nbsp;              #  因此Therefore, 从这行开始可以写没有#开头的的注释行
+  30&nbsp;	      #
+  31&nbsp;
+  32&nbsp;# ------------------------------------------------------------------------
+  33&nbsp;"phonebook"文件的例子:
+  34&nbsp;
+  35&nbsp;John Doe        1555 Main St., Baltimore, MD 21228          (410) 222-3333
+  36&nbsp;Mary Moe        9899 Jones Blvd., Warren, NH 03787          (603) 898-3232
+  37&nbsp;Richard Roe     856 E. 7th St., New York, NY 10009          (212) 333-4567
+  38&nbsp;Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+  39&nbsp;Zoe Zenobia     4481 N. Baker St., San Francisco, SF 94338  (415) 501-1631
+  40&nbsp;# ------------------------------------------------------------------------
+  41&nbsp;
+  42&nbsp;$bash pb.sh Roe
+  43&nbsp;Richard Roe     856 E. 7th St., New York, NY 10009          (212) 333-4567
+  44&nbsp;Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+  45&nbsp;
+  46&nbsp;$bash pb.sh Roe Sam
+  47&nbsp;Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+  48&nbsp;
+  49&nbsp;#  当超过一个参数传给这个脚本时,
+  50&nbsp;#+ 它只打印包含所有参数的行.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="USRMNT"
+></A
+>
+  <P
+><B
+>例子 33-10. 另一个递归调用自己本身的（有用）脚本</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# usrmnt.sh, 由Anthony Richardson编写
+   3&nbsp;# 得到允许在此使用.
+   4&nbsp;
+   5&nbsp;# usage:       usrmnt.sh
+   6&nbsp;# 描述: 挂载设备, 调用者必须列在/etc/sudoers文件的MNTUSERS组里
+   7&nbsp;#
+   8&nbsp;
+   9&nbsp;# ----------------------------------------------------------
+  10&nbsp;#  这是一个用户挂载设备的脚本，它用sudo来调用自己.
+  11&nbsp;#  只有拥有合适权限的用户才能用
+  12&nbsp;
+  13&nbsp;#   usermount /dev/fd0 /mnt/floppy
+  14&nbsp;
+  15&nbsp;# 来代替
+  16&nbsp;
+  17&nbsp;#   sudo usermount /dev/fd0 /mnt/floppy
+  18&nbsp;
+  19&nbsp;#  我使用相同的技术来处理我所有的sudo脚本, 
+  20&nbsp;#+ 因为我觉得它很方便.
+  21&nbsp;# ----------------------------------------------------------
+  22&nbsp;
+  23&nbsp;#  如果 SUDO_COMMAND 变量没有设置，我们不能通过sudo来运行脚本本身.
+  24&nbsp;#+ 传递用户的真实ID和组ID . . .
+  25&nbsp;
+  26&nbsp;if [ -z "$SUDO_COMMAND" ]
+  27&nbsp;then
+  28&nbsp;   mntusr=$(id -u) grpusr=$(id -g) sudo $0 $*
+  29&nbsp;   exit 0
+  30&nbsp;fi
+  31&nbsp;
+  32&nbsp;# 如果我们以sudo来调用运行，就会运行这儿.
+  33&nbsp;/bin/mount $* -o uid=$mntusr,gid=$grpusr
+  34&nbsp;
+  35&nbsp;exit 0
+  36&nbsp;
+  37&nbsp;# 附注 (由脚本作者加注): 
+  38&nbsp;# -------------------------------------------------
+  39&nbsp;
+  40&nbsp;# 1) Linux允许在/etc/fstab文件中使用"users"选项 
+  41&nbsp;#    以使任何用户能挂载可移动的介质.
+  42&nbsp;#    但是, 在一个服务器上, 
+  43&nbsp;#    我只想有限的几个用户可以存取可移动介质.
+  44&nbsp;#    我发现使用sudo可以有更多的控制.
+  45&nbsp;
+  46&nbsp;# 2) 我也发现sudo能通过组更方便地达成目的.
+  47&nbsp;# 
+  48&nbsp;
+  49&nbsp;# 3) 这个方法使给予任何想给合适权限的人使用mount命令
+  50&nbsp;#    所以要小心使用.
+  51&nbsp;#    你也可以开发类似的脚本mntfloppy, mntcdrom,和 mntsamba来使mount命令得到更好的控制
+  52&nbsp;# 
+  53&nbsp;# 
+  54&nbsp;# </PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>过多层次的递归调用会耗尽脚本的堆栈空间，会引起段错误.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="testsandcomparisons.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="colorizing.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tests and Comparisons: Alternatives</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="QUOTE"
+>"Colorizing"</SPAN
+> Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

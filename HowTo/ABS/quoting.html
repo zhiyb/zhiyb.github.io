@@ -1,0 +1,676 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Quoting</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basics"
+HREF="part2.html"><LINK
+REL="PREVIOUS"
+TITLE="Special Variable Types"
+HREF="othertypesv.html"><LINK
+REL="NEXT"
+TITLE="Escaping"
+HREF="escapingsection.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="othertypesv.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="escapingsection.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="QUOTING"
+>第五章：引用</A
+></H1
+>
+  <P
+><A
+NAME="QUOTINGREF"
+></A
+></P
+>
+  <P
+>引用意味着保护在引号中的字符串. 引用在保护被引起字符串中的<A
+HREF="special-chars.html#SCHARLIST1"
+>特殊字符</A
+>被shell或shell脚本解释或扩展. (如果一个字符能被特殊解释为不同于它字面上表示的意思，那么这个字符是“特殊”的,比如说通配符 -- <SPAN
+CLASS="TOKEN"
+>*</SPAN
+>.)</P
+>
+  <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l [Vv]*</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-rw-r--    1 bozo  bozo       324 Apr  2 15:05 VIEWDATA.BAT
+ -rw-rw-r--    1 bozo  bozo       507 May  4 14:25 vartrace.sh
+ -rw-rw-r--    1 bozo  bozo       539 Apr 14 17:11 viewdata.sh</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l '[Vv]*'</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>ls: [Vv]*: No such file or directory</TT
+></PRE
+></TD
+></TR
+></TABLE
+>	      
+	      </P
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN1963"
+></A
+>
+          <P
+>在日常的演讲和写作中，我们使用双引号(&quot;&quot;)引用一个短语,使短语被分开以示特别。在Bash脚本中，当我们引用一个字符串，也会把它分隔开以表示它原来字面上的意思。</P
+>
+        </DIV
+></TD
+></TR
+></TABLE
+>
+  <P
+>某些程序和软件包可以重新解释或扩展引号里的特殊字符。引号一个很重要的作用是保护命令行上的一个参数不被shell解释，而把此参数传递给要执行的程序来处理它。</P
+>
+  <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>grep '[Ff]irst' *.txt</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>file1.txt:This is the first line of file1.txt.
+ file2.txt:This is the First line of file2.txt.</TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+>
+  <P
+>注意在Bash shell下如果没有用引号的命令<TT
+CLASS="USERINPUT"
+><B
+>grep [Ff]irst *.txt</B
+></TT
+>会怎么样。<A
+NAME="AEN1976"
+HREF="#FTN.AEN1976"
+>[1]</A
+> </P
+>
+  <P
+>引号也能改掉<A
+HREF="internal.html#ECHOREF"
+>echo's</A
+><SPAN
+CLASS="QUOTE"
+>不换行的“习惯”。</SPAN
+></P
+>
+  <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $(ls -l)</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>total 8 -rw-rw-r-- 1 bozo bozo 130 Aug 21 12:57 t222.sh -rw-rw-r-- 1 bozo bozo 78 Aug 21 12:57 t71.sh</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo "$(ls -l)"</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>total 8
+ -rw-rw-r--  1 bozo bozo 130 Aug 21 12:57 t222.sh
+ -rw-rw-r--  1 bozo bozo  78 Aug 21 12:57 t71.sh</TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><DIV
+CLASS="SECT1"
+>
+    <H1
+CLASS="SECT1"
+><A
+NAME="QUOTINGVAR"
+>5.1. 引用变量</A
+></H1
+>
+    <P
+>当要引用一个变量的值时，一般推荐使用双引号。使用双引号除了变量名<A
+NAME="AEN1994"
+HREF="#FTN.AEN1994"
+>[2]</A
+>前缀($)、后引符(`)和转义符(\)外，会使shell不再解释引号中其它所有的特殊字符。<A
+NAME="AEN2000"
+HREF="#FTN.AEN2000"
+>[3]</A
+> 用双引号时$仍被当成特殊字符，允许引用一个被双引号引起的变量(&quot;$variable&quot;), 那也是说$variable会被它的值所代替。(参考上面的<A
+HREF="variables.html#EX9"
+>例子 4-1</A
+>).</P
+>
+    <P
+>用双引号还能使句子不被分割开. <A
+NAME="AEN2024"
+HREF="#FTN.AEN2024"
+>[4]</A
+> 一个参数用双引号引起来能使它被看做一个单元，这样即使参数里面包含有<A
+HREF="special-chars.html#WHITESPACEREF"
+>空白字符</A
+>也不会被shell分割开了。
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;variable1="a variable containing five words"
+   2&nbsp;COMMAND This is $variable1    # 用下面7个参数执行COMMAND命令:
+   3&nbsp;# "This" "is" "a" "variable" "containing" "five" "words"
+   4&nbsp;
+   5&nbsp;COMMAND "This is $variable1"  # 用下面1个参数执行COMMAND命令:
+   6&nbsp;# "This is a variable containing five words"
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;variable2=""    # 空字符串。
+  10&nbsp;
+  11&nbsp;COMMAND $variable2 $variable2 $variable2        # 没有带参数执行COMMAND 命令
+  12&nbsp;COMMAND "$variable2" "$variable2" "$variable2"  # 用三个含空字符串的参数执行COMMAND命令
+  13&nbsp;COMMAND "$variable2 $variable2 $variable2"      # 用一个包含两个空白符的参数执行COMMAND命令
+  14&nbsp;
+  15&nbsp;# Thanks, St閜hane Chazelas.</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="TIP"
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/tip.png"
+HSPACE="5"
+ALT="Tip"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>在echo语句中，只有句子分割和保存<A
+HREF="special-chars.html#WHITESPACEREF"
+>空白符</A
+>的时候，才需要把参数用双引号引起来。.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR>
+      <A
+NAME="WEIRDVARS"
+></A
+> 
+      <P
+><B
+>例子 5-1. 引号引起奇怪的变量</B
+></P
+>
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# weirdvars.sh: Echoing weird variables.
+   3&nbsp;
+   4&nbsp;var="'(]\\{}\$\""
+   5&nbsp;echo $var        # '(]\{}$"
+   6&nbsp;echo "$var"      # '(]\{}$"     和上面一句没什么不同.
+   7&nbsp;
+   8&nbsp;echo
+   9&nbsp;
+  10&nbsp;IFS='\'
+  11&nbsp;echo $var        # '(] {}$"     \字符被空白符替换了，为什么?
+  12&nbsp;echo "$var"      # '(]\{}$"
+  13&nbsp;
+  14&nbsp;# 以上例子由Stephane Chazelas提供..
+  15&nbsp;
+  16&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+    <P
+>单引号（' '）和双引号类似，但它不允许解释变量引用，因此，在单引号内的字符$的特殊意思无效了。在单引号内，除了字符'，每个特殊字符都只是字面的意思。单引号（全局引用）比双引号（部分引用）更严格的处理引用部分。</P
+>
+    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>由于在单引号里的转义字符（\）也只是被局限于字面上的意思，所以想在一双单引号里再加单引号是不行的。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo "Why can't I write 's between single quotes"
+   2&nbsp;
+   3&nbsp;echo
+   4&nbsp;
+   5&nbsp;# The roundabout method.
+   6&nbsp;echo 'Why can'\''t I write '"'"'s between single quotes'
+   7&nbsp;#    |-------|  |----------|   |-----------------------|
+   8&nbsp;# 三个单引号引起的字符串之间有一个转义的单引号和一个由双引号引起的单引号.
+   9&nbsp;
+  10&nbsp;# 这个例子得到 St閜hane Chazelas同意.</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注：</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN1976"
+HREF="quoting.html#AEN1976"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>除非当前目录下有一个文件名为first的文件。那这是引用的另外一个不同的理由了。（多谢 Harald Koenig指出这一点）</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN1994"
+HREF="quoting.html#AEN1994"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>这也会使变量的值会有副作用。（看下面的）</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN2000"
+HREF="quoting.html#AEN2000"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>在命令行上，把感叹号&quot;!&quot;放在双引号里执行命令会出错（译者注：比如说：echo &quot;hello!&quot;）. 因为感叹号被解释成了一个<A
+HREF="histcommands.html"
+>历史命令</A
+>. 然而在一个脚本文件里，这么写则是正确的，因为在脚本文件里Bash的历史机制被禁用了。</P
+>
+      <P
+>在双号号里在字符&quot;\&quot;也会引起许多不一致的行为。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo hello\!</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>hello!</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo "hello\!"</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>hello\!</TT
+>
+ 
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e x\ty</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>xty</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e "x\ty"</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>x       y</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+
+              (多谢Wayne Pollock指出这一点) </P
+></TD
+>
+  </TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN2024"
+HREF="quoting.html#AEN2024"
+>[4]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>句子的分割，在这里是指分割一个字符串为许多不连续的单独的参数。</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="othertypesv.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="escapingsection.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Special Variable Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Escaping</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

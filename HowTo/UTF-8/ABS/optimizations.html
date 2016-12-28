@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Optimizations</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Colorizing Scripts"
+HREF="colorizing.html"><LINK
+REL="NEXT"
+TITLE="Assorted Tips"
+HREF="assortedtips.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="colorizing.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 33. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="assortedtips.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="OPTIMIZATIONS"
+>33.6. </A
+>优化</H1
+>
+  <P
+>大多数shell脚本处理不复杂的问题时会有很快的解决办法. 正因为这样，优化脚本速度不是一个问题.  考虑这样的情况, 一个脚本处理很重要的任务, 虽然它确实运行的很好很正确，但是处理速度太慢. 用一种可编译的语言重写它可能不是非常好的选择. 最简单的办法是重写使这个脚本效率低下的部分. 这个代码优化的原理是否同样适用于效率低下的shell脚本?</P
+>
+  <P
+>检查脚本中的循环. 反复执行操作的时间消耗增长非常的快. 如果可能, 可以从循环中删除时间消耗的操作.</P
+>
+  <P
+>优先使用<A
+HREF="internal.html#BUILTINREF"
+>内建（builtin）</A
+>命令而不是系统命令. 内建命令执行起来更快并且一般调用时不会产生新的子shell.</P
+>
+  <P
+>避免不需要的命令, 特别是<A
+HREF="special-chars.html#PIPEREF"
+>管道（pipe）</A
+>.
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat "$file" | grep "$word"
+   2&nbsp;
+   3&nbsp;grep "$word" "$file"
+   4&nbsp;
+   5&nbsp;#  上面的命令行有同样的效果,
+   6&nbsp;#+ 但第二个运行的更有效率，因为它不产生新的子进程.</PRE
+></TD
+></TR
+></TABLE
+>
+	  <A
+HREF="external.html#CATREF"
+>cat</A
+> 命令似乎特别常在脚本中被滥用.
+	  </P
+>
+	  <P
+>用<A
+HREF="timedate.html#TIMREF"
+>time</A
+>和<A
+HREF="internal.html#TIMESREF"
+>times</A
+>工具去了解计算花费的时间. 考虑用C甚至是汇编重写关键的消耗时间的部分.</P
+>
+	  <P
+>尝试最小化文件I/O. Bash在文件处理上不是特别地有效率, 所以要考虑在脚本中使用更合适地工具来处理,
+	   比如说<A
+HREF="awk.html#AWKREF"
+>awk</A
+> 或 <A
+HREF="wrapper.html#PERLREF"
+>Perl</A
+>.</P
+>
+	  <P
+>采用结构化的思想来写脚本, 使各个模块能够依据需要组织和合并起来.一些适用于高级语言的优化技术也可以用在脚本上 , 但有些技术, 比如说循环优化,
+	   几乎是不相关的. 上面的讨论, 依据经验来判断.</P
+>
+	  <P
+>怎样优化减少执行时间的优秀脚本示例, 请参考<A
+HREF="mathc.html#MONTHLYPMT"
+>例子 12-42</A
+>.</P
+>
+</DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="colorizing.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="assortedtips.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="QUOTE"
+>"Colorizing"</SPAN
+> Scripts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Assorted Tips</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

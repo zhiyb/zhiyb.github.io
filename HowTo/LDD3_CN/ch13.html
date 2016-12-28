@@ -1,0 +1,66 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第13章 USB 驱动</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch12s08.html" title="12.8.&#160;快速参考">
+<link rel="next" href="ch13s02.html" title="13.2.&#160;USB 和 sysfs">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第&nbsp;13&nbsp;章&nbsp;USB 驱动</H1> </th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch12s08.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch13s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="chapter" lang="zh-cn">
+<p>通用串行总线(USB)是一个在主机和许多外设之间的连接. 最初它被创建来替代许多慢速和不同的总线-并口, 串口, 和键盘连接--有一个单个的所有设备都可以连接的总线类型.<sup>[<A href="#ftn.id473861" name=id473861>45</A>]</sup> USB 已经成长超出了这些慢速连接并且现在支持几乎每种可以连接到 PC 的设备. USB 规范的最新版本增加了高速连接, 理论上到 480 MBps.</p>
+<p>拓扑结构上, 一个 USB 子系统没有如同一个总线一样分布; 它更多是一个树, 有几个点对点连接. 这些连接是 4-线 电缆(地, 电源, 和 2 个信号线)来连接一个设备和一个集线器, 如同双绞线以太网. USB 主控制器负责询问每个 USB 设备是否它有数据发送. 由于这个拓扑关系, 一个 USB 设备在没有首先被主控制器询问时从不启动发送数据. 这个配置允许一个非常容易即插即用的系统, 这样各种设备可自动被主机配置.</p>
+<p>在技术层面这个总线是非常简单的, 因为它是一个单主实现, 其中主机查询各种外设. 除了这个固有的限制, 这个总线有一些有趣的特性, 例如一个设备能够请求一个固定的数据传送带宽, 为了可靠地支持视频和音频 I/O. 另一个重要的特性是它只作为设备和主机之间的一个通讯通道, 对它传递的数据没有特殊的含义和结构要求.</p>
+<p>实际上, 有一些结构, 但是它大部分精简为适应一个预先定义的类别: 例如, 一个键盘不会分配带宽, 而一些视频摄像头会.</p>
+<p>USB 协议规范定义了一套标准, 任何特定类型的设备都可以遵循. 如果一个设备遵循这个标准, 那么给那个设备的一个特殊的驱动就不必了. 这些不同的类型称为类, 并且包含如同存储设备, 键盘, 鼠标, 游戏杆, 网络设备, 和猫. 其他不适合这些类的设备需要一个特殊的供应商-特定的驱动给这些特别的设备. 视频设备和 USB-到-串口 设备是一个好的例子, 这里没有定义好的标准, 并且需要一个驱动给每个来自不同制造商的不同的设备.</p>
+<p>这些特性, 连同固有的设计上的热插拔能力, 使 USB 称为一个方便的, 低成本的机制来连接(和去连接)多个设备到计算机, 而不必关机, 开盒子, 并且旋开螺钉和电线.</p>
+<p>Linux 内核支持 2 类 USB 驱动: 位于主机系统的驱动和位于设备的驱动. 给主机系统的 USB 驱动控制插入其中的 USB 设备, 从主机的观点看(一个通常的 USB 主机是一个桌面计算机). 在设备中的 USB 驱动, 控制单个设备如何作为一个 USB 设备看待主机系统. 由于术语" USB 设备驱动"是非常迷惑, USB 开发者已经创建了术语" USB 器件驱动"来描述控制一个连接到计算机的 USB 设备的驱动(记住 Linux 也运行在这些小的嵌入式的设备中). 本章详述了运行在一台桌面计算机上的 USB 系统如何工作的. USB 器件驱动此时超出了本书的范围.</p>
+<p>如同图<A title="图&nbsp;13.1.&nbsp;USB 驱动概览" href="ch13.html#ldd3-13-1.fig" >USB 驱动概览</A>所示, USB 驱动位于不同的内核子系统(块, 网络, 字符, 等等)和硬件控制器之间. USB 核心提供了一个接口给 USB 驱动用来存取和控制 USB 硬件, 而不必担心出现在系统中的不同的 USB 硬件控制器.</p>
+<div class="figure">
+<a name="ldd3-13-1.fig"></a><p class="title"><b>图&nbsp;13.1.&nbsp;USB 驱动概览</b></p>
+<div><IMG alt="USB 驱动概览" src="images/snagitldd3/ldd3-13-1.png" ></div>
+</div>
+<div class="figure">
+<a name="ldd3-13-2.fig"></a><p class="title"><b>图&nbsp;13.2.&nbsp;USB 设备概览</b></p>
+<div><IMG alt="USB 设备概览" src="images/snagitldd3/ldd3-13-2.png" ></div>
+</div>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><h2 class="title" style="CLEAR: both">
+<a name="USBDeviceBasics.sect1"></a>
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch12s08.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch13s01.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">12.8.&nbsp;快速参考&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top"> &nbsp;13.1.&nbsp;USB 设备基础知识</td>
+</tr>
+</table> </h2></div></div></div>
+</div>
+</div>
+</body>
+</html>

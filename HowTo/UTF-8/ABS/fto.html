@@ -1,0 +1,788 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>File test operators</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tests"
+HREF="tests.html"><LINK
+REL="PREVIOUS"
+TITLE="Tests"
+HREF="tests.html"><LINK
+REL="NEXT"
+TITLE="Other Comparison Operators"
+HREF="comparison-ops.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tests.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Tests</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="comparison-ops.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="FTO"
+>7.2. </A
+>文件测试操作符</H1
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="RTIF"
+></A
+>如果下面的条件成立返回真...</B
+></P
+>
+    <DL
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-e</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件存在</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-a</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件存在</P
+>
+        <P
+>这个和-e的作用一样. 它是不赞成使用的，所以它的用处不大。</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-f</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个普通文件(不是一个目录或是一个设备文件)</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-s</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件大小不为零</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-d</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个目录</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-b</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个块设备(软盘, 光驱, 等等.) </P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-c</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个字符设备(键盘, 调制解调器, 声卡, 等等.)</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-p</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个<A
+HREF="special-chars.html#PIPEREF"
+>管道</A
+></P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-h</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个<A
+HREF="external.html#SYMLINKREF"
+>符号链接</A
+></P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-L</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个符号链接</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-S</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是一个<A
+HREF="devproc.html#SOCKETREF"
+>socket</A
+></P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-t</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+> 文件(<A
+HREF="io-redirection.html#FDREF"
+>描述符</A
+>)与一个终端设备相关</P
+>
+        <P
+>这个测试选项可以用于检查脚本中是否标准输入 (<tt
+class="USERINPUT"
+><b
+>[ -t 0 ]</b
+></tt
+>)或标准输出(<tt
+class="USERINPUT"
+><b
+>[ -t 1 ]</b
+></tt
+>)是一个终端.</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-r</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是否可读 (<I
+CLASS="EMPHASIS"
+>指运行这个测试命令的用户的读权限</I
+>)</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-w</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是否可写 (<I
+CLASS="EMPHASIS"
+>指运行这个测试命令的用户的读权限</I
+>)</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-x</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件是否可执行 (<I
+CLASS="EMPHASIS"
+>指运行这个测试命令的用户的读权限</I
+>)</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-g</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件或目录的设置-组-ID(sgid)标记被设置</P
+>
+        <P
+>如果一个目录的sgid标志被设置，在这个目录下创建的文件都属于拥有此目录的用户组，而不必是创建文件的用户所属的组。这个特性对在一个工作组里的同享目录很有用处。</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-u</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件的设置-用户-ID(suid)标志被设置</P
+>
+        <P
+>一个root用户拥有的二进制执行文件如果设置了设置-用户-ID位(suid)标志普通用户可以以root权限运行。<A
+NAME="AEN2643"
+HREF="#FTN.AEN2643"
+>[1]</A
+> 这对需要存取系统硬件的执行程序（比如说pppd和cdrecord）很有用。如果没有设置suid位，则这些二进制执行程序不能由非root的普通用户调用。
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="SCREEN"
+> 	      <TT
+CLASS="COMPUTEROUTPUT"
+>-rwsr-xr-t    1 root       178236 Oct  2  2000 /usr/sbin/pppd</TT
+>
+ 	      </PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+        被设置了suid标志的文件在权限列中以s标志表示.</DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-k</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>粘住位设置</P
+>
+        <P
+>Commonly known as the <SPAN
+CLASS="QUOTE"
+>"sticky bit,"</SPAN
+> the <I
+CLASS="EMPHASIS"
+>save-text-mode</I
+> flag is a special type of file permission. If a file has this flag set, that 
+          file will be kept in cache memory, for quicker access. <A
+NAME="AEN2663"
+HREF="#FTN.AEN2663"
+>[2]</A
+> If set on a directory, it restricts write permission. Setting the sticky bit 
+          adds a <I
+CLASS="EMPHASIS"
+>t</I
+> to the permissions on the file or directory listing. 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="SCREEN"
+> 	      <TT
+CLASS="COMPUTEROUTPUT"
+>drwxrwxrwt    7 root         1024 May 19 21:26 tmp/</TT
+>
+ 	      </PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+        If a user does not own a directory that has the sticky bit set, but has 
+        write permission in that directory, he can only delete files in it that 
+        he owns. This keeps users from inadvertently overwriting or deleting each 
+        other's files in a publicly accessible directory, such as <TT
+CLASS="FILENAME"
+>/tmp</TT
+>.</P
+></DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-O</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>你是文件拥有者</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-G</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>你所在组和文件的group-id相同</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-N</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件最后一次读后被修改</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>f1 -nt f2</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件<tt
+class="REPLACEABLE"
+><i
+>f1</i
+></tt
+>比<tt
+class="REPLACEABLE"
+><i
+>f2</i
+></tt
+>新</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>f1 -ot f2</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件<tt
+class="REPLACEABLE"
+><i
+>f1</i
+></tt
+>比<tt
+class="REPLACEABLE"
+><i
+>f2</i
+></tt
+>旧<TT
+CLASS="REPLACEABLE"
+></TT
+></P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>f1 -ef f2</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>文件<tt
+class="REPLACEABLE"
+><i
+>f1</i
+></tt
+>和<tt
+class="REPLACEABLE"
+><i
+>f2</i
+></tt
+> 是相同文件的硬链接</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>!</SPAN
+></DT
+>
+      <DD
+> 
+        <P
+>&quot;非&quot; -- 反转上面所有测试的结果(如果没有给出条件则返回真).</P
+>
+      </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="BROKENLINK"
+></A
+> 
+    <P
+><B
+>例子 7-4. 测试断掉的连接</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# broken-link.sh
+   3&nbsp;# 由Lee bigelow所写&#60;ligelowbee@yahoo.com&#62;
+   4&nbsp;# 已经征得作者的同意.
+   5&nbsp;
+   6&nbsp;#一个用于发现死符号链接并且输出它们的链接文件的纯shell的脚本。
+   7&nbsp;#所以它们能把输出提供给xargs并处理 :)
+   8&nbsp;#例如： broken-link.sh /somedir /someotherdir|xargs rm
+   9&nbsp;#
+  10&nbsp;#下面是更好的发现死符号链接的办法:
+  11&nbsp;#
+  12&nbsp;#find "somedir" -type l -print0|\
+  13&nbsp;#xargs -r0 file|\
+  14&nbsp;#grep "broken symbolic"|
+  15&nbsp;#sed -e 's/^\|: *broken symbolic.*$/"/g'
+  16&nbsp;#
+  17&nbsp;#但这不是纯bash脚本，下面的则是.
+  18&nbsp;#注意: 谨防在/proc文件系统和死循环链接中使用!
+  19&nbsp;##############################################################
+  20&nbsp;
+  21&nbsp;
+  22&nbsp;#如果没有参数被传递给脚本作为搜索目录，则使用当前目录
+  23&nbsp;#
+  24&nbsp;#
+  25&nbsp;####################
+  26&nbsp;[ $# -eq 0 ] &#38;&#38; directorys=`pwd` || directorys=$@
+  27&nbsp;
+  28&nbsp;#Setup the function linkchk to check the directory it is passed 
+  29&nbsp;#for files that are links and don't exist, then print them quoted.
+  30&nbsp;#If one of the elements in the directory is a subdirectory then 
+  31&nbsp;#send that send that subdirectory to the linkcheck function.
+  32&nbsp;##########
+  33&nbsp;linkchk () {
+  34&nbsp;    for element in $1/*; do
+  35&nbsp;    [ -h "$element" -a ! -e "$element" ] &#38;&#38; echo \"$element\"
+  36&nbsp;    [ -d "$element" ] &#38;&#38; linkchk $element
+  37&nbsp;    # Of course, '-h' tests for symbolic link, '-d' for directory.
+  38&nbsp;    done
+  39&nbsp;}
+  40&nbsp;
+  41&nbsp;#Send each arg that was passed to the script to the linkchk function
+  42&nbsp;#if it is a valid directoy.  If not, then print the error message
+  43&nbsp;#and usage info.
+  44&nbsp;################
+  45&nbsp;for directory in $directorys; do
+  46&nbsp;    if [ -d $directory ]
+  47&nbsp;	then linkchk $directory
+  48&nbsp;	else 
+  49&nbsp;	    echo "$directory is not a directory"
+  50&nbsp;	    echo "Usage: $0 dir1 dir2 ..."
+  51&nbsp;    fi
+  52&nbsp;done
+  53&nbsp;
+  54&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+><A
+HREF="zeros.html#COOKIES"
+>例子 28-1</A
+>, <A
+HREF="loops.html#BINGREP"
+>例子 10-7</A
+>, <A
+HREF="loops.html#FILEINFO"
+>例子 10-3</A
+>, <A
+HREF="zeros.html#RAMDISK"
+>例子 28-3</A
+>, 和 <A
+HREF="contributed-scripts.html#MAILFORMAT"
+>例子 A-1</A
+> 也说明了文件测试操作符的用法.</P
+>
+</DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN2643"
+HREF="fto.html#AEN2643"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>一定要意识到suid二进制文件可能引起潜在的安全漏洞，并且在shell脚本中suid标志已经不起作用了。</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN2663"
+HREF="fto.html#AEN2663"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>在现代UNIX操作系统，粘住位已经不在文件中再使用，只用在目录中。</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tests.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="comparison-ops.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tests</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tests.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Other Comparison Operators</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,667 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>/proc</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="/dev and /proc"
+HREF="devproc.html"><LINK
+REL="PREVIOUS"
+TITLE="/dev and /proc"
+HREF="devproc.html"><LINK
+REL="NEXT"
+TITLE="Of Zeros and Nulls"
+HREF="zeros.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"ºÚÌå", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devproc.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 27. /dev and /proc</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="zeros.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PROCREF1"
+>27.2. <TT
+CLASS="FILENAME"
+>/proc</TT
+></A
+></H1
+>
+<P
+><TT
+CLASS="FILENAME"
+>/proc</TT
+>&#30446;&#24405;&#23454;&#38469;&#19978;&#26159;&#19968;&#20010;&#20266;&#25991;&#20214;&#31995;&#32479; .  &#22312; <TT
+CLASS="FILENAME"
+>/proc</TT
+> &#30446;&#24405;&#37324;&#30340;&#25991;&#20214;&#26159;&#24403;&#21069;&#36816;&#34892;&#31995;&#32479;&#21644;&#20869;&#26680;&#36827;&#31243;&#21450;&#23427;&#20204;&#30340;&#30456;&#20851;&#20449;&#24687;&#21644;&#32479;&#35745;.</P
+>
+<P
+>         <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/devices</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Character devices:
+   1 mem
+   2 pty
+   3 ttyp
+   4 ttyS
+   5 cua
+   7 vcs
+  10 misc
+  14 sound
+  29 fb
+  36 netlink
+ 128 ptm
+ 136 pts
+ 162 raw
+ 254 pcmcia
+
+ Block devices:
+   1 ramdisk
+   2 fd
+   3 ide0
+   9 md</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/interrupts</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>           CPU0       
+   0:      84505          XT-PIC  timer
+   1:       3375          XT-PIC  keyboard
+   2:          0          XT-PIC  cascade
+   5:          1          XT-PIC  soundblaster
+   8:          1          XT-PIC  rtc
+  12:       4231          XT-PIC  PS/2 Mouse
+  14:     109373          XT-PIC  ide0
+ NMI:          0 
+ ERR:          0</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/partitions</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>major minor  #blocks  name     rio rmerge rsect ruse wio wmerge wsect wuse running use aveq
+
+    3     0    3007872 hda 4472 22260 114520 94240 3551 18703 50384 549710 0 111550 644030
+    3     1      52416 hda1 27 395 844 960 4 2 14 180 0 800 1140
+    3     2          1 hda2 0 0 0 0 0 0 0 0 0 0 0
+    3     4     165280 hda4 10 0 20 210 0 0 0 0 0 210 210
+    ...</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/loadavg</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0.13 0.42 0.27 2/44 1119</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/apm</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1.16 1.2 0x03 0x01 0xff 0x80 -1% -1 ?</TT
+>
+          </PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+>
+      <P
+>Shell &#33050;&#26412;&#21487;&#20197;&#20174;/proc&#30446;&#24405;&#20013;&#30340;&#19968;&#20123;&#25991;&#20214;&#37324;&#25552;&#21462;&#25968;&#25454;.
+
+	   <A
+NAME="AEN14673"
+HREF="#FTN.AEN14673"
+>[1]</A
+></P
+>
+      <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;FS=iso                       # ISO &#25991;&#20214;&#31995;&#32479;&#26159;&#21542;&#34987;&#20869;&#26680;&#25903;&#25345;?
+   2&nbsp;
+   3&nbsp;grep $FS /proc/filesystems   # iso9660</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;kernel_version=$( awk '{ print $3 }' /proc/version )</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;CPU=$( awk '/model name/ {print $4}' &#60; /proc/cpuinfo )
+   2&nbsp;
+   3&nbsp;if [ $CPU = Pentium ]
+   4&nbsp;then
+   5&nbsp;  run_some_commands
+   6&nbsp;  ...
+   7&nbsp;else
+   8&nbsp;  run_different_commands
+   9&nbsp;  ...
+  10&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;devfile="/proc/bus/usb/devices"
+   2&nbsp;USB1="Spd=12"
+   3&nbsp;USB2="Spd=480"
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;bus_speed=$(grep Spd $devfile | awk '{print $9}')
+   7&nbsp;
+   8&nbsp;if [ "$bus_speed" = "$USB1" ]
+   9&nbsp;then
+  10&nbsp;  echo "USB 1.1 port found."
+  11&nbsp;  # &#36825;&#20799;&#24320;&#22987;&#25805;&#20316;USB 1.1&#30456;&#20851;&#30340;&#21160;&#20316;.
+  12&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+><TT
+CLASS="FILENAME"
+>/proc</TT
+>&#30446;&#24405;&#19979;&#26377;&#35768;&#22810;&#19981;&#30456;&#21516;&#30340;&#25968;&#23383;&#21629;&#21517;&#30340;&#23376;&#30446;&#24405;.  &#36825;&#20123;&#23376;&#30446;&#24405;&#30340;&#25968;&#23383;&#21517;&#23383;&#37117;&#26144;&#23556;&#23545;&#24212;&#30340;&#24403;&#21069;&#27491;&#22312;&#36816;&#34892;&#30340;&#36827;&#31243;&#30340;<A
+HREF="variables2.html#PPIDREF"
+>&#36827;&#31243;&#21495;(process ID)</A
+> .  &#36825;&#20123;&#23376;&#30446;&#24405;&#37324;&#38754;&#26377;&#35768;&#22810;&#25991;&#20214;&#29992;&#20110;&#20445;&#23384;&#23545;&#24212;&#36827;&#31243;&#30340;&#20449;&#24687;&#12290;&#25991;&#20214; <TT
+CLASS="FILENAME"
+>stat</TT
+> &#21644; <TT
+CLASS="FILENAME"
+>status</TT
+> &#20445;&#23384;&#30528;&#36827;&#31243;&#36816;&#34892;&#26102;&#30340;&#21508;&#39033;&#32479;&#35745;, the <TT
+CLASS="FILENAME"
+>cmdline</TT
+>&#25991;&#20214;&#20445;&#23384;&#35813;&#36827;&#31243;&#30340;&#34987;&#35843;&#29992;&#26102;&#30340;&#21629;&#20196;&#34892;&#21442;&#25968;, &#32780;and
+	   the <TT
+CLASS="FILENAME"
+>exe</TT
+> &#25991;&#20214;&#26159;&#35813;&#36816;&#34892;&#36827;&#31243;&#23436;&#25972;&#36335;&#24452;&#21517;&#30340;&#31526;&#21495;&#38142;&#25509;. &#36824;&#26377;&#20854;&#20182;&#19968;&#20123;&#25991;&#20214;&#65292;&#20294;&#20174;&#33050;&#26412;&#30340;&#35266;&#28857;&#26469;&#30475;&#23427;&#20204;&#37117;&#38750;&#24120;&#30340;&#26377;&#24847;&#24605;&#12290;</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PIDID"
+></A
+>
+  <P
+><B
+>&#20363;&#23376; 27-2. &#25628;&#32034;&#19982;&#19968;&#20010;PID&#30456;&#20851;&#30340;&#36827;&#31243;</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# pid-identifier.sh: &#32473;&#20986;&#25351;&#23450;PID&#30340;&#36827;&#31243;&#30340;&#31243;&#24207;&#20840;&#36335;&#24452;.
+   3&nbsp;
+   4&nbsp;ARGNO=1  # &#27492;&#33050;&#26412;&#26399;&#26395;&#30340;&#21442;&#25968;&#20010;&#25968;.
+   5&nbsp;E_WRONGARGS=65
+   6&nbsp;E_BADPID=66
+   7&nbsp;E_NOSUCHPROCESS=67
+   8&nbsp;E_NOPERMISSION=68
+   9&nbsp;PROCFILE=exe
+  10&nbsp;
+  11&nbsp;if [ $# -ne $ARGNO ]
+  12&nbsp;then
+  13&nbsp;  echo "Usage: `basename $0` PID-number" &#62;&#38;2  # &#24110;&#21161;&#20449;&#24687;&#37325;&#23450;&#21521;&#21040;&#26631;&#20934;&#20986;&#38169;.
+  14&nbsp;  exit $E_WRONGARGS
+  15&nbsp;fi  
+  16&nbsp;
+  17&nbsp;pidno=$( ps ax | grep $1 | awk '{ print $1 }' | grep $1 )
+  18&nbsp;# &#25628;&#32034;&#21629;&#20196;"ps"&#36755;&#20986;&#30340;&#31532;&#19968;&#21015;.
+  19&nbsp;# &#28982;&#21518;&#20877;&#27425;&#30830;&#35748;&#26159;&#30495;&#27491;&#25105;&#20204;&#35201;&#23547;&#25214;&#30340;&#36827;&#31243;&#65292;&#32780;&#19981;&#26159;&#36825;&#20010;&#33050;&#26412;&#35843;&#29992;&#32780;&#20135;&#29983;&#30340;&#36827;&#31243;.
+  20&nbsp;# &#21518;&#19968;&#20010;"grep $1"&#20250;&#28388;&#25481;&#36825;&#20010;&#21487;&#33021;&#20135;&#29983;&#30340;&#36827;&#31243;.
+  21&nbsp;#
+  22&nbsp;#    pidno=$( ps ax | awk '{ print $1 }' | grep $1 )
+  23&nbsp;#    &#20063;&#21487;&#20197;, &#30001; Teemu Huovila&#25351;&#20986;.
+  24&nbsp;
+  25&nbsp;if [ -z "$pidno" ]  # &#22914;&#26524;&#36807;&#28388;&#23436;&#21518;&#32467;&#26524;&#26159;&#19968;&#20010;&#31354;&#23383;&#31526;&#20018;,
+  26&nbsp;then                # &#27809;&#26377;&#23545;&#24212;&#30340;PID&#36827;&#31243;&#22312;&#36816;&#34892;.
+  27&nbsp;  echo "No such process running."
+  28&nbsp;  exit $E_NOSUCHPROCESS
+  29&nbsp;fi  
+  30&nbsp;
+  31&nbsp;# &#20063;&#21487;&#20197;&#29992;:
+  32&nbsp;#   if ! ps $1 &#62; /dev/null 2&#62;&#38;1
+  33&nbsp;#   then                # &#27809;&#26377;&#23545;&#24212;&#30340;PID&#36827;&#31243;&#22312;&#36816;&#34892;.
+  34&nbsp;#     echo "No such process running."
+  35&nbsp;#     exit $E_NOSUCHPROCESS
+  36&nbsp;#    fi
+  37&nbsp;
+  38&nbsp;# &#20026;&#20102;&#31616;&#21270;&#25972;&#20010;&#36827;&#31243;&#65292;&#20351;&#29992;"pidof".
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;if [ ! -r "/proc/$1/$PROCFILE" ]  # &#26816;&#26597;&#35835;&#26435;&#38480;.
+  42&nbsp;then
+  43&nbsp;  echo "Process $1 running, but..."
+  44&nbsp;  echo "Can't get read permission on /proc/$1/$PROCFILE."
+  45&nbsp;  exit $E_NOPERMISSION  # &#26222;&#36890;&#29992;&#25143;&#19981;&#33021;&#23384;&#21462;/proc&#30446;&#24405;&#30340;&#26576;&#20123;&#25991;&#20214;.
+  46&nbsp;fi  
+  47&nbsp;
+  48&nbsp;# &#26368;&#21518;&#20004;&#20010;&#27979;&#35797;&#21487;&#20197;&#29992;&#19979;&#38754;&#30340;&#20195;&#26367;:
+  49&nbsp;#    if ! kill -0 $1 &#62; /dev/null 2&#62;&#38;1 # '0'&#19981;&#26159;&#19968;&#20010;&#20449;&#21495;&#65292;
+  50&nbsp;                                      # &#20294;&#36825;&#26679;&#21487;&#20197;&#27979;&#35797;&#26159;&#21542;&#21487;&#20197;
+  51&nbsp;                                      # &#21521;&#35813;&#36827;&#31243;&#21457;&#36865;&#20449;&#21495;.
+  52&nbsp;#    then echo "PID doesn't exist or you're not its owner" &#62;&#38;2
+  53&nbsp;#    exit $E_BADPID
+  54&nbsp;#    fi
+  55&nbsp;
+  56&nbsp;
+  57&nbsp;
+  58&nbsp;exe_file=$( ls -l /proc/$1 | grep "exe" | awk '{ print $11 }' )
+  59&nbsp;# &#25110;       exe_file=$( ls -l /proc/$1/exe | awk '{print $11}' )
+  60&nbsp;#
+  61&nbsp;# /proc/pid-number/exe &#26159;&#36827;&#31243;&#31243;&#24207;&#20840;&#36335;&#24452;&#30340;&#31526;&#21495;&#38142;&#25509;&#12290;
+  62&nbsp;#
+  63&nbsp;
+  64&nbsp;if [ -e "$exe_file" ]  # &#22914;&#26524; /proc/pid-number/exe &#23384;&#22312; ...
+  65&nbsp;then                 # &#21017;&#30456;&#24212;&#30340;&#36827;&#31243;&#23384;&#22312;.
+  66&nbsp;  echo "Process #$1 invoked by $exe_file."
+  67&nbsp;else
+  68&nbsp;  echo "No such process running."
+  69&nbsp;fi  
+  70&nbsp;
+  71&nbsp;
+  72&nbsp;# &#36825;&#20010;&#34987;&#35814;&#32454;&#35762;&#35299;&#30340;&#33050;&#26412;&#20960;&#20046;&#21487;&#20197;&#29992;&#19979;&#38754;&#30340;&#21629;&#20196;&#20195;&#26367;&#65306;
+  73&nbsp;# ps ax | grep $1 | awk '{ print $5 }'
+  74&nbsp;# &#28982;&#32780;, &#36825;&#26679;&#24182;&#19981;&#20250;&#24037;&#20316;...
+  75&nbsp;# &#22240;&#20026;'ps'&#36755;&#20986;&#30340;&#31532;5&#21015;&#26159;&#36827;&#31243;&#30340;argv[0]&#65288;&#21363;&#21629;&#20196;&#34892;&#31532;&#19968;&#20010;&#21442;&#25968;&#65292;&#35843;&#29992;&#26102;&#31243;&#24207;&#29992;&#30340;&#31243;&#24207;&#36335;&#24452;&#26412;&#36523;&#65289;,
+  76&nbsp;# &#20294;&#19981;&#26159;&#21487;&#25191;&#34892;&#25991;&#20214;.
+  77&nbsp;#
+  78&nbsp;# &#28982;&#32780;, &#19979;&#38754;&#30340;&#20004;&#20010;&#37117;&#21487;&#20197;&#24037;&#20316;.
+  79&nbsp;#       find /proc/$1/exe -printf '%l\n'
+  80&nbsp;#       lsof -aFn -p $1 -d txt | sed -ne 's/^n//p'
+  81&nbsp;
+  82&nbsp;# &#30001;Stephane Chazelas&#38468;&#21152;&#27880;&#37322;.
+  83&nbsp;
+  84&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="CONSTAT"
+></A
+>
+  <P
+><B
+>&#20363;&#23376; 27-3. &#32593;&#32476;&#36830;&#25509;&#29366;&#24577;</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;PROCNAME=pppd        # ppp &#23432;&#25252;&#36827;&#31243;
+   4&nbsp;PROCFILENAME=status  # &#22312;&#36825;&#20799;&#23547;&#25214;&#20449;&#24687;.
+   5&nbsp;NOTCONNECTED=65
+   6&nbsp;INTERVAL=2           # &#20004;&#31186;&#21047;&#26032;&#19968;&#27425;.
+   7&nbsp;
+   8&nbsp;pidno=$( ps ax | grep -v "ps ax" | grep -v grep | grep $PROCNAME | awk '{ print $1 }' )
+   9&nbsp;# &#25628;&#32034;ppp&#23432;&#25252;&#36827;&#31243;'pppd'&#30340;&#36827;&#31243;&#21495;.
+  10&nbsp;# &#19968;&#23450;&#35201;&#36807;&#28388;&#25481;&#30001;&#25628;&#32034;&#36827;&#31243;&#20135;&#29983;&#30340;&#35813;&#34892;&#36827;&#31243;.
+  11&nbsp;#
+  12&nbsp;#  &#27491;&#22914;Oleg Philon&#25351;&#20986;&#30340;&#37027;&#26679;,
+  13&nbsp;#+ &#20351;&#29992;"pidof"&#21629;&#20196;&#20250;&#30456;&#24403;&#30340;&#31616;&#21333;.
+  14&nbsp;#  pidno=$( pidof $PROCNAME )
+  15&nbsp;#
+  16&nbsp;#  &#39047;&#26377;&#33391;&#24515;&#30340;&#24314;&#35758;:
+  17&nbsp;#+ &#24403;&#21629;&#20196;&#24207;&#21015;&#21464;&#24471;&#22797;&#26434;&#30340;&#26102;&#20505;&#65292;&#21435;&#23547;&#25214;&#26356;&#31616;&#27905;&#30340;&#21150;&#27861;&#12290; .
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;if [ -z "$pidno" ]   # &#22914;&#26524;&#27809;&#26377;&#25214;&#21040;&#27492;&#36827;&#31243;&#21495;,&#21017;&#36827;&#31243;&#27809;&#26377;&#36816;&#34892;.
+  21&nbsp;then
+  22&nbsp;  echo "Not connected."
+  23&nbsp;  exit $NOTCONNECTED
+  24&nbsp;else
+  25&nbsp;  echo "Connected."; echo
+  26&nbsp;fi
+  27&nbsp;
+  28&nbsp;while [ true ]       # &#27515;&#24490;&#29615;&#65292;&#36825;&#20799;&#21487;&#20197;&#26377;&#25152;&#25913;&#36827;.
+  29&nbsp;do
+  30&nbsp;
+  31&nbsp;  if [ ! -e "/proc/$pidno/$PROCFILENAME" ]
+  32&nbsp;  # &#36827;&#31243;&#36816;&#34892;&#26102;&#65292;&#23545;&#24212;&#30340;"status"&#25991;&#20214;&#20250;&#23384;&#22312;.
+  33&nbsp;  then
+  34&nbsp;    echo "Disconnected."
+  35&nbsp;    exit $NOTCONNECTED
+  36&nbsp;  fi
+  37&nbsp;
+  38&nbsp;netstat -s | grep "packets received"  # &#21462;&#24471;&#19968;&#20123;&#36830;&#25509;&#32479;&#35745;.
+  39&nbsp;netstat -s | grep "packets delivered"
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;  sleep $INTERVAL
+  43&nbsp;  echo; echo
+  44&nbsp;
+  45&nbsp;done
+  46&nbsp;
+  47&nbsp;exit 0
+  48&nbsp;
+  49&nbsp;# &#24403;&#35201;&#20572;&#27490;&#23427;&#26102;&#65292;&#21487;&#20197;&#29992;Control-C&#32456;&#27490;.
+  50&nbsp;
+  51&nbsp;#    &#32451;&#20064;:
+  52&nbsp;#    ---------
+  53&nbsp;#    &#25913;&#36827;&#36825;&#20010;&#33050;&#26412;&#65292;&#20351;&#23427;&#33021;&#25353;"q"&#38190;&#36864;&#20986;.
+  54&nbsp;#    &#32473;&#33050;&#26412;&#26356;&#21451;&#22909;&#30340;&#30028;&#38754;.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/warning.png"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#19968;&#33324;&#26469;&#35828;, &#20889;<TT
+CLASS="FILENAME"
+>/proc</TT
+>&#30446;&#24405;&#37324;&#30340;&#25991;&#20214;&#26159;&#21361;&#38505; ,&#22240;&#20026;&#36825;&#26679;&#20250;&#30772;&#22351;&#36825;&#20010;&#25991;&#20214;&#31995;&#32479;&#25110;&#25703;&#27585;&#26426;&#22120;.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>&#27880;</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14673"
+HREF="procref1.html#AEN14673"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>&#19968;&#20123;&#31995;&#32479;&#21629;&#20196;, &#20363;&#22914;
+	     <A
+HREF="system.html#PROCINFOREF"
+>procinfo</A
+>,
+	     <A
+HREF="system.html#FREEREF"
+>free</A
+>,
+	     <A
+HREF="system.html#VMSTATREF"
+>vmstat</A
+>,
+	     <A
+HREF="system.html#LSDEVREF"
+>lsdev</A
+>,
+	     &#21644;<A
+HREF="system.html#UPTIMEREF"
+>uptime</A
+>
+	     &#20063;&#33021;&#20570;&#31867;&#20284; &#30340;&#20107;&#24773;.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devproc.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="zeros.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>/dev and /proc</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devproc.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Of Zeros and Nulls</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

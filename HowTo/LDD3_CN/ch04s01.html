@@ -1,0 +1,151 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>4.2. 用打印调试</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="ch04.html" title="第&#160;4&#160;章&#160;调试技术">
+<link rel="prev" href="ch04.html" title="第&#160;4&#160;章&#160;调试技术">
+<link rel="next" href="ch04s03.html" title="4.3.&#160;用查询来调试">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H2>4.1. 内核中的调试支持</H2></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch04.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle"></th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="file://C:\Documents and Settings\zhurp\桌面\LDD3_CHN\ch04s02.html" >下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div>
+<div class=sect1 lang=zh-cn >
+<p>在第 2 章, 我们建议你建立并安装你自己的内核, 而不是运行来自你的发布商的现成的内核. 
+运行你自己的内核的最充分的理由之一是内核开发者已经在内核自身中构建了多个调试特性. 这些特性能产生额外的输出并降低性能, 
+因此发布商的产品内核中往往不会使能它们. 作为一个内核开发者, 但是, 你有不同的优先权并且会乐于接收这些格外的内核调试支持带来的开销.</p>
+<p>这里, 我们列出用来开发的内核应当激活的配置选项. 除了另外指出的, 所有的这些选项都在 "kernel 
+hacking" 菜单, 不管什么样的你喜欢的内核配置工具. 注意有些选项不是所有体系都支持. </p>
+<div class=variablelist>
+<dl>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_KERNEL</span></span> 
+  <dd>
+  <p>这个选项只是使其他调试选项可用; 它应当打开, 但是它自己不激活任何的特性.</p>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_SLAB</span></span> 
+  <dd>
+  <p>这个重要的选项打开了内核内存分配函数的几类检查; 激活这些检查, 
+  就可能探测到一些内存覆盖和遗漏初始化的错误. 被分配的每一个字节在递交给调用者之前都设成 0xa5, 随后在释放时被设成 0x6b. 
+  你在任何时候如果见到任一个这种"坏"模式重复出现在你的驱动输出(或者常常在一个 oops 的列表), 你会确切知道去找什么类型的错误. 当激活调试, 
+  内核还会在每个分配的内存对象的前后放置特别的守护值; 如果这些值曾被改动, 内核知道有人已覆盖了一个内存分配区, 它大声抱怨. 
+  各种的对更模糊的问题的检查也给激活了.</p>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_PAGEALLOC</span></span> 
+  <dd>
+  <p>满的页在释放时被从内核地址空间去除. 这个选项会显著拖慢系统, 
+  但是它也能快速指出某些类型的内存损坏错误.</p>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_SPINLOCK</span></span> 
+  <dd>
+  <p>激活这个选项, 内核捕捉对未初始化的自旋锁的操作, 以及各种其他的错误( 例如 2 次解锁同一个锁 
+  ).</p>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_SPINLOCK_SLEEP</span></span> 
+  <dd>
+  <p>这个选项激活对持有自旋锁时进入睡眠的检查. 实际上, 如果你调用一个可能会睡眠的函数, 它就抱怨, 
+  即便这个有疑问的调用没有睡眠.</p>
+  <dt><span class=term><span 
+  >CONFIG_INIT_DEBUG</span></span> 
+  <dd>
+  <p>用__init (或者 __initdata) 标志的项在系统初始化或者模块加载后都被丢弃. 
+  这个选项激活了对代码的检查, 这些代码试图在初始化完成后存取初始化时内存.</p>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_INFO</span></span> 
+  <dd>
+  <p>这个选项使得内核在建立时包含完整的调试信息. 如果你想使用 gdb 调试内核, 你将需要这些信息. 
+  如果你打算使用 gdb, 你还要激活 CONFIG_FRAME_POINTER.</p>
+  <dt><span class=term><span 
+  >CONFIG_MAGIC_SYSRQ</span></span> 
+  <dd>
+  <p>激活"魔术 SysRq"键. 我们在本章后面的"系统挂起"一节查看这个键.</p>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_STACKOVERFLOW</span></span> 
+  <dd>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_STACK_USAGE</span></span> 
+  <dd>
+  <p>这些选项能帮助跟踪内核堆栈溢出. 堆栈溢出的确证是一个 oops 输出, 但是没有任何形式的合理的回溯. 
+  第一个选项给内核增加了明确的溢出检查; 第 2 个使得内核监测堆栈使用并作一些统计, 这些统计可以用魔术 SysRq 键得到.</p>
+  <dt><span class=term><span 
+  >CONFIG_KALLSYMS</span></span> 
+  <dd>
+  <p>这个选项(在"Generl setup/Standard features"下)使得内核符号信息建在内核中; 
+  缺省是激活的. 符号选项用在调试上下文中; 没有它, 一个 oops 列表只能以 16 进制格式给你一个内核回溯, 这不是很有用.</p>
+  <dt><span class=term><span 
+  >CONFIG_IKCONFIG</span></span> 
+  <dd>
+  <dt><span class=term><span 
+  >CONFIG_IKCONFIG_PROC</span></span> 
+  <dd>
+  <p>这些选项(在"Generl setup"菜单)使得完整的内核配置状态被建立到内核中, 可以通过 /proc 
+  来使其可用. 大部分内核开发者知道他们使用的哪个配置, 并不需要这些选项(会使得内核更大). 但是如果你试着调试由其他人建立的内核中的问题, 
+  它们可能有用.</p>
+  <dt><span class=term><span 
+  >CONFIG_ACPI_DEBUG</span></span> 
+  <dd>
+  <p>在"Power management/ACPI"下. 这个选项打开详细的 ACPI (Advanced 
+  Configuration and Power Interface) 调试信息, 它可能有用如果你怀疑一个问题和 ACPI 相关.</p>
+  <dt><span class=term><span 
+  >CONFIG_DEBUG_DRIVER</span></span> 
+  <dd>
+  <p>在"Device drivers"下. 打开了驱动核心的调试信息, 可用以追踪低层支持代码的问题. 我们在第 
+  14 章查看驱动核心.</p>
+  <dt><span class=term><span 
+  >CONFIG_SCSI_CONSTANTS</span></span> 
+  <dd>
+  <p>这个选项, 在"Device drivers/SCSI device support"下, 建立详细的 
+  SCSI 错误消息的信息. 如果你在使用 SCSI 驱动, 你可能需要这个选项.</p>
+  <dt><span class=term><span 
+  >CONFIG_INPUT_EVBUG</span></span> 
+  <dd>
+  <p>这个选项(在"Device drivers/Input device 
+  support"下)打开输入事件的详细日志. 如果你使用一个输入设备的驱动, 这个选项可能会有用. 然而要小心这个选项的安全性的隐含意义: 
+  它记录了你键入的任何东西, 包括你的密码.</p>
+  <dt><span class=term><span 
+  >CONFIG_PROFILING</span></span> 
+  <dd>
+  <p>这个选项位于"Profiling support"之下. 剖析通常用在系统性能调整, 
+  但是在追踪一些内核挂起和相关问题上也有用.</p></dd></dl></div>
+<p>我们会再次遇到一些上面的选项, 当我们查看各种方法来追踪内核问题时. 但是首先, 我们要看一下经典的调试技术: 
+print 语句.</p></div>
+<a name="DebuggingbyPrinting"></a></div>
+<DIV>
+<H2 class=title style="CLEAR: both">
+<hr>
+</H2>
+<H2 class=title style="CLEAR: both">
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch04.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=u href="ch04.html">上一级</A></td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="file://C:\Documents and Settings\zhurp\桌面\LDD3_CHN\ch04s02.html" >下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">第&nbsp;4&nbsp;章&nbsp;调试技术&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;4.3.&nbsp;用查询来调试</td>
+</tr>
+</table></H2></DIV></div></div>
+</div>
+</body>
+</html>

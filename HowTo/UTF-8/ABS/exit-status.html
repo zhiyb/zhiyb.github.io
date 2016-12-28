@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Exit and Exit Status</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basics"
+HREF="part2.html"><LINK
+REL="PREVIOUS"
+TITLE="Escaping"
+HREF="escapingsection.html"><LINK
+REL="NEXT"
+TITLE="Tests"
+HREF="tests.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="escapingsection.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tests.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+>
+<DIV
+CLASS="CHAPTER"
+> 
+  <H1
+><A
+NAME="EXIT-STATUS"
+>第六章：退出和退出状态</A
+></H1
+>
+  <TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>...there are dark corners in the Bourne shell, and people use all
+      of them.</I
+></P
+></I
+></TD
+></TR
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+><SPAN
+CLASS="ATTRIBUTION"
+>Chet Ramey</SPAN
+></I
+></TD
+></TR
+></TABLE
+>
+  <P
+><A
+NAME="EXITCOMMANDREF"
+></A
+><B
+CLASS="COMMAND"
+>exit</B
+>命令一般用于结束一个脚本，就像C语言的exit一样。它也能返回一个值给父进程。</P
+>
+  <P
+><A
+NAME="EXITSTATUSREF"
+></A
+>每一个命令都能返回一个退出状态（有时也看做<I
+CLASS="FIRSTTERM"
+>返回状态</I
+>).一个命令执行成功返回0，一个执行不成功的命令则返回一个非零值，此值通常可以被解释成一个对应的错误值。除了一些例外的情况，一个行为端庄的UNIX命令，程序或是软件包执行成功能返回0的作为退出码。</P
+>
+  <P
+>同样的，在脚本里的函数和脚本自身都会返回一个退出状态码。在脚本或函数里被执行的最后一个命令将决定退出状态码。在一个脚本里，<TT
+CLASS="USERINPUT"
+><B
+>exit <TT
+CLASS="REPLACEABLE"
+><I
+>nnn</I
+></TT
+></B
+></TT
+> 命令将会返回shell一个nnn的退出状态码。（nnn必须是一个在0-255范围的十进制整数）。</P
+>
+  <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>如果一个脚本以不带参数的<b
+class="COMMAND"
+>exit</b
+>命令结束，脚本的退出状态码将会是执行<b
+class="COMMAND"
+>exit</b
+>命令前的最后一个命令的退出码。</P
+>
+          <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;COMMAND_1
+   4&nbsp;
+   5&nbsp;. . .
+   6&nbsp;
+   7&nbsp;# 脚本将会以最后命令COMMAND＿LAST的状态码退出。
+   8&nbsp;COMMAND_LAST
+   9&nbsp;
+  10&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+          <P
+>脚本结束没有exit,不带参数的<b
+class="COMMAND"
+>exit</b
+>和<b
+class="COMMAND"
+>exit $?</b
+>三者是等价的。</P
+>
+          <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;COMMAND_1
+   4&nbsp;
+   5&nbsp;. . .
+   6&nbsp;
+   7&nbsp;# 会以最后命令的退出码退出脚本.
+   8&nbsp;COMMAND_LAST
+   9&nbsp;
+  10&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;COMMAND1
+   4&nbsp;
+   5&nbsp;. . . 
+   6&nbsp;
+   7&nbsp;# 会以最后命令的退出码退出脚本.
+   8&nbsp;COMMAND_LAST</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><A
+NAME="EXSREF"
+></A
+></P
+>
+  <P
+> <TT
+CLASS="VARNAME"
+> </TT
+>$?变量保存了最后一个命令执行后的退出状态。当一个函数返回时，$?保存了函数里最后一个命令的退出状态码。这就是Bash里函数返回值的处理办法。当一个脚本运行结束，$? 
+    变量保存脚本的退出状态，而脚本的退出状态则是脚本中最后一个已执行命令的退出状态。并且依照惯例，0表示执行成功，1-255的整数范围表示错误。</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="EX5"
+></A
+> 
+    <P
+><B
+>例子 6-1. 退出/退出状态码</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo hello
+   4&nbsp;echo $?    # 因为上一条命令执行成功，打印0.
+   5&nbsp;
+   6&nbsp;lskdf      # 无效命令.
+   7&nbsp;echo $?    # 因为上面的无效命令执行失败，打印一个非零的值.
+   8&nbsp;
+   9&nbsp;echo
+  10&nbsp;
+  11&nbsp;exit 113   # 返回113状态码给shell.
+  12&nbsp;           # 可以运行脚本结束后立即执行命令&quot;echo $?&quot; 检验.
+  13&nbsp;
+  14&nbsp;#  依照惯例,命令'exit 0'表示执行成功,
+  15&nbsp;#+ 当产生一个非零退出值时表示一个错误或是反常的条件。</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+><A
+HREF="variables2.html#XSTATVARREF"
+>$?</A
+> 变量用于测试脚本中的命令执行结果非常的有用(参考<A
+HREF="filearchiv.html#FILECOMP"
+>例子 12-32</A
+>和<A
+HREF="textproc.html#LOOKUP"
+>例子 12-17</A
+>).</P
+>
+  <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>逻辑非操作符<A
+HREF="special-chars.html#NOTREF"
+>!</A
+>反转一个命令或一个测试的结果，它也能反转<A
+HREF="exit-status.html#EXITSTATUSREF"
+>退出状态</A
+>. 
+          <DIV
+CLASS="EXAMPLE"
+><HR>
+            <A
+NAME="NEGCOND"
+></A
+> 
+            <P
+><B
+>例子 6-2. 逻辑非一个条件结果的用法</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;true  # ture命令是内建的.
+   2&nbsp;echo "exit status of \"true\" = $?"     # 0
+   3&nbsp;
+   4&nbsp;! true
+   5&nbsp;echo "exit status of \"! true\" = $?"   # 1
+   6&nbsp;# 注意逻辑非字符&quot;!&quot;需要一个空格.
+   7&nbsp;#    !true   会导致一个&quot;command not found&quot;（命令没有发现）的错误。
+   8&nbsp;#
+   9&nbsp;# 操作符'!'放在一个命令前面会导致调用Bash的历史机制。
+  10&nbsp;
+  11&nbsp;true
+  12&nbsp;!true
+  13&nbsp;# 这次没有错误，也没有反转结果.
+  14&nbsp;# 它只是重复执行上次的命令(true).
+  15&nbsp;
+  16&nbsp;# 多谢, Stéphane Chazelas and Kristopher Newsome.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="35"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD width="983"
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>有一些退出状态码被用于<A
+HREF="exitcodes.html#EXITCODESREF"
+>保留(reserved meanings)</A
+> 的含义，不应该在用户脚本使用。</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="escapingsection.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tests.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Escaping</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tests</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

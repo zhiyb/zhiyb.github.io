@@ -1,0 +1,1441 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Loops and Branches</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="PREVIOUS"
+TITLE="The Double Parentheses Construct"
+HREF="dblparens.html"><LINK
+REL="NEXT"
+TITLE="Nested Loops"
+HREF="nestedloops.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="dblparens.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="nestedloops.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="LOOPS"
+>第十章：循环和分支</A
+></H1
+>
+  <P
+>对代码块的操作是构造组织shell脚本的关键. 循环和分支结构为脚本编程提供了操作代码块的工具.</P
+>
+  <DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="LOOPS1"
+>10.1. Loops</A
+></H1
+>
+  <P
+>循环就是重复一些命令的代码块,如果条件不满足就退出循环.</P
+>
+  <DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="FORLOOPREF1"
+></A
+>for loops</B
+></P
+><DL
+><DT
+><B
+CLASS="COMMAND"
+>for <TT
+CLASS="VARNAME"
+>arg</TT
+> in <TT
+CLASS="REPLACEABLE"
+><I
+>[list]</I
+></TT
+></B
+></DT
+><DD
+>
+    <P
+>这是一个基本的循环结构.它与C的for结构有很大不同.</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>for</B
+>   <TT
+CLASS="REPLACEABLE"
+><I
+>arg</I
+></TT
+>   in  [<TT
+CLASS="REPLACEABLE"
+><I
+>list</I
+></TT
+>]<BR>  do <BR>  <TT
+CLASS="REPLACEABLE"
+><I
+>&nbsp;&nbsp;&nbsp;command(s)</I
+></TT
+>... <BR>  done </P
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>在循环的每次执行中,arg将顺序的存取list中列出的变量..</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;for arg in "$var1" "$var2" "$var3" ... "$varN"  
+   2&nbsp;# 在第1次循环中, arg = $var1	    
+   3&nbsp;# 在第2次循环中, arg = $var2	    
+   4&nbsp;# 在第3次循环中, arg = $var3	    
+   5&nbsp;# ...
+   6&nbsp;# 在第N次循环中, arg = $varN
+   7&nbsp;
+   8&nbsp;# 在[list]中的参数加上双引号是为了防止单词被不合理地分割.</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+   <P
+>list中的参数允许包含通配符.</P
+><P
+>如果do和for想在同一行出现,那么在它们之间需要添加一个&quot;;&quot;.</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>for</B
+>   <TT
+CLASS="REPLACEABLE"
+><I
+>arg</I
+></TT
+>   in  [<TT
+CLASS="REPLACEABLE"
+><I
+>list</I
+></TT
+>]  ;   do <BR></P
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX22"
+></A
+>
+     <P
+><B
+>例子 10-1. 循环的一个简单例子</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 列出所有的行星名称.
+   3&nbsp;
+   4&nbsp;for planet in Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune Pluto
+   5&nbsp;do
+   6&nbsp;  echo $planet  # 每个行星被单独打印在一行上.
+   7&nbsp;done
+   8&nbsp;
+   9&nbsp;echo
+  10&nbsp;
+  11&nbsp;for planet in "Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune Pluto"
+  12&nbsp;# 所有的行星名称打印在同一行上.
+  13&nbsp;# 整个'list'只有一个变量，用&quot;&quot;封成一个变量.
+  14&nbsp;do
+  15&nbsp;  echo $planet
+  16&nbsp;done
+  17&nbsp;
+  18&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>每个<tt
+class="USERINPUT"
+><b
+>[list]</b
+></tt
+>中的元素都可能包含多个参数.在处理参数组时,这是非常有用的.在这种情况下,使用<a
+href="internal.html#SETREF"
+>set</a
+>命令(见<a
+href="internal.html#EX34"
+>例子 11-15</a
+>)来强制解析每个[list]中的元素,并且分配每个解析出来的部分到一个位置参数中.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX22A"
+></A
+>
+    <P
+><B
+>例子 10-2. <B
+CLASS="COMMAND"
+>每个[list]元素带两个参数的for循环</B
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 再访行星.
+   3&nbsp;
+   4&nbsp;# 分配行星的名字和它距太阳的距离.
+   5&nbsp;
+   6&nbsp;for planet in "Mercury 36" "Venus 67" "Earth 93"  "Mars 142" "Jupiter 483"
+   7&nbsp;do
+   8&nbsp;  set -- $planet  # Parses variable "planet" and sets positional parameters.
+   9&nbsp;  # &quot;--&quot; 将防止$planet为空,或者是以一个破折号开头.
+  10&nbsp;
+  11&nbsp;  # 可能需要保存原始的位置参数,因为它们被覆盖了.
+  12&nbsp;  # 一种方法就是使用数组,
+  13&nbsp;  #        original_params=("$@")
+  14&nbsp;
+  15&nbsp;  echo "$1		$2,000,000 miles from the sun"
+  16&nbsp;  #-------two  tabs---把后边的0和$2连接起来
+  17&nbsp;done
+  18&nbsp;
+  19&nbsp;# (Thanks, S.C., for additional clarification.)
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>可以在for循环中的<tt
+class="USERINPUT"
+><b
+>[list]</b
+></tt
+>位置放入一个变量.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FILEINFO"
+></A
+>
+    <P
+><B
+>例子 10-3. 文件信息: 对包含在变量中的文件列表进行操作</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# fileinfo.sh
+   3&nbsp;
+   4&nbsp;FILES="/usr/sbin/accept
+   5&nbsp;/usr/sbin/pwck
+   6&nbsp;/usr/sbin/chroot
+   7&nbsp;/usr/bin/fakefile
+   8&nbsp;/sbin/badblocks
+   9&nbsp;/sbin/ypbind"     # 你关心的文件列表.
+  10&nbsp;                  # 扔进去一个假文件, /usr/bin/fakefile.
+  11&nbsp;
+  12&nbsp;echo
+  13&nbsp;
+  14&nbsp;for file in $FILES
+  15&nbsp;do
+  16&nbsp;
+  17&nbsp;  if [ ! -e "$file" ]       # 检查文件是否存在.
+  18&nbsp;  then
+  19&nbsp;    echo "$file does not exist."; echo
+  20&nbsp;    continue                # 继续下一个.
+  21&nbsp;   fi
+  22&nbsp;
+  23&nbsp;  ls -l $file | awk '{ print $9 "         file size: " $5 }'  # 打印2个域.
+  24&nbsp;  whatis `basename $file`   # 文件信息.
+  25&nbsp;  # 注意whatis数据库需要提前建立好.
+  26&nbsp;  # 要想达到这个目的, 以root身份运行/usr/bin/makewhatis.
+  27&nbsp;  echo
+  28&nbsp;done  
+  29&nbsp;
+  30&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>如果在for循环的<tt
+class="USERINPUT"
+><b
+>[list]</b
+></tt
+>中有通配符(*和?),那将会产生文件名扩展,也就是文件名扩展（<a
+href="globbingref.html"
+>globbing</a
+>）.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="LISTGLOB"
+></A
+>
+    <P
+><B
+>例子 10-4. <B
+CLASS="COMMAND"
+>在for循环中操作文件</B
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# list-glob.sh:  在for循环中使用文件名扩展产生 [list]
+   3&nbsp;
+   4&nbsp;echo
+   5&nbsp;
+   6&nbsp;for file in *
+   7&nbsp;#           ^  在表达式中识别文件扩展符时,
+   8&nbsp;#+             Bash 将执行文件名扩展.
+   9&nbsp;do
+  10&nbsp;  ls -l "$file"  # Lists all files in $PWD (current directory).
+  11&nbsp;  #  回想一下,通配符&quot;*&quot;能够匹配所有文件,
+  12&nbsp;  #+ 然而,在&quot;文件扩展符&quot;中,是不能匹配&quot;.&quot;文件的.
+  13&nbsp;
+  14&nbsp;  #  如果没匹配到任何文件,那它将扩展成自己
+  15&nbsp;  #  为了不让这种情况发生,那就设置nullglob选项
+  16&nbsp;  #+   (shopt -s nullglob).
+  17&nbsp;  #  Thanks, S.C.
+  18&nbsp;done
+  19&nbsp;
+  20&nbsp;echo; echo
+  21&nbsp;
+  22&nbsp;for file in [jx]*
+  23&nbsp;do
+  24&nbsp;  rm -f $file    # 只删除当前目录下以&quot;j&quot;或&quot;x&quot;开头的文件.
+  25&nbsp;  echo "Removed file \"$file\"".
+  26&nbsp;done
+  27&nbsp;
+  28&nbsp;echo
+  29&nbsp;
+  30&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>在一个for循环中忽略<tt
+class="USERINPUT"
+><b
+>in [list]</b
+></tt
+>部分的话,将会使循环操作$@(从命令行传递给脚本的参数列表).一个非常好的例子,见<A
+HREF="contributed-scripts.html#PRIMES"
+>例子 A-16</A
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX23"
+></A
+>
+    <P
+><B
+>例子 10-5. 在for循环中省略in [list]</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  使用两种方法来调用这个脚本,一种是带参数的情况,另一种不带参数.
+   4&nbsp;#+ 观察此脚本的行为各是什么样的?
+   5&nbsp;
+   6&nbsp;for a
+   7&nbsp;do
+   8&nbsp; echo -n "$a "
+   9&nbsp;done
+  10&nbsp;
+  11&nbsp;#  没有[list],所以循环将操作'$@'
+  12&nbsp;#+ (包括空白的命令参数列表).
+  13&nbsp;
+  14&nbsp;echo
+  15&nbsp;
+  16&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>也可以使用<a
+href="commandsub.html#COMMANDSUBREF"
+>命令替换（command substitution）</a
+>来产生for循环的<tt
+class="USERINPUT"
+><b
+>[list]</b
+></tt
+>.具体见<A
+HREF="extmisc.html#EX53"
+>例子 12-49</A
+>,
+	      <A
+HREF="loops.html#SYMLINKS"
+>例子 10-10</A
+> 和<A
+HREF="mathc.html#BASE"
+>例子 12-43</A
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FORLOOPCMD"
+></A
+>
+	        <P
+><B
+>例子10-6. 使用命令替换来产生for循环的[list]</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;#  for-loopcmd.sh: 带[list]的for循环
+   3&nbsp;#+ [list]是由命令替换产生的.
+   4&nbsp;
+   5&nbsp;NUMBERS="9 7 3 8 37.53"
+   6&nbsp;
+   7&nbsp;for number in `echo $NUMBERS`  # for number in 9 7 3 8 37.53
+   8&nbsp;do
+   9&nbsp;  echo -n "$number "
+  10&nbsp;done
+  11&nbsp;
+  12&nbsp;echo 
+  13&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>下边是一个用命令替换来产生[list]的更复杂的例子.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BINGREP"
+></A
+>
+    <P
+><B
+>例子 10-7. 对于二进制文件的<a
+href="textproc.html#GREPREF"
+>grep</a
+>替换</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# bin-grep.sh: 在一个二进制文件中定位匹配字串.
+   3&nbsp;
+   4&nbsp;# 对于二进制文件的一个grep替换
+   5&nbsp;# 与&quot;grep -a&quot;的效果相似
+   6&nbsp;
+   7&nbsp;E_BADARGS=65
+   8&nbsp;E_NOFILE=66
+   9&nbsp;
+  10&nbsp;if [ $# -ne 2 ]
+  11&nbsp;then
+  12&nbsp;  echo "Usage: `basename $0` search_string filename"
+  13&nbsp;  exit $E_BADARGS
+  14&nbsp;fi
+  15&nbsp;
+  16&nbsp;if [ ! -f "$2" ]
+  17&nbsp;then
+  18&nbsp;  echo "File \"$2\" does not exist."
+  19&nbsp;  exit $E_NOFILE
+  20&nbsp;fi  
+  21&nbsp;
+  22&nbsp;
+  23&nbsp;IFS="\n"         # 由Paulo Marcel Coelho Aragao提出的建议.
+  24&nbsp;for word in $( strings "$2" | grep "$1" )
+  25&nbsp;# &quot;strings&quot; 命令列出二进制文件中的所有字符串.
+  26&nbsp;# 输出到管道交给&quot;grep&quot;,然后由grep命令来过滤字符串.
+  27&nbsp;do
+  28&nbsp;  echo $word
+  29&nbsp;done
+  30&nbsp;
+  31&nbsp;# S.C. 指出, 行23 - 29 可以被下边的这行来代替,
+  32&nbsp;#    strings "$2" | grep "$1" | tr -s "$IFS" '[\n*]'
+  33&nbsp;
+  34&nbsp;
+  35&nbsp;# 试试用&quot;./bin-grep.sh mem /bin/ls&quot;来运行这个脚本.
+  36&nbsp;
+  37&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>大部分相同.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="USERLIST"
+></A
+>
+    <P
+><B
+>例子 10-8. 列出系统上的所有用户</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# userlist.sh
+   3&nbsp;
+   4&nbsp;PASSWORD_FILE=/etc/passwd
+   5&nbsp;n=1           # User number
+   6&nbsp;
+   7&nbsp;for name in $(awk 'BEGIN{FS=":"}{print $1}' &#60; "$PASSWORD_FILE" )
+   8&nbsp;# 域分隔   = :           ^^^^^^
+   9&nbsp;# 打印出第一个域                 ^^^^^^^^
+  10&nbsp;# 从password文件中取得输入                    ^^^^^^^^^^^^^^^^^
+  11&nbsp;do
+  12&nbsp;  echo "USER #$n = $name"
+  13&nbsp;  let "n += 1"
+  14&nbsp;done  
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;# USER #1 = root
+  18&nbsp;# USER #2 = bin
+  19&nbsp;# USER #3 = daemon
+  20&nbsp;# ...
+  21&nbsp;# USER #30 = bozo
+  22&nbsp;
+  23&nbsp;exit 0
+  24&nbsp;
+  25&nbsp;#  练习:
+  26&nbsp;#  --------
+  27&nbsp;#  一个普通用户(或者是一个普通用户运行的脚本)
+  28&nbsp;#+ 怎么能读取/etc/password呢?
+  29&nbsp;#  这是否是一个安全漏洞? 为什么是?为什么不是?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>关于用命令替换来产生[list]的最后的例子.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FINDSTRING"
+></A
+>
+    <P
+><B
+>例子 10-9. 在目录的所有文件中查找源字串</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# findstring.sh:
+   3&nbsp;# 在一个指定目录的所有文件中查找一个特定的字符串.
+   4&nbsp;
+   5&nbsp;directory=/usr/bin/
+   6&nbsp;fstring="Free Software Foundation"  # 查看那个文件中包含FSF.
+   7&nbsp;
+   8&nbsp;for file in $( find $directory -type f -name '*' | sort )
+   9&nbsp;do
+  10&nbsp;  strings -f $file | grep "$fstring" | sed -e "s%$directory%%"
+  11&nbsp;  #  在&quot;sed&quot;表达式中,
+  12&nbsp;  #+ 我们必须替换掉正常的替换分隔符&quot;/&quot;,
+  13&nbsp;  #+ 因为&quot;/&quot;碰巧是我们需要过滤的字串之一.
+  14&nbsp;  #  如果不用&quot;%&quot;代替&quot;/&quot;作为分隔符,那么这个操作将失败,并给出一个错误消息.(试试)
+  15&nbsp;done  
+  16&nbsp;
+  17&nbsp;exit 0
+  18&nbsp;
+  19&nbsp;#  练习 (容易):
+  20&nbsp;#  ---------------
+  21&nbsp;#  将内部用的$directory和$fstring变量,用从
+  22&nbsp;#+ 命令行参数代替.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>for循环的输出也可以通过管道传递到一个或多个命令中.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SYMLINKS"
+></A
+>
+    <P
+><B
+>例子 10-10. 列出目录中所有的<a
+href="external.html#SYMLINKREF"
+>符号连接(symbolic link</a
+><a
+href="external.html#SYMLINKREF"
+>s)</a
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# symlinks.sh: 列出目录中所有的符号连接文件.
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;directory=${1-`pwd`}
+   6&nbsp;#  如果没有其他的特殊指定,
+   7&nbsp;#+ 默认为当前工作目录.
+   8&nbsp;#  下边的代码块,和上边这句等价.
+   9&nbsp;# ----------------------------------------------------------
+  10&nbsp;# ARGS=1                 # 需要一个命令行参数.
+  11&nbsp;#
+  12&nbsp;# if [ $# -ne "$ARGS" ]  # 如果不是一个参数的话...
+  13&nbsp;# then
+  14&nbsp;#   directory=`pwd`      # 当前工作目录
+  15&nbsp;# else
+  16&nbsp;#   directory=$1
+  17&nbsp;# fi
+  18&nbsp;# ----------------------------------------------------------
+  19&nbsp;
+  20&nbsp;echo "symbolic links in directory \"$directory\""
+  21&nbsp;
+  22&nbsp;for file in "$( find $directory -type l )"   # -type l 就是符号连接文件
+  23&nbsp;do
+  24&nbsp;  echo "$file"
+  25&nbsp;done | sort                                  # 否则列出的文件将是未排序的
+  26&nbsp;#  严格上说,此处并不一定非要一个循环不可,
+  27&nbsp;#+ 因为&quot;find&quot;命令的结果将被扩展成一个单词.
+  28&nbsp;#  然而,这种方式很容易理解和说明.
+  29&nbsp;
+  30&nbsp;#  Dominik 'Aeneas' Schnitzer 指出,
+  31&nbsp;#+ 如果没将 $( find $directory -type l )用&quot;&quot;引用起来的话
+  32&nbsp;#+ 那么将会把一个带有空白部分的文件名拆成以空白分隔的两部分(文件名中允许有空白).
+  33&nbsp;#  即使这只将取出每个参数的第一个域.
+  34&nbsp;
+  35&nbsp;exit 0
+  36&nbsp;
+  37&nbsp;
+  38&nbsp;# Jean Helou 建议使用下边的方法:
+  39&nbsp;
+  40&nbsp;echo "symbolic links in directory \"$directory\""
+  41&nbsp;# 当前IFS的备份.要小心使用这个值.
+  42&nbsp;OLDIFS=$IFS
+  43&nbsp;IFS=:
+  44&nbsp;
+  45&nbsp;for file in $(find $directory -type l -printf "%p$IFS")
+  46&nbsp;do     #                              ^^^^^^^^^^^^^^^^
+  47&nbsp;       echo "$file"
+  48&nbsp;       done|sort</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>循环的输出可以<a
+href="io-redirection.html#IOREDIRREF"
+>重定向</a
+>到文件中,我们对上边的例子做了一点修改.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SYMLINKS2"
+></A
+>
+    <P
+><B
+>例子 10-11. 将目录中的符号连接文件名保存到一个文件中</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# symlinks.sh: 列出目录中所有的符号连接文件.
+   3&nbsp;
+   4&nbsp;OUTFILE=symlinks.list                         # 保存的文件
+   5&nbsp;
+   6&nbsp;directory=${1-`pwd`}
+   7&nbsp;#  如果没有其他的特殊指定,
+   8&nbsp;#+ 默认为当前工作目录.
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;echo "symbolic links in directory \"$directory\"" &#62; "$OUTFILE"
+  12&nbsp;echo "---------------------------" &#62;&#62; "$OUTFILE"
+  13&nbsp;
+  14&nbsp;for file in "$( find $directory -type l )"    # -type l 为寻找类型为符号链接的文件
+  15&nbsp;do
+  16&nbsp;  echo "$file"
+  17&nbsp;done | sort &#62;&#62; "$OUTFILE"                     # 循环的输出
+  18&nbsp;#           ^^^^^^^^^^^^^                       重定向到一个文件中.
+  19&nbsp;
+  20&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>有一种非常像C语言的for循环的语法形式.这需要使用(()).</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FORLOOPC"
+></A
+>
+    <P
+><B
+>例子 10-12. 一个C风格的for循环</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 两种循环到10的方法.
+   3&nbsp;
+   4&nbsp;echo
+   5&nbsp;
+   6&nbsp;# 标准语法.
+   7&nbsp;for a in 1 2 3 4 5 6 7 8 9 10
+   8&nbsp;do
+   9&nbsp;  echo -n "$a "
+  10&nbsp;done  
+  11&nbsp;
+  12&nbsp;echo; echo
+  13&nbsp;
+  14&nbsp;# +==========================================+
+  15&nbsp;
+  16&nbsp;# 现在, 让我们用C风格的语法做同样的事.
+  17&nbsp;
+  18&nbsp;LIMIT=10
+  19&nbsp;
+  20&nbsp;for ((a=1; a &#60;= LIMIT ; a++))  # 双圆括号, 并且&quot;LIMIT&quot;变量前边没有 &quot;$&quot;.
+  21&nbsp;do
+  22&nbsp;  echo -n "$a "
+  23&nbsp;done                           # 这是一个借用'ksh93'的结构.
+  24&nbsp;
+  25&nbsp;echo; echo
+  26&nbsp;
+  27&nbsp;# +=========================================================================+
+  28&nbsp;
+  29&nbsp;# 让我们使用C的逗号操作符,来同时增加两个变量的值.
+  30&nbsp;
+  31&nbsp;for ((a=1, b=1; a &#60;= LIMIT ; a++, b++))  # 逗号将同时进行2条操作.
+  32&nbsp;do
+  33&nbsp;  echo -n "$a-$b "
+  34&nbsp;done
+  35&nbsp;
+  36&nbsp;echo; echo
+  37&nbsp;
+  38&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>参考<A
+HREF="arrays.html#QFUNCTION"
+>例子 26-15</A
+>, <A
+HREF="arrays.html#TWODIM"
+>例子 26-16</A
+>, 和 <A
+HREF="contributed-scripts.html#COLLATZ"
+>例子 A-6</A
+>.</P
+><P
+>---</P
+>
+  <P
+>现在来一个现实生活中使用的for循环.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX24"
+></A
+>
+    <P
+><B
+>例子 10-13. 在batch mode中使用efax</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Faxing ('fax' 必须已经被安装过了).
+   3&nbsp;
+   4&nbsp;EXPECTED_ARGS=2
+   5&nbsp;E_BADARGS=65
+   6&nbsp;
+   7&nbsp;if [ $# -ne $EXPECTED_ARGS ]
+   8&nbsp;# 检查命令行参数的个数是否正确.
+   9&nbsp;then
+  10&nbsp;   echo "Usage: `basename $0` phone# text-file"
+  11&nbsp;   exit $E_BADARGS
+  12&nbsp;fi
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;if [ ! -f "$2" ]
+  16&nbsp;then
+  17&nbsp;  echo "File $2 is not a text file"
+  18&nbsp;  exit $E_BADARGS
+  19&nbsp;fi
+  20&nbsp;  
+  21&nbsp;
+  22&nbsp;fax make $2              # 从文本文件中创建传真格式的文件.
+  23&nbsp;
+  24&nbsp;for file in $(ls $2.0*)  # 连接转换过的文件.
+  25&nbsp;                         # 在变量列表中使用通配符.
+  26&nbsp;do
+  27&nbsp;  fil="$fil $file"
+  28&nbsp;done  
+  29&nbsp;
+  30&nbsp;efax -d /dev/ttyS3 -o1 -t "T$1" $fil   # 干活的地方.
+  31&nbsp;
+  32&nbsp;
+  33&nbsp;# S.C. 指出, 通过下边的命令可以省去for循环.
+  34&nbsp;#    efax -d /dev/ttyS3 -o1 -t "T$1" $2.0*
+  35&nbsp;# 但这并不十分有讲解意义[嘿嘿].
+  36&nbsp;
+  37&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="WHILELOOPREF"
+></A
+><B
+CLASS="COMMAND"
+>while</B
+></DT
+><DD
+>
+	      <P
+>这种结构在循环的开头判断条件是否满足,如果条件一直满足,那就一直循环下去(0为<a
+href="exit-status.html#EXITSTATUSREF"
+>退出码[exit status]</a
+>).与<a
+href="loops.html#FORLOOPREF1"
+>for 循环</a
+>的区别是,这种结构适合用在循环次数未知的情况下.</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>while</B
+>  [<TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+>]<BR>  do <BR>  
+	        <TT
+CLASS="REPLACEABLE"
+><I
+>&nbsp;&nbsp;command</I
+></TT
+>... <BR>  done </P
+></P
+><P
+>和for循环一样,如果想把do和条件放到同一行上还是需要一个&quot;;&quot;.</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>while</B
+>  [<TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+>]  ;   do </P
+></P
+>
+          <P
+>注意一下某种特定的while循环,比如<a
+href="internal.html#GETOPTSX"
+>getopts结构</a
+>,好像和这里所介绍的模版有点脱节.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX25"
+></A
+>
+            <P
+><B
+>例子 10-14. 简单的while循环</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;var0=0
+   4&nbsp;LIMIT=10
+   5&nbsp;
+   6&nbsp;while [ "$var0" -lt "$LIMIT" ]
+   7&nbsp;do
+   8&nbsp;  echo -n "$var0 "        # -n 将会阻止产生新行.
+   9&nbsp;  #             ^           空格,数字之间的分隔.
+  10&nbsp;
+  11&nbsp;  var0=`expr $var0 + 1`   # var0=$(($var0+1))  也可以.
+  12&nbsp;                          # var0=$((var0 + 1)) 也可以.
+  13&nbsp;                          # let "var0 += 1"    也可以.
+  14&nbsp;done                      # 使用其他的方法也行.
+  15&nbsp;
+  16&nbsp;echo
+  17&nbsp;
+  18&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX26"
+></A
+>
+    <P
+><B
+>例子 10-15. 另一个while循环</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo
+   4&nbsp;                               # 等价于:
+   5&nbsp;while [ "$var1" != "end" ]     # while test "$var1" != "end"
+   6&nbsp;do
+   7&nbsp;  echo "Input variable #1 (end to exit) "
+   8&nbsp;  read var1                    # 为什么不使用'read $var1'?
+   9&nbsp;  echo "variable #1 = $var1"   # 因为包含&quot;#&quot;字符,所以需要&quot;&quot; . . .
+  10&nbsp;  # 如果输入为'end',那么就在这里打印.
+  11&nbsp;  # 不在这里判断结束,在循环顶判断.
+  12&nbsp;  echo
+  13&nbsp;done  
+  14&nbsp;
+  15&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>一个while循环可以有多个判断条件,但是只有最后一个才能决定是否退出循环.然而这需要一种有点不同的循环语法.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX26A"
+></A
+>
+    <P
+><B
+>例子 10-16. <B
+CLASS="COMMAND"
+>多条件的while循环</B
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;var1=unset
+   4&nbsp;previous=$var1
+   5&nbsp;
+   6&nbsp;while echo "previous-variable = $previous"
+   7&nbsp;      echo
+   8&nbsp;      previous=$var1
+   9&nbsp;      [ "$var1" != end ] # 记录之前的$var1.
+  10&nbsp;      # 这个&quot;while&quot;循环中有4个条件, 但是只有最后一个能控制循环.
+  11&nbsp;      # 退出状态由第4个条件决定.
+  12&nbsp;do
+  13&nbsp;echo "Input variable #1 (end to exit) "
+  14&nbsp;  read var1
+  15&nbsp;  echo "variable #1 = $var1"
+  16&nbsp;done  
+  17&nbsp;
+  18&nbsp;# 尝试理解这个脚本的运行过程.
+  19&nbsp;# 这里还是有点小技巧的.
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>与for循环一样,while循环也可通过(())来使用C风格语法.(见<A
+HREF="dblparens.html#CVARS"
+>例子 9-30</A
+>).</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="WHLOOPC"
+></A
+>
+    <P
+><B
+>例子 10-17. C风格的while循环</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# wh-loopc.sh: 循环10次的while循环.
+   3&nbsp;
+   4&nbsp;LIMIT=10
+   5&nbsp;a=1
+   6&nbsp;
+   7&nbsp;while [ "$a" -le $LIMIT ]
+   8&nbsp;do
+   9&nbsp;  echo -n "$a "
+  10&nbsp;  let "a+=1"
+  11&nbsp;done           # 到目前为止都没什么令人惊奇的地方.
+  12&nbsp;
+  13&nbsp;echo; echo
+  14&nbsp;
+  15&nbsp;# +=================================================================+
+  16&nbsp;
+  17&nbsp;# 现在, 重复C风格的语法.
+  18&nbsp;
+  19&nbsp;((a = 1))      # a=1
+  20&nbsp;# 双圆括号允许赋值两边的空格,就像C语言一样.
+  21&nbsp;
+  22&nbsp;while (( a &#60;= LIMIT ))   # 双圆括号, 变量前边没有&quot;$&quot;.
+  23&nbsp;do
+  24&nbsp;  echo -n "$a "
+  25&nbsp;  ((a += 1))   # let "a+=1"
+  26&nbsp;  # Yes, 看到了吧.
+  27&nbsp;  # 双圆括号允许像C风格的语法一样增加变量的值.
+  28&nbsp;done
+  29&nbsp;
+  30&nbsp;echo
+  31&nbsp;
+  32&nbsp;# 现在,C程序员可以在Bash中找到回家的感觉了吧.
+  33&nbsp;
+  34&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>while循环的stdin可以用&lt;来<a
+href="redircb.html#REDIRREF"
+>重定向到文件</a
+>.</P
+>
+    <P
+>whild循环的stdin支持<A
+HREF="internal.html#READPIPEREF"
+>管道</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="UNTILLOOPREF"
+></A
+><B
+CLASS="COMMAND"
+>until</B
+></DT
+><DD
+>
+	      <P
+>这个结构在循环的顶部判断条件,并且如果条件一直为false那就一直循环下去.(与while相反).</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>until</B
+>  [<TT
+CLASS="REPLACEABLE"
+><I
+>condition-is-true</I
+></TT
+>]<BR>  do <BR>  
+	        <TT
+CLASS="REPLACEABLE"
+><I
+>&nbsp;&nbsp;command</I
+></TT
+>... <BR>  done </P
+></P
+><P
+>注意: until循环的判断在循环的顶部,这与某些编程语言是不同的.</P
+><P
+>与for循环一样,如果想把do和条件放在一行里,就使用&quot;;&quot;.</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>until</B
+>  [<TT
+CLASS="REPLACEABLE"
+><I
+>condition-is-true</I
+></TT
+>]  ;   do </P
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX27"
+></A
+>
+	          <P
+><B
+>例子 10-18. <B
+CLASS="COMMAND"
+>until循环</B
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;END_CONDITION=end
+   4&nbsp;
+   5&nbsp;until [ "$var1" = "$END_CONDITION" ]
+   6&nbsp;# 在循环的顶部判断条件.
+   7&nbsp;do
+   8&nbsp;  echo "Input variable #1 "
+   9&nbsp;  echo "($END_CONDITION to exit)"
+  10&nbsp;  read var1
+  11&nbsp;  echo "variable #1 = $var1"
+  12&nbsp;  echo
+  13&nbsp;done  
+  14&nbsp;
+  15&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+></DL
+>
+  </DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dblparens.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="nestedloops.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The Double Parentheses Construct</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part3.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Nested Loops</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

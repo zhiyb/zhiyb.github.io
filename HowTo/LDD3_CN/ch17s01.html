@@ -1,0 +1,128 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>17.1. 连接到内核</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="ch17.html" title="第&#160;17&#160;章&#160;网络驱动">
+<link rel="prev" href="ch17.html" title="第&#160;17&#160;章&#160;网络驱动">
+<link rel="next" href="ch17s03.html" title="17.3.&#160;net_device 结构的详情">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H2>17.1. snull是如何设计的</H2></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch17.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle"></th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch17s02.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div>
+<DIV class=sect1 lang=zh-cn>
+<P>本节谈论产生 snull 网络接口的设计概念. 尽管这个信息可能看来是边缘的使用, 不理解它在你运行例子代码时可能会导致问题.</P>
+<P>首先, 也是最重要的, 设计的决定是例子接口应该保持独立于真实的硬件, 就像本书使用的大部分例子. 这个限制导致了一些构成环回接口的东西. snull 
+不是一个环回接口; 但是, 它模拟了与真实的远端主机间的对话, 以便更好演示编写一个网络驱动的任务. Linux 环回驱动实际是非常简单的; 它可在 
+drivers/net/lookback.c 找到.</P>
+<P>snull 的另一个特性是它只支持 IP 通讯. 这是接口的内部工作的结果 -- snull 不得不查看里面并且解析报文来正确模拟一对硬件接口. 
+实际的接口不依赖于被发送的协议, 并且 snull 的这种限制不影响本章展示的代码片断.</P>
+<DIV class=sect2 lang=zh-cn>
+<DIV class=titlepage>
+<DIV>
+<DIV>
+<H3 class=title><A name=AssigningIPNumbers></A>  
+17.1.1.&nbsp;分配IP号</H3></DIV></DIV></DIV>
+<P>snull 模块创建了两个接口. 这些接口与一个简单的环回不同, 因为无论你通过其中一个接口发送什么都环回到另外一个, 而不是它自己. 
+它看起来好像你有两个外部连接, 但实际上是你的计算机在回答它自己.</P>
+<P>不幸的是, 这个效果不能仅仅通过 IP 号码分配来完成, 因为内核不会通过接口 A 发送一个报文给它自己的接口 B, 它会利用环回通道而不是通过 
+snull. 为了能建立一个通过 snull 接口的通讯, 源和目的地址在实际传送中需要修改. 换句话说, 通过其中一个接口发送的报文应该被另一个收到, 
+但是外出报文的接受者不应当被认做是本地主机. 同样适用于接收到的报文的源地址.</P>
+<P>为获得这种"隐藏的环回", snull 接口翻转源地址和目的地址的第 3 个 octet 的最低有效位; 就是说, 它改变了 C 类 IP 
+编号的网络编号和主机编号. 网络方面的效果是发给网络 A( 连接在 sn0 上, 第一个接口 )的报文作为属于网络 B 的报文出现在 sn1 接口.</P>
+<P>为避免处理太多编号, 我们分配符号名子给涉及到的 IP 编号:</P>
+<DIV class=itemizedlist>
+<UL type=disc>
+  <LI>
+  <P>snullnet0 是连接到 sn0 接口的网络. 同样, snullnet1 是连接到 sn1. 这些网络的地址应当仅仅在第 3 个 octet 
+  的最低有效位不同. 这些网络必须有 24 位的子网掩码.</P>
+  <LI>
+  <P>local0 是分配给 sn0 接口的 IP 地址; 它属于 snullnet0. 陪伴 sn1 的地址是 local1. local0 和 
+  local1 必须在它们的第 3 octet 的最低有效位和第 4 octet 上不同.</P>
+  <LI>
+  <P>remote0 是在 snullnet0 的主机, 并且它的第 4 octet 与 local1 的相同. 任何发送给 remote0 的报文到达 
+  local1, 在它的网络地址被接口代码改变之后. 主机 remote1 属于 snullnet1, 它的第 4 octet 与 local0 
+  相同.</P></LI></UL></DIV>
+<P>snull 接口的操作在图 <A title=图&nbsp;17.1.&nbsp;主机如何看它的接口 
+href="ch17.html#ldd3-17-1.fig">主机如何看它的接口</A>中描述, 其中每个接口的关联的主机名印在接口名的旁边.</P>
+<DIV class=figure><A name=ldd3-17-1.fig></A>
+<P class=title><B>图&nbsp;17.1.&nbsp;主机如何看它的接口</B></P>
+<DIV><IMG alt=主机如何看它的接口 src="images/snagitldd3/ldd3-17-1.png"></DIV></DIV>
+<P>下面是网络编号的可能值. 一旦你把这些行放进 /etc/networks, 你可以使用名子来调用你的网络. 这些值选自保留做私人用途的编号范围.</P><PRE class=screen>snullnet0 192.168.0.0
+snullnet1 192.168.1.0
+</PRE>
+<P>下面的是一些可能的主机编号, 可放进 /etc/hosts 里面:</P><PRE class=screen>192.168.0.1  local0  
+192.168.0.2  remote0  
+192.168.1.2  local1  
+192.168.1.1  remote1  
+</PRE>
+<P>这些编号的重要特性是 local0 的主机部分与 remote1 的主机部分相同, local1 的主机部分和 remote0 的主机部分相同. 
+你可以使用完全不同的编号, 只要保持着这种关系.</P>
+<P>但是要小心, 如果你的计算机以及连接到一个网络上. 你选择的编号可能是真实的互联网或者内联网的编号, 把它们安排给你的接口会阻止和这些真实的主机间的通讯. 
+例如, 尽管刚刚展示的这些编号不是可以路由的互联网编号, 它们也可能被你的私有网络已经在使用.</P>
+<P>不管你选择什么编号, 你可以正确设置这些接口来操作, 通过发出下面的命令:</P><PRE class=screen>ifconfig sn0 local0 
+ifconfig sn1 local1 
+</PRE>
+<P>你可能需要添加网络掩码 255.255.255.0 参数, 如果选择的地址范围不是 C 类范围.</P>
+<P>在此, 接口的"远程"端点能够到达了. 下面的屏幕拷贝显示了一个主机如何到达 remote0 和 remote1 的, 通过 snull 接口.</P><PRE class=screen>morgana% ping -c 2 remote0 
+64 bytes from 192.168.0.99: icmp_seq=0 ttl=64 time=1.6 ms 
+64 bytes from 192.168.0.99: icmp_seq=1 ttl=64 time=0.9 ms 
+2 packets transmitted, 2 packets received, 0% packet loss 
+morgana% ping -c 2 remote1
+64 bytes from 192.168.1.88: icmp_seq=0 ttl=64 time=1.8 ms
+64 bytes from 192.168.1.88: icmp_seq=1 ttl=64 time=0.9 ms
+2 packets transmitted, 2 packets received, 0% packet loss
+</PRE>
+<P>注意, 你不能到达属于这两个网络的任何其他主机, 因为报文被你的计算机丢弃了, 在地址被修改和收到报文之后. 例如, 一个发向 192.168.0.32 
+的报文将离开 sn0 并以 192.168.1.32 的目的地址出现在 sn1, 这并不是这台主机的本地地址.</P></DIV>
+<DIV class=sect2 lang=zh-cn>
+<DIV class=titlepage>
+<DIV>
+<DIV>
+<H3 class=title><A 
+name=ThePhysicalTransportofPacket></A>17.1.2.&nbsp;报文的物理传送</H3></DIV></DIV></DIV>
+<P>只考虑数据传送的话, snull 接口属于以太网一类的.</P>
+<P>snull 模拟以太网是因为大量的现存网络 -- 至少一个工作站所连接的网段 -- 是基于以太网技术的, 它可能是 10base-T, 
+100base-T, 或者 千兆网. 另外, 内核为以太网设备提供了一些通用的接口, 没有理由不用它. 一个以太网设备的优势是如此的强以至于 plip 接口( 
+使用打印机端口的接口 )都声明自己是一个以太网设备.</P>
+<P>snull 使用以太网设置的最后一个优势是你可以运行 tcpdump 在接口上来观察过往的报文. 使用 tcpdump 
+来观察接口是得知两个接口如何工作的有用途径.</P>
+<P>如同我们之前提到的, snull 只处理 IP 报文. 这个限制来自这样的事实, snull 监听报文并且甚至修改它们, 以便使代码工作. 
+代码修改了每个报文的源, 目的和 IP header 的校验和, 并不检查它是否实际承载着 IP 信息.</P>
+<P>这种快而脏的数据修改毁坏了非 IP 报文. 如果你想通过 snull 递交其他协议, 你必须修改模块的源代码.</P></DIV></DIV>
+<a name="ConnectingtotheKernel"></a></div><div><h2 class="title" style="CLEAR: both">
+<hr></h2><h2 class="title" style="CLEAR: both">
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch17.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=u href="ch17.html">上一级</A></td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch17s02.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">第&nbsp;17&nbsp;章&nbsp;网络驱动&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top"> &nbsp;17.2.&nbsp;连接到内核</td>
+</tr>
+</table></h2></div></div></div>
+</div>
+</body>
+</html>

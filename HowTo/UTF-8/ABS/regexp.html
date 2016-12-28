@@ -1,0 +1,1418 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Regular Expressions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="NEXT"
+TITLE="Globbing"
+HREF="globbingref.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="part4.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="globbingref.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="REGEXP"
+>第19章. 正则表达式</A
+></H1
+>
+  <P
+><A
+NAME="REGEXREF"
+></A
+></P
+>
+  <P
+>为了充分发挥shell编程的威力，你需要精通正则表达式。 在脚本编程中的一些命令和软件包普遍使用正则表达式，例如<A
+HREF="textproc.html#GREPREF"
+>grep</A
+>, <A
+HREF="moreadv.html#EXPRREF"
+>expr</A
+>, <A
+HREF="sedawk.html#SEDREF"
+>sed</A
+>和<A
+HREF="awk.html#AWKREF"
+>awk</A
+>.</P
+>
+  <DIV
+CLASS="SECT1"
+>
+    <H1
+CLASS="SECT1"
+><A
+NAME="AEN13353"
+>19.1. 一个简要的正则表达式介绍</A
+></H1
+>
+    <P
+>一个正式表达式是一个字符串.字符串里的字符被称为元字符，它们可以表示了比它们字面上看起来的意思更丰富的含义。例如，一个引用符号可以表示引用一个人演讲中的话，或者表示下面将要讲到的引申表示的意思。正则表达式是一个字符或/和元字符组合成的字符集，它们匹配(或指定)一个模式。.</P
+>
+    <P
+>一个正则表达式包含下面一个或多个项:</P
+>
+    <UL
+><LI
+>
+        <P
+><I
+CLASS="FIRSTTERM"
+>一个字符集</I
+>. 这里的字符集里的字符表示的就是它们字面上的意思.正则表达式最简单的情况就是仅仅由字符集组成，而没有其他的元字符.</P
+>
+      </LI
+><LI
+>
+        <P
+><I
+CLASS="FIRSTTERM"
+>锚</I
+>. 一个锚指明了正则表达式在一行文本中要匹配的位置，例如<SPAN
+CLASS="TOKEN"
+>^</SPAN
+>和<SPAN
+CLASS="TOKEN"
+>$</SPAN
+>就是锚.</P
+>
+      </LI
+><LI
+>
+        <P
+><I
+CLASS="FIRSTTERM"
+>修饰符</I
+>. 它们用于展开或缩小(即是修改了)正则表达式匹配文本行的范围.修饰符包括了星号，括号和反斜杠符号.</P
+>
+      </LI
+></UL
+>
+    <P
+>正则表达是的主要作用是用来文本搜索和字串操作。一个正则表达式匹配一个字符或是一串字符--完整的一串字符或是另外一个字符串的子串.</P
+>
+    <UL
+>
+      <LI
+> 
+        <P
+>星号 -- <SPAN
+CLASS="TOKEN"
+>*</SPAN
+> -- 匹配前一个字符的任意多次(包括零次)。</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"1133*"</SPAN
+>匹配<TT
+CLASS="REPLACEABLE"
+><I
+>11 + 一个或更多的3 + 可能的其他字符</I
+></TT
+>: <TT
+CLASS="REPLACEABLE"
+><I
+>113</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>1133</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>111312</I
+></TT
+>, 等等.</P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+><A
+NAME="REGEXDOT"
+></A
+>点 -- <SPAN
+CLASS="TOKEN"
+>.</SPAN
+> -- 匹配除了新行符之外的任意一个字符. <A
+NAME="AEN13402"
+HREF="#FTN.AEN13402"
+>[1]</A
+> </P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"13."</SPAN
+> 匹配<TT
+CLASS="REPLACEABLE"
+><I
+>13 + 至少一个任意字符(包括空格)</I
+></TT
+>: <TT
+CLASS="REPLACEABLE"
+><I
+>1133</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>11333</I
+></TT
+>, 但不匹配<tt></tt> <TT
+CLASS="REPLACEABLE"
+><I
+>13</I
+></TT
+> (因为少了附加的至少一个任意字符).</P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+>脱字符 -- <SPAN
+CLASS="TOKEN"
+>^</SPAN
+> -- 匹配一行的开头，但依赖于上下文环境，可能在正则表达式中表示否定一个字符集的意思. </P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+><A
+NAME="DOLLARSIGNREF"
+></A
+></P
+>
+        <P
+>美元符 -- <SPAN
+CLASS="TOKEN"
+>$</SPAN
+> -- 在正则表达式中匹配行尾.</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"^$"</SPAN
+> 匹配空行.</P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+><A
+NAME="BRACKETSREF"
+></A
+></P
+>
+        <P
+>方括号 -- <SPAN
+CLASS="TOKEN"
+>[...]</SPAN
+> -- 在正则表达式中表示匹配括号中的一个字符.</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"[xyz]"</SPAN
+> 匹配字符<TT
+CLASS="REPLACEABLE"
+><I
+>x</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>y</I
+></TT
+>, 或<TT
+CLASS="REPLACEABLE"
+><I
+>z</I
+></TT
+>.</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"[c-n]"</SPAN
+> 匹配从字符<TT
+CLASS="REPLACEABLE"
+><I
+>c</I
+></TT
+>到<TT
+CLASS="REPLACEABLE"
+><I
+>n</I
+></TT
+>之间的任意一个字符.</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"[B-Pk-y]"</SPAN
+> 匹配从<TT
+CLASS="REPLACEABLE"
+><I
+>B</I
+></TT
+>到<TT
+CLASS="REPLACEABLE"
+><I
+>P</I
+></TT
+> 或从<TT
+CLASS="REPLACEABLE"
+><I
+>k</I
+></TT
+>到<TT
+CLASS="REPLACEABLE"
+><I
+>y</I
+></TT
+>的任意一个字符.</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"[a-z0-9]"</SPAN
+> 匹配任意小写字母或数字.</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"[^b-d]"</SPAN
+> 匹配除了从<tt
+class="REPLACEABLE"
+><i
+>b</i
+></tt
+>到<tt
+class="REPLACEABLE"
+><i
+>d</i
+></tt
+>范围内所有的字符. 这是正则表达式中反转意思或取否的一个例子。(就好像在别的情形中!字符所扮演的角色).</P
+>
+        <P
+>多个方括号字符集组合使用可以匹配一般的单词和数字模式。<SPAN
+CLASS="QUOTE"
+>"[Yy][Ee][Ss]"</SPAN
+> 匹配<TT
+CLASS="REPLACEABLE"
+><I
+>yes</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>Yes</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>YES</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>yEs</I
+></TT
+>, 等等. <SPAN
+CLASS="QUOTE"
+>"[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]"</SPAN
+> 匹配社会安全码(Social Security number).</P
+>
+      </LI
+>
+      <LI
+>反斜杠字符 -- <SPAN
+CLASS="TOKEN"
+>\</SPAN
+> -- <A
+HREF="escapingsection.html#ESCP"
+>转义(escapes)</A
+> 一个特殊的字符，使这个字符表示原来字面上的意思. 
+        <P
+><SPAN
+CLASS="QUOTE"
+>"\$"表示了原来的字面意思</SPAN
+><SPAN
+CLASS="QUOTE"
+>"$"</SPAN
+>,而不是在正则表达式中表达的匹配行尾的意思.同样<SPAN
+CLASS="QUOTE"
+>，"\\"</SPAN
+>也被解释成了字面上的意思<SPAN
+CLASS="QUOTE"
+>"\"</SPAN
+>.</P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+><A
+NAME="ANGLEBRAC"
+></A
+></P
+>
+        <P
+><A
+HREF="escapingsection.html#ESCP"
+>转义(escape)</A
+><SPAN
+CLASS="QUOTE"
+>"尖角号"</SPAN
+> -- <SPAN
+CLASS="TOKEN"
+>\&#60;...\&#62;</SPAN
+> -- 用于表示单词的边界.</P
+>
+        <P
+>尖角号必须被转义，因为不这样做的话它们就表示单纯的字面意思而已.</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"\&#60;the\&#62;"</SPAN
+> 匹配单词<SPAN
+CLASS="QUOTE"
+>"the"</SPAN
+>,但不匹配<SPAN
+CLASS="QUOTE"
+>"them"</SPAN
+>, <SPAN
+CLASS="QUOTE"
+>"there"</SPAN
+>, <SPAN
+CLASS="QUOTE"
+>"other"</SPAN
+>, 等等.</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat textfile</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>This is line 1, of which there is only one instance.
+ This is the only instance of line 2.
+ This is line 3, another line.
+ This is line 4.</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>grep 'the' textfile</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>This is line 1, of which there is only one instance.
+ This is the only instance of line 2.
+ This is line 3, another line.</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>grep '\&#60;the\&#62;' textfile</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>This is the only instance of line 2.</TT
+>
+ 	      </PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+      </LI
+>
+    </UL
+>
+    <TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN13519"
+></A
+>
+            <P
+>确定正则表达式能否工作的唯一办法是测试它.</P
+>
+            <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;TEST FILE: tstfile                          # 不匹配.
+   2&nbsp;                                            # 不匹配.
+   3&nbsp;Run   grep "1133*"  on this file.           # 匹配.
+   4&nbsp;                                            # 不匹配.
+   5&nbsp;                                            # 不匹配.
+   6&nbsp;This line contains the number 113.          # 匹配.
+   7&nbsp;This line contains the number 13.           # 不匹配.
+   8&nbsp;This line contains the number 133.          # 不匹配.
+   9&nbsp;This line contains the number 1133.         # 匹配.
+  10&nbsp;This line contains the number 113312.       # 匹配.
+  11&nbsp;This line contains the number 1112.         # 不匹配.
+  12&nbsp;This line contains the number 113312312.    # 匹配.
+  13&nbsp;This line contains no numbers at all.       # 不匹配.</PRE
+></TD
+></TR
+></TABLE
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>grep "1133*" tstfile</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Run   grep "1133*"  on this file.           # 匹配.
+ This line contains the number 113.          # 匹配.
+ This line contains the number 1133.         # 匹配.
+ This line contains the number 113312.       # 匹配.
+ This line contains the number 113312312.    # 匹配.</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+></DIV
+></TD
+></TR
+></TABLE
+>
+    <UL
+>
+      <LI
+STYLE="list-style-type: square"
+> 
+        <DIV
+CLASS="FORMALPARA"
+> 
+          <P
+><B
+><A
+NAME="EXTREGEX"
+></A
+>扩展的正则表达式. </B
+>增加了一些元字符到上面提到的基本的元字符集合里. 它们在<A
+HREF="textproc.html#EGREPREF"
+>egrep</A
+>, <A
+HREF="awk.html#AWKREF"
+>awk</A
+>,和<A
+HREF="wrapper.html#PERLREF"
+>Perl</A
+>中使用.</P
+>
+        </DIV
+>
+      </LI
+>
+      <LI
+> 
+        <P
+><A
+NAME="QUEXREGEX"
+></A
+></P
+>
+        <P
+>问号 -- <SPAN
+CLASS="TOKEN"
+>?</SPAN
+> -- 匹配零或一个前面的字符. 它一般用于匹配单个字符.</P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+><A
+NAME="PLUSREF"
+></A
+></P
+>
+        <P
+>加号 -- <SPAN
+CLASS="TOKEN"
+>+</SPAN
+> -- 匹配一个或多个前面的字符.它的作用和*很相似，但唯一的区别是它不匹配零个字符的情况.</P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# GNU 版本的 sed 和 awk 可以使用"+",
+   2&nbsp;# 但它应该转义一下.
+   3&nbsp;
+   4&nbsp;echo a111b | sed -ne '/a1\+b/p'
+   5&nbsp;echo a111b | grep 'a1\+b'
+   6&nbsp;echo a111b | gawk '/a1+b/'
+   7&nbsp;# 上面三句都是等价的效果.
+   8&nbsp;
+   9&nbsp;# 多谢, S.C.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+><A
+HREF="escapingsection.html#ESCP"
+>转义</A
+><SPAN
+CLASS="QUOTE"
+>"大括号"</SPAN
+> -- <SPAN
+CLASS="TOKEN"
+>\{ \}</SPAN
+> -- 指示前面正则表达式匹配的次数.</P
+>
+        <P
+>要转义是因为不转义的话大括号只是表示他们字面上的意思。这个用法只是技巧上的而不是基本正则表达式的内容。</P
+>
+        <P
+><SPAN
+CLASS="QUOTE"
+>"[0-9]\{5\}"</SPAN
+> 精确匹配5个数字 (从 0 到 9的数字).</P
+>
+        <DIV
+CLASS="NOTE"
+> 
+          <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+            <TR
+> 
+              <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+              <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>大括号不能在“经典”(不是POSIX兼容)的正则表达式版本的<a
+href="awk.html#AWKREF"
+>awk</a
+>中使用. 然而, <B
+CLASS="COMMAND"
+>gawk</B
+> 有<TT
+CLASS="OPTION"
+>一个选项--re-interval</TT
+>来允许使用大括号(不必转义).</P
+>
+                <P
+> 
+                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                  <TR
+> 
+                    <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo 2222 | gawk --re-interval '/2{3}/'</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>2222</TT
+>
+ 	      </PRE
+></TD
+>
+                  </TR
+>
+                </TABLE
+></P
+>
+                <P
+><B
+CLASS="COMMAND"
+>Perl</B
+>和一些<B
+CLASS="COMMAND"
+>egrep</B
+>版本不要求转义大括号.</P
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DIV
+>
+      </LI
+>
+      <LI
+> 
+        <P
+>圆括号 -- <B
+CLASS="COMMAND"
+>( )</B
+> -- 括起一组正则表达式. 它和下面要讲的<SPAN
+CLASS="QUOTE"
+>"<SPAN
+CLASS="TOKEN"
+>|</SPAN
+>"操作符或在用<a
+href="moreadv.html#EXPRREF"
+>expr</a
+>进行<a
+href="string-manipulation.html#EXPRPAREN"
+>子字符串提取(substring extraction)</a
+>一起使用很有用。</SPAN
+></P
+>
+      </LI
+>
+      <LI
+> 
+        <P
+>竖线 -- <B
+CLASS="COMMAND"
+>|</B
+> -- <SPAN
+CLASS="QUOTE"
+>"或"</SPAN
+>正则操作符用于匹配一组可选的字符.</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>egrep 're(a|e)d' misc.txt</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>People who read seem to be better informed than those who do not.
+ The clarinet produces sound by the vibration of its reed.</TT
+>
+ 	      </PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+      </LI
+>
+    </UL
+>
+    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>一些<B
+CLASS="COMMAND"
+>sed</B
+>, <B
+CLASS="COMMAND"
+>ed</B
+>, 和<B
+CLASS="COMMAND"
+>ex</B
+>的版本像GNU的软件版本一样支持上面描述的扩展正则表达式的版本。</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+    <UL
+>
+      <LI
+STYLE="list-style-type: square"
+>
+        <DIV
+CLASS="FORMALPARA"
+> 
+          <P
+><B
+><A
+NAME="POSIXREF"
+></A
+>POSIX字符类. </B
+><TT
+CLASS="USERINPUT"
+><B
+>[:class:]</B
+></TT
+></P
+>
+        </DIV
+>
+        <P
+>这是另外一个可选的用于指定匹配字符范围的方法。</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:alnum:]</B
+></TT
+> 匹配字母和数字.等同于<TT
+CLASS="USERINPUT"
+><B
+>A-Za-z0-9</B
+></TT
+>.</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:alpha:]</B
+></TT
+> 匹配字母. 等同于<TT
+CLASS="USERINPUT"
+><B
+>A-Za-z</B
+></TT
+>.</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:blank:]</B
+></TT
+> 匹配一个空格或是一个制表符(tab).</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:cntrl:]</B
+></TT
+> 匹配控制字符.</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:digit:]</B
+></TT
+> 匹配(十进制)数字. 等同于<TT
+CLASS="USERINPUT"
+><B
+>0-9</B
+></TT
+>.</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:graph:]</B
+></TT
+> (可打印的图形字符). 匹配 ASCII 码值的33 - 126之间的字符. 这和下面提到的<b></b> <TT
+CLASS="USERINPUT"
+><B
+>[:print:]</B
+></TT
+>一样,但是不包括空格字符.</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:lower:]</B
+></TT
+> 匹配小写字母. 等同于<TT
+CLASS="USERINPUT"
+><B
+>a-z</B
+></TT
+>.</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:print:]</B
+></TT
+> (可打印字符). 匹配 ASCII码值 32 - 126之间的字符. 这和上面提到的一样<TT
+CLASS="USERINPUT"
+><B
+>[:graph:]</B
+></TT
+>,但是增多一个空格字符。 </P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:space:]</B
+></TT
+> 匹配空白字符 (空格符和水平制表符).</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:upper:]</B
+></TT
+> 匹配大写字母. 等同于<TT
+CLASS="USERINPUT"
+><B
+>A-Z</B
+></TT
+>.</P
+>
+      </LI
+>
+      <LI
+>
+        <P
+><TT
+CLASS="USERINPUT"
+><B
+>[:xdigit:]</B
+></TT
+> 匹配十六进制数字. 等同于<TT
+CLASS="USERINPUT"
+><B
+>0-9A-Fa-f</B
+></TT
+>.</P
+>
+        <DIV
+CLASS="IMPORTANT"
+>
+          <TABLE
+CLASS="IMPORTANT"
+WIDTH="90%"
+BORDER="0"
+>
+            <TR
+>
+              <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/important.png"
+HSPACE="5"
+ALT="Important"></TD
+>
+              <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>POSIX字符类一般都要求用引号或是<A
+HREF="tests.html#DBLBRACKETS"
+>双方括号double brackets</A
+> ([[ ]])引起来.</P
+>
+                <P
+> 
+                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                  <TR
+>
+                    <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>grep [[:digit:]] test.file</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>abc=723</TT
+>
+ 	      </PRE
+></TD
+>
+                  </TR
+>
+                </TABLE
+></P
+>
+                <P
+>这些字符类在一个受限的范围内甚至可能用在能用在<A
+HREF="globbingref.html"
+>通配(globbing)</A
+>中.</P
+>
+                <P
+> 
+                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                  <TR
+>
+                    <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l ?[[:digit:]][[:digit:]]?</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-rw-r--    1 bozo  bozo         0 Aug 21 14:47 a33b</TT
+>
+ 	      </PRE
+></TD
+>
+                  </TR
+>
+                </TABLE
+></P
+>
+                <P
+>为了理解POSIX字符类在脚本中的使用，请参考<A
+HREF="textproc.html#EX49"
+>例子 12-18</A
+> 和 <A
+HREF="textproc.html#LOWERCASE"
+>例子 12-19</A
+>.</P
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DIV
+>
+      </LI
+>
+    </UL
+>
+    <P
+><A
+HREF="sedawk.html#SEDREF"
+>Sed</A
+>, <A
+HREF="awk.html#AWKREF"
+>awk</A
+>, 和<A
+HREF="wrapper.html#PERLREF"
+>Perl</A
+>在脚本中被用作过滤器, "过滤"或转换文件/IO流的时候以正则表达式作为参数。参考<A
+HREF="contributed-scripts.html#BEHEAD"
+>例子 A-12</A
+>和<A
+HREF="contributed-scripts.html#TREE"
+>例子 A-17</A
+> 来理解这种用法.</P
+>
+    <P
+>在正则表达式这个复杂主题的标准参考是Friedl的<I
+CLASS="CITETITLE"
+>Mastering Regular Expressions</I
+>.由Dougherty和Robbins写的 <I
+CLASS="CITETITLE"
+>Sed &#38; Awk</I
+>也给出了一个清晰的正则表达式论述. 查看<A
+HREF="biblio.html"
+><I
+>参考书目</I
+></A
+> 找到这个主题更多的信息.</P
+>
+  </DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN13402"
+HREF="regexp.html#AEN13402"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>因为Since <A
+HREF="sedawk.html#SEDREF"
+>sed</A
+>, <A
+HREF="awk.html#AWKREF"
+>awk</A
+>, 和and <A
+HREF="textproc.html#GREPREF"
+>grep</A
+> 通常处理单行，而不能匹配一个新行符. 在要处理多行的一个输入时，可以使用点操作符，它可以匹配新行符。
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;sed -e 'N;s/.*/[&#38;]/' &#60;&#60; EOF   # Here Document
+   4&nbsp;line1
+   5&nbsp;line2
+   6&nbsp;EOF
+   7&nbsp;# 输出:
+   8&nbsp;# [line1
+   9&nbsp;# line2]
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;awk '{ $0=$1 "\n" $2; if (/line.1/) {print}}' &#60;&#60; EOF
+  16&nbsp;line 1
+  17&nbsp;line 2
+  18&nbsp;EOF
+  19&nbsp;# 输出:
+  20&nbsp;# line
+  21&nbsp;# 1
+  22&nbsp;
+  23&nbsp;
+  24&nbsp;# 多谢, S.C.
+  25&nbsp;
+  26&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="globbingref.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Advanced Topics</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Globbing</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

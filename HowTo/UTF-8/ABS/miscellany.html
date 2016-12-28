@@ -1,0 +1,360 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Miscellany</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="Scripting With Style"
+HREF="scrstyle.html"><LINK
+REL="NEXT"
+TITLE="Shell Wrappers"
+HREF="wrapper.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="scrstyle.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="wrapper.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="MISCELLANY"
+>第三十三章. 杂项</A
+></H1
+>
+  <TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>Nobody really knows what the Bourne shell's grammar is. Even
+        examination of the source code is little help.</I
+></P
+></I
+></TD
+></TR
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+><SPAN
+CLASS="ATTRIBUTION"
+>Tom Duff</SPAN
+></I
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="SECT1"
+>
+          <H1
+CLASS="SECT1"
+><A
+NAME="INTANDNONINT"
+>33.1. 交互式和非交互式的shells和脚本</A
+></H1
+>
+          <P
+>交互式的shell在 <TT
+CLASS="FILENAME"
+>tty</TT
+>终端从用户的输入中读取命令. 另一方面,
+	   shell能在启动时读取启动文件，显示一个提示符并默认激活作业控制. 用户能交互地使用shell.</P
+>
+          <P
+>运行脚本的shell一般都是非交互的shell. 但脚本仍然可以存取它拥有的终端. 脚本里甚至可以仿效成可交互的shell.
+
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;MY_PROMPT='$ '
+   3&nbsp;while :
+   4&nbsp;do
+   5&nbsp;  echo -n "$MY_PROMPT"
+   6&nbsp;  read line
+   7&nbsp;  eval "$line"
+   8&nbsp;  done
+   9&nbsp;
+  10&nbsp;exit 0
+  11&nbsp;
+  12&nbsp;# 这个例子脚本, 和上面的解释由
+  13&nbsp;# Stéphane Chazelas 提供(再次感谢).</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+>让我们考虑一个要求用户交互式输入的脚本，通常用<A
+HREF="internal.html#READREF"
+>read</A
+>语句 (参考<A
+HREF="internal.html#EX36"
+>例子 11-3</A
+>).  <SPAN
+CLASS="QUOTE"
+>真正的情况可能有些混乱.</SPAN
+>以现在假设的情况来说，交互式脚本被限制在一个tty设备上，它本身已经是从一个控制终端或一个中被用户调用的.</P
+>
+  <P
+>初始化和启动脚本不必是非交互式的，因为它们必须不需要人为地干预地运行。许多管理和系统维护脚本也同样是非交互式的。不多变的重复性的任务可以自动地由非交互式脚本完成.</P
+>
+  <P
+>非交互式的脚本可以在后台运行，但交互脚本在后台运行则会被挂起，等待永远不会到达的输入。解决这个难点的办法可以写预料这种情况的脚本或是内嵌<A
+HREF="here-docs.html#HEREDOCREF"
+>here
+	   document</A
+> 的脚本来获取脚本期望的输入，这样就可作为后台任务运行了.在最简单的情况，重定向一个文件给一个<b
+class="COMMAND"
+>read</b
+>语句提供输入(<B
+CLASS="COMMAND"
+>read variable &#60;file</B
+>).  这就可能适应交互和非交互的工作环境下都能达成脚本运行的目的.</P
+>
+  <P
+>如果脚本需要测试当前是否运行在交互shell中，一个简单的办法是找一下是否有提示符变量，即<A
+HREF="variables2.html#PS1REF"
+>$PS1</A
+>是否设置了. (如果脚本需要用户输入数据，则脚本会显示一个提示符.)
+
+	   <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ -z $PS1 ] # 没有提示符?
+   2&nbsp;then
+   3&nbsp;  # 非交互式
+   4&nbsp;  ...
+   5&nbsp;else
+   6&nbsp;  # 交互式
+   7&nbsp;  ...
+   8&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+>
+
+	   <A
+NAME="IITEST"
+></A
+>另一个办法是脚本可以测试是否在变量<A
+HREF="variables2.html#FLPREF"
+>$-</A
+>中出现了选项<span
+class="QUOTE"
+>"i"</span
+>.
+
+           <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;case $- in
+   2&nbsp;*i*)    # 交互式 shell
+   3&nbsp;;;
+   4&nbsp;*)      # 非交互式 shell
+   5&nbsp;;;
+   6&nbsp;# (Courtesy of "UNIX F.A.Q.," 1993)</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>脚本可以使用<span
+class="TOKEN"
+>-i</span
+>选项强制在交互式模式下运行或脚本头用<TT
+CLASS="USERINPUT"
+><B
+>#!/bin/bash -i</B
+></TT
+>. 注意这样可能会引起脚本古怪的行为或当没有错误出现时也会显示错误信息.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="scrstyle.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="wrapper.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Scripting With Style</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Shell Wrappers</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

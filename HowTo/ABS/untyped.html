@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Bash Variables Are Untyped</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction to Variables and Parameters"
+HREF="variables.html"><LINK
+REL="PREVIOUS"
+TITLE="Variable Assignment"
+HREF="varassignment.html"><LINK
+REL="NEXT"
+TITLE="Special Variable Types"
+HREF="othertypesv.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="varassignment.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Introduction to Variables and Parameters</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="othertypesv.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="UNTYPED"
+>4.3. Bash变量是无类型的</A
+></H1
+>
+  <P
+><A
+NAME="BVUNTYPED"
+></A
+></P
+>
+  <P
+>不同与许多其他的编程语言，Bash不以<SPAN
+CLASS="QUOTE"
+>"类型"</SPAN
+>来区分变量。本质上来说，Bash变量是字符串，但是根据环境的不同，Bash允许变量有整数计算和比较。其中的决定因素是变量的值是不是只含有数字.</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="INTORSTRING"
+></A
+> 
+    <P
+><B
+>例子 4-4. 整数还是字符串?</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# int-or-string.sh: Integer or string?
+   3&nbsp;
+   4&nbsp;a=2334                   # 整数.
+   5&nbsp;let "a += 1"
+   6&nbsp;echo "a = $a "           # a = 2335
+   7&nbsp;echo                     # 仍然是整数.
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;b=${a/23/BB}             # 把变量a中的&quot;23&quot;替换为&quot;BB&quot;并赋给变量b
+  11&nbsp;                         # 这使变量$b成为字符串
+  12&nbsp;echo "b = $b"            # b = BB35
+  13&nbsp;declare -i b             # 即使明确地声明它是整数也没有用
+  14&nbsp;echo "b = $b"            # b = BB35
+  15&nbsp;
+  16&nbsp;let "b += 1"             # BB35 + 1 =
+  17&nbsp;echo "b = $b"            # b = 1
+  18&nbsp;echo
+  19&nbsp;
+  20&nbsp;c=BB34
+  21&nbsp;echo "c = $c"            # c = BB34
+  22&nbsp;d=${c/BB/23}             # 把&quot;BB&quot;替换成&quot;23&quot;
+  23&nbsp;                         # 这使变量$d成为一个整数
+  24&nbsp;echo "d = $d"            # d = 2334
+  25&nbsp;let "d += 1"             # 2334 + 1 =
+  26&nbsp;echo "d = $d"            # d = 2335
+  27&nbsp;echo
+  28&nbsp;
+  29&nbsp;# What about null variables?
+  30&nbsp;e=""
+  31&nbsp;echo "e = $e"            # e =
+  32&nbsp;let "e += 1"             # 数值计算允许有null值操作?
+  33&nbsp;echo "e = $e"            # e = 1
+  34&nbsp;echo                     # 空值(null)变量变成了整数
+  35&nbsp;
+  36&nbsp;# 如果没有声明变量会怎么样?
+  37&nbsp;echo "f = $f"            # f =
+  38&nbsp;let "f += 1"             # 算术计算能通过吗?
+  39&nbsp;echo "f = $f"            # f = 1
+  40&nbsp;echo                     # 没有预先声明的变量变为整数
+  41&nbsp;
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;# 在Bash中的变量确实是无类型的.
+  45&nbsp;
+  46&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>变量没有类型既是幸运的也是悲惨的。它使脚本编程时有更多的弹性（但也可能把你弄晕）并能很容易地写出代码。但是，这也很容易不小心犯错误和养成坏的编程习惯。</P
+>
+  <P
+>程序员的负担就是要清楚地知道脚本中变量的类型。Bash不会帮你检查。</P
+>
+</DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="varassignment.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="othertypesv.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Variable Assignment</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Special Variable Types</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1411 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Operations and Related Topics</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basics"
+HREF="part2.html"><LINK
+REL="PREVIOUS"
+TITLE="Testing Your Knowledge of Tests"
+HREF="testtest.html"><LINK
+REL="NEXT"
+TITLE="Numerical Constants"
+HREF="numerical-constants.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="testtest.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="numerical-constants.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="OPERATIONS"
+></A
+>第八章：操作符和相关主题</H1
+>
+  <DIV
+CLASS="SECT1"
+>
+    <H1
+CLASS="SECT1"
+><A
+NAME="OPS"
+>8.1. 操作符</A
+></H1
+>
+    <DIV
+CLASS="VARIABLELIST"
+>
+      <P
+><B
+><A
+NAME="ASNOP1"
+></A
+>赋值</B
+></P
+>
+      <DL
+>
+        <DT
+><TT
+CLASS="REPLACEABLE"
+><I
+>变量赋值</I
+></TT
+></DT
+>
+        <DD
+> 
+          <P
+>初始化或改变一个变量的值</P
+>
+        </DD
+>
+        <DT
+>=</DT
+>
+        <DD
+> 
+          <P
+>通用的变量赋值操作符，可以用于数值和字符串的赋值</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;var=27
+   2&nbsp;category=minerals  # &quot;=&quot;字符后面不能加空白字符.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <DIV
+CLASS="CAUTION"
+> 
+            <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>不要把&quot;=&quot;赋值操作符和=测试操作符搞混了。</P
+>
+                  <P
+> 
+                  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                    <TR
+> 
+                      <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#    = 用于测试操作符
+   2&nbsp;
+   3&nbsp;if [ "$string1" = "$string2" ]
+   4&nbsp;# if [ "X$string1" = "X$string2" ] 会更安全,
+   5&nbsp;# 它为了防止其中有一个字符串为空时产生错误信息.
+   6&nbsp;# (增加的&quot;X&quot;字符可以互相抵消.) 
+   7&nbsp;then
+   8&nbsp;   command
+   9&nbsp;fi</PRE
+></TD
+>
+                    </TR
+>
+                  </TABLE
+></P
+>
+                  </TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+      <P
+><B
+><A
+NAME="AROPS1"
+></A
+>计算操作符</B
+></P
+>
+      <DL
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>+</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>加</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>-</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>减</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>*</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>乘</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>/</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>除</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="EXPONENTIATIONREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>**</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>求幂
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Bash在版本2.02引入了&quot;**&quot;求幂操作符.
+   2&nbsp;
+   3&nbsp;let "z=5**3"
+   4&nbsp;echo "z = $z"   # z = 125</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><A
+NAME="MODULOREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>%</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>求模（它返回整数整除一个数后的余数）</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>expr 5 % 3</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>2</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <I
+CLASS="EMPHASIS"
+>5/3 = 1 余 2</I
+> </P
+> 
+          <P
+>This operator finds use in, among other things, generating numbers within a specific 
+            range (see <A
+HREF="randomvar.html#EX21"
+>Example 9-24</A
+> and <A
+HREF="randomvar.html#RANDOMTEST"
+>Example 9-27</A
+>) and formatting program output (see <A
+HREF="arrays.html#QFUNCTION"
+>Example 26-15</A
+> and <A
+HREF="contributed-scripts.html#COLLATZ"
+>Example A-6</A
+>). It can even be used to generate prime numbers, (see <A
+HREF="contributed-scripts.html#PRIMES"
+>Example A-16</A
+>). Modulo turns up surprisingly often in various numerical recipes.</P
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="GCD"
+></A
+> 
+            <P
+><B
+>例子 8-1. 最大公约数</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# gcd.sh: 最大公约数
+   3&nbsp;#         用Euclid运算法则
+   4&nbsp;
+   5&nbsp;#  两个整数的&quot;最大公约数&quot;
+   6&nbsp;#+ 是能被这两个整数整除的大最整数.
+   7&nbsp;
+   8&nbsp;#  Euclid运算法则采用逐次除法.
+   9&nbsp;#  每一次都重新赋值,
+  10&nbsp;#+ 被除数 &lt;---  除数
+  11&nbsp;#+ 除数  &lt;---  余数
+  12&nbsp;#+ 直到 余数 = 0.
+  13&nbsp;#+ 最后被传递的值中：最大公约数 = 被除数.
+  14&nbsp;#
+  15&nbsp;#  关于Euclid运算法则的讨论有一个出色的讨论,
+  16&nbsp;#  访问Jim Loy的网站, http://www.jimloy.com/number/euclids.htm.
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;# ------------------------------------------------------
+  20&nbsp;# 参数检查
+  21&nbsp;ARGS=2
+  22&nbsp;E_BADARGS=65
+  23&nbsp;
+  24&nbsp;if [ $# -ne "$ARGS" ]
+  25&nbsp;then
+  26&nbsp;  echo "Usage: `basename $0` first-number second-number"
+  27&nbsp;  exit $E_BADARGS
+  28&nbsp;fi
+  29&nbsp;# ------------------------------------------------------
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;gcd ()
+  33&nbsp;{
+  34&nbsp;
+  35&nbsp;  dividend=$1                    #  随意赋值.
+  36&nbsp;  divisor=$2                     #+ 这里在两个参数赋大的还是小的都没有关系.
+  37&nbsp;                                 #  为什么?
+  38&nbsp;
+  39&nbsp;  remainder=1                    #  如果在循环中使用未初始化的变量,
+  40&nbsp;                                 #+ 在循环中第一个传递值会使它返回一个错误信息
+  41&nbsp;                                 #
+  42&nbsp;
+  43&nbsp;  until [ "$remainder" -eq 0 ]
+  44&nbsp;  do
+  45&nbsp;    let "remainder = $dividend % $divisor"
+  46&nbsp;    dividend=$divisor            # 现在用最小的两个数字来重复.
+  47&nbsp;    divisor=$remainder
+  48&nbsp;  done                           # Euclid运算法则
+  49&nbsp;
+  50&nbsp;}                                # 最后的$dividend变量值就是最大公约数.
+  51&nbsp;
+  52&nbsp;
+  53&nbsp;gcd $1 $2
+  54&nbsp;
+  55&nbsp;echo; echo "GCD of $1 and $2 = $dividend"; echo
+  56&nbsp;
+  57&nbsp;
+  58&nbsp;# 练习:
+  59&nbsp;# --------
+  60&nbsp;#  检测命令行参数以确保它们是整数,
+  61&nbsp;#+ 如果不是整数则给出一个适当的错误信息并退出脚本.
+  62&nbsp;
+  63&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>+=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>&quot;加-等(plus-equal)&quot; (把原变量值增加一个常量并重新赋值给变量)</P
+>
+          <P
+><TT
+CLASS="USERINPUT"
+><B
+>let "var += 5"</B
+></TT
+>会使变量var值加了5并把值赋给var.</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>-=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>&quot;(减-等)minus-equal&quot; (把原变量值减少一个常量并重新赋值给变量)</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>*=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>&quot;(乘-等)times-equal&quot; (把原变量值乘上一个常量并重新赋值给变量)</P
+>
+          <P
+><TT
+CLASS="USERINPUT"
+><B
+>let "var *= 4"</B
+></TT
+> 使变量var的值乘上4并把值赋给var.</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>/=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>&quot;(除-等)slash-equal&quot; (把原变量值除以一个常量并重新赋值给变量)</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>%=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>&quot;(模-等)mod-equal&quot; (把原变量值除以一个常量整除（译者注：即取模）并重新赋余数的值给变量)</P
+>
+          <P
+><I
+CLASS="EMPHASIS"
+>计算操作符常常出现在<a
+href="moreadv.html#EXPRREF"
+>expr</a
+>或<a
+href="internal.html#LETREF"
+>let</a
+>命令的表达式中.</I
+></P
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="ARITHOPS"
+></A
+> 
+            <P
+><B
+>例子 8-2. 使用计算操作符</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 用10种不同的方法计数到11.
+   3&nbsp;
+   4&nbsp;n=1; echo -n "$n "
+   5&nbsp;
+   6&nbsp;let "n = $n + 1"   # let &quot;n = n + 1&quot;也可以.
+   7&nbsp;echo -n "$n "
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;: $((n = $n + 1))
+  11&nbsp;#  &quot;:&quot;是需要的，
+  12&nbsp;#+ 否则Bash会尝试把&quot;$((n = $n + 1))&quot;作为命令运行.
+  13&nbsp;echo -n "$n "
+  14&nbsp;
+  15&nbsp;(( n = n + 1 ))
+  16&nbsp;#  上面是更简单的可行的办法.
+  17&nbsp;#  多谢David Lombard指出这一点.
+  18&nbsp;echo -n "$n "
+  19&nbsp;
+  20&nbsp;n=$(($n + 1))
+  21&nbsp;echo -n "$n "
+  22&nbsp;
+  23&nbsp;: $[ n = $n + 1 ]
+  24&nbsp;#  &quot;:&quot;是需要的，
+  25&nbsp;#+ 否则Bash会尝试把&quot;$[ n = $n + 1 ]&quot;作为命令运行.
+  26&nbsp;#  即使&quot;n&quot;被当作字符串来初始化也能工作.
+  27&nbsp;echo -n "$n "
+  28&nbsp;
+  29&nbsp;n=$[ $n + 1 ]
+  30&nbsp;#  即使&quot;n&quot;被当作字符串来初始化也能工作.
+  31&nbsp;#* 应避免这种使用这种结构,因为它是被废弃并不可移植的.
+  32&nbsp;#  多谢Stephane Chazelas.
+  33&nbsp;echo -n "$n "
+  34&nbsp;
+  35&nbsp;# 现在是C风格的增加操作.
+  36&nbsp;# 多谢Frank Wang指出这一点.
+  37&nbsp;
+  38&nbsp;let "n++"          # let "++n"也可以.
+  39&nbsp;echo -n "$n "
+  40&nbsp;
+  41&nbsp;(( n++ ))          # (( ++n )也可以.
+  42&nbsp;echo -n "$n "
+  43&nbsp;
+  44&nbsp;: $(( n++ ))       # : $(( ++n ))也可以.
+  45&nbsp;echo -n "$n "
+  46&nbsp;
+  47&nbsp;: $[ n++ ]         # : $[ ++n ]]也可以.
+  48&nbsp;echo -n "$n "
+  49&nbsp;
+  50&nbsp;echo
+  51&nbsp;
+  52&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Bash中的整数变量实际上是有符号的长整数(32位)，它的范围在-2147483648至2147483647之间。如果有在此范围限制之外的操作将会得到一个错误的结果。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;a=2147483646
+   2&nbsp;echo "a = $a"      # a = 2147483646
+   3&nbsp;let "a+=1"         # 把变量&quot;a&quot;的值自增一.
+   4&nbsp;echo "a = $a"      # a = 2147483647
+   5&nbsp;let "a+=1"         # 再自增&quot;a&quot;一次,超过这个限制.
+   6&nbsp;echo "a = $a"      # a = -2147483648
+   7&nbsp;                   #      错误 (溢出)</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+>
+            <P
+>到2.05b版本为止，Bash支持64位的整数。</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Bash不能处理浮点计算。它会把含有小数点的数当成字符串。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;a=1.5
+   2&nbsp;
+   3&nbsp;let "b = $a + 1.3"  # 错误
+   4&nbsp;# t2.sh: let: b = 1.5 + 1.3: syntax error in expression (error token is ".5 + 1.3") 意为表达式错误(错误的符号&quot;.5 + 1.3&quot;)
+   5&nbsp;
+   6&nbsp;echo "b = $b"       # b=1</PRE
+></TD
+></TR
+></TABLE
+>
+
+        在脚本中用<a
+href="mathc.html#BCREF"
+>bc</a
+>需要浮点计算或数学库函数的支持。</TD
+>
+        </TR
+></TABLE
+></DIV
+>
+    <DIV
+CLASS="FORMALPARA"
+> 
+      <P
+><B
+>位操作符. </B
+>位操作符很少在脚本中使用。他们主要用于操作和测试从端口或<a
+href="devproc.html#SOCKETREF"
+>sockets</a
+>中读到的数据。“位运算”更多地用于编译型的语言，比如说C和C++，它们运行起来快地像飞。</P
+>
+    </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+      <P
+><B
+><A
+NAME="BITWSOPS1"
+></A
+>位操作符</B
+></P
+>
+      <DL
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>&#60;&#60;</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>位左移（每移一位相当乘以2）</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>&#60;&#60;=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+><SPAN
+CLASS="QUOTE"
+>"位左移赋值"</SPAN
+></P
+>
+          <P
+><TT
+CLASS="USERINPUT"
+><B
+>let "var &#60;&#60;= 2"</B
+></TT
+> 结果使var的二进制值左移了二位（相当于乘以4）</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>&#62;&#62;</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>位右移（每移一位相当除以2）</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>&#62;&#62;=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+><SPAN
+CLASS="QUOTE"
+>"</SPAN
+>位右移赋值<SPAN
+CLASS="QUOTE"
+>"</SPAN
+>（和&lt;&lt;=相反）</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>&#38;</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>位与</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>&#38;=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+><SPAN
+CLASS="QUOTE"
+>"位于赋值"</SPAN
+></P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>|</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>位或</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>|=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+><SPAN
+CLASS="QUOTE"
+>"位或赋值"</SPAN
+></P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>~</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>位反</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>!</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>位非</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>^</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>位或</P
+>
+        </DD
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>^=</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+><SPAN
+CLASS="QUOTE"
+>"位或赋值"</SPAN
+></P
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+      <P
+><B
+><A
+NAME="LOGOPS1"
+></A
+>逻辑操作符</B
+></P
+>
+      <DL
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>&#38;&#38;</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>逻辑与</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ $condition1 ] &#38;&#38; [ $condition2 ]
+   2&nbsp;# 等同于:  if [ $condition1 -a $condition2 ]
+   3&nbsp;# 如果condition1和condition2都为真则返回真...
+   4&nbsp;
+   5&nbsp;if [[ $condition1 &#38;&#38; $condition2 ]]    # Also works.
+   6&nbsp;# 注意&amp;&amp;操作不能在[ ... ]结构中使用.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="35"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD width="880"
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><SPAN
+CLASS="TOKEN"
+>依据上下文，&amp;&amp;也可以在<a
+href="list-cons.html#LISTCONSREF"
+>与列表</a
+>(and list)连接命令中。</SPAN
+></P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+        <DT
+><A
+NAME="ORREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>||</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>逻辑或</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ $condition1 ] || [ $condition2 ]
+   2&nbsp;# 等同于:  if [ $condition1 -o $condition2 ]
+   3&nbsp;# 如果condition1和condition2有一个为真则返回真...
+   4&nbsp;
+   5&nbsp;if [[ $condition1 || $condition2 ]]    # Also works.
+   6&nbsp;# 注意||操作不能在[ ... ]结构中使用.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Bash测试由逻辑操作符连接起来的每一个表达式的<a
+href="exit-status.html#EXITSTATUSREF"
+>退出状态</a
+>。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="ANDOR"
+></A
+> 
+            <P
+><B
+>例子 8-3. 使用&amp;&amp;和||进行混合条件测试</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;a=24
+   4&nbsp;b=47
+   5&nbsp;
+   6&nbsp;if [ "$a" -eq 24 ] &#38;&#38; [ "$b" -eq 47 ]
+   7&nbsp;then
+   8&nbsp;  echo "Test #1 succeeds."
+   9&nbsp;else
+  10&nbsp;  echo "Test #1 fails."
+  11&nbsp;fi
+  12&nbsp;
+  13&nbsp;# 错误:   if [ &quot;$a&quot; -eq 24 &amp;&amp; &quot;$b&quot; -eq 47 ]
+  14&nbsp;#+         这会尝试执行' [ &quot;$a&quot; -eq 24 '
+  15&nbsp;#+         然后会因没找到匹配的']'而失败.
+  16&nbsp;#
+  17&nbsp;#  注意:  if [[ $a -eq 24 &amp;&amp; $b -eq 24 ]]也可以.
+  18&nbsp;#  双方括号的if-test比
+  19&nbsp;#+ 单方括号的结构更灵活.       
+  20&nbsp;#    (第17行和第6行的&quot;&amp;&amp;&quot;有不同的意思.)
+  21&nbsp;#    多谢Stephane Chazelas指出这一点.
+  22&nbsp;
+  23&nbsp;
+  24&nbsp;if [ "$a" -eq 98 ] || [ "$b" -eq 47 ]
+  25&nbsp;then
+  26&nbsp;  echo "Test #2 succeeds."
+  27&nbsp;else
+  28&nbsp;  echo "Test #2 fails."
+  29&nbsp;fi
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;#  -a和-o选项提供
+  33&nbsp;#+ 混合条件测试另一个选择.
+  34&nbsp;#  多谢Patrick Callahan指出这一点.
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;if [ "$a" -eq 24 -a "$b" -eq 47 ]
+  38&nbsp;then
+  39&nbsp;  echo "Test #3 succeeds."
+  40&nbsp;else
+  41&nbsp;  echo "Test #3 fails."
+  42&nbsp;fi
+  43&nbsp;
+  44&nbsp;
+  45&nbsp;if [ "$a" -eq 98 -o "$b" -eq 47 ]
+  46&nbsp;then
+  47&nbsp;  echo "Test #4 succeeds."
+  48&nbsp;else
+  49&nbsp;  echo "Test #4 fails."
+  50&nbsp;fi
+  51&nbsp;
+  52&nbsp;
+  53&nbsp;a=rhino
+  54&nbsp;b=crocodile
+  55&nbsp;if [ "$a" = rhino ] &#38;&#38; [ "$b" = crocodile ]
+  56&nbsp;then
+  57&nbsp;  echo "Test #5 succeeds."
+  58&nbsp;else
+  59&nbsp;  echo "Test #5 fails."
+  60&nbsp;fi
+  61&nbsp;
+  62&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+          <P
+>在算术计算的环境中，&amp;&amp;和||操作符也可以使用。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $(( 1 &#38;&#38; 2 )) $((3 &#38;&#38; 0)) $((4 || 0)) $((0 || 0))</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1 0 1 0</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+      </DL
+>
+    </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+      <P
+><B
+><A
+NAME="MISCOP1"
+></A
+>杂合的其他操作符</B
+></P
+>
+      <DL
+>
+        <DT
+><A
+NAME="COMMAOP"
+></A
+><SPAN
+CLASS="TOKEN"
+>,</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>逗号操作符</P
+>
+          <P
+><strong>逗号操作符</strong>连接两个或更多的算术操作。所有的操作都被求值(可能会有副作用)，但只返回最后一个操作的结构.</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;let "t1 = ((5 + 3, 7 - 1, 15 - 4))"
+   2&nbsp;echo "t1 = $t1"               # t1 = 11
+   3&nbsp;
+   4&nbsp;let "t2 = ((a = 9, 15 / 3))"  # 初始化&quot;a&quot;并求&quot;t2&quot;的值.
+   5&nbsp;echo "t2 = $t2    a = $a"     # t2 = 5    a = 9</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+>逗号操作符主要用在<a
+href="loops.html#FORLOOPREF1"
+>for 循环</a
+>里. 参考<A
+HREF="loops.html#FORLOOPC"
+>例子 10-12</A
+>.</P
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="testtest.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="numerical-constants.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Testing Your Knowledge of Tests</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Numerical Constants</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

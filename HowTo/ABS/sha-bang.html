@@ -1,0 +1,944 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Starting Off With a Sha-Bang</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction"
+HREF="part1.html"><LINK
+REL="PREVIOUS"
+TITLE="Why Shell Programming?"
+HREF="why-shell.html"><LINK
+REL="NEXT"
+TITLE="Preliminary Exercises"
+HREF="prelimexer.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:宋体, Arial;
+line-height:140%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="why-shell.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="prelimexer.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="SHA-BANG"
+>第二章：从一个Sha-Bang（#!）开始</A
+></H1
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>Shell编程就像一个1950年代的自动点唱机…</I
+></P
+></I
+></TD
+></TR
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+><SPAN
+CLASS="ATTRIBUTION"
+>Larry Wall</SPAN
+></I
+></TD
+></TR
+></TABLE
+><P
+>在最简单的情况下，脚本程序不过是存储在一个文件里的系统命令列表。这至少让你执行它
+时不必重新按顺序键入相同功能的命令序列。
+</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX1"
+></A
+><P
+><B
+>例子 2-1. <B
+CLASS="COMMAND"
+>cleanup</B
+>: 一个清空/var/log目录下的日志文件的脚本</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Cleanup
+   2&nbsp;# 必须以root用户运行.
+   3&nbsp;
+   4&nbsp;cd /var/log
+   5&nbsp;cat /dev/null &#62; messages
+   6&nbsp;cat /dev/null &#62; wtmp
+   7&nbsp;echo "Logs cleaned up."</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>这没有什么不同寻常的，它不过是一组可以容易地从控制台或<I
+CLASS="FIRSTTERM"
+>xterm</I
+>(译者注：一种图形虚拟控制台). )中顺序键入的命令集。用一种脚本代替这组命令的用处是使你不必每次执行相同任务时都重复地顺序键入它们。脚本变成了一个<I
+CLASS="EMPHASIS"
+>工具</I
+>,
+      并且它也很容易地在一个实际项目被修改或者定制。</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX1A"
+></A
+><P
+><B
+>例子 2-2. <B
+CLASS="COMMAND"
+>cleanup</B
+>: 一个改进版的cleanup脚本</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Bash脚本正确的头部.
+   3&nbsp;
+   4&nbsp;# Cleanup, 版本 2
+   5&nbsp;
+   6&nbsp;# 需要以root运行.
+   7&nbsp;# 如果不是root用户，在此处添加错误信息打印代码和退出代码.
+   8&nbsp;
+   9&nbsp;LOG_DIR=/var/log
+  10&nbsp;# 使用变量比使用硬编码（hard-coded）更好。
+  11&nbsp;cd $LOG_DIR
+  12&nbsp;
+  13&nbsp;cat /dev/null &#62; messages
+  14&nbsp;cat /dev/null &#62; wtmp
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;echo "Logs cleaned up."
+  18&nbsp;
+  19&nbsp;exit # 这是从一个脚本中退出正确合适的方法</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>现在它看起来像一个真正的脚本了。但下面我们将做的更好…</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX2"
+></A
+><P
+><B
+>例子 2-3. <B
+CLASS="COMMAND"
+>cleanup</B
+>: 一个上面脚本的增强版，但不能处理错误</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Cleanup, 版本 3
+   3&nbsp;
+   4&nbsp;#  注意:
+   5&nbsp;#  -------
+   6&nbsp;#  这个脚本使用了相当多的特性，这些我们稍后将会解释.
+   7&nbsp;#
+   8&nbsp;#  到那时，你已经学了这本书的一半了，你将不会再对shell感觉神秘了。
+   9&nbsp;#
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;LOG_DIR=/var/log
+  14&nbsp;ROOT_UID=0     # 只有用户ID变量$UID值为0的用户才有root权限.
+  15&nbsp;LINES=50       # 默认的行数
+  16&nbsp;E_XCD=66       # 不能进入到目录时的退出代码值
+  17&nbsp;E_NOTROOT=67   # 不是root用户时退出的代码值
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;# 必须以root用户运行，以下进行检测
+  21&nbsp;if [ "$UID" -ne "$ROOT_UID" ]
+  22&nbsp;then
+  23&nbsp;  echo "Must be root to run this script."
+  24&nbsp;  exit $E_NOTROOT
+  25&nbsp;fi  
+  26&nbsp;
+  27&nbsp;if [ -n "$1" ]
+  28&nbsp;# 测试是否提供了命令行参数(即是测试命令行参数至少有一个参数)
+  29&nbsp;then
+  30&nbsp;  lines=$1
+  31&nbsp;else  
+  32&nbsp;  lines=$LINES # Default, if not specified on command line.
+  33&nbsp;fi  
+  34&nbsp;
+  35&nbsp;
+  36&nbsp;#  Stephane Chazelas建议,
+  37&nbsp;#+ 下面是一种更好的检测命令行参数的方法，
+  38&nbsp;#+ 但是对于现在来说还是有些高级。
+  39&nbsp;#
+  40&nbsp;#    E_WRONGARGS=65  # 不是数字参数 (参数格式不对)时的退出码
+  41&nbsp;#
+  42&nbsp;#    case "$1" in
+  43&nbsp;#    ""      ) lines=50;;
+  44&nbsp;#    *[!0-9]*) echo "Usage: `basename $0` file-to-cleanup"; exit $E_WRONGARGS;;
+  45&nbsp;#    *       ) lines=$1;;
+  46&nbsp;#    esac
+  47&nbsp;#
+  48&nbsp;#* 可以跳到"循环"那章阅读开头一部分去了解上面的代码意思.
+  49&nbsp;
+  50&nbsp;
+  51&nbsp;cd $LOG_DIR
+  52&nbsp;
+  53&nbsp;if [ `pwd` != "$LOG_DIR" ]  # 也可以用  if [ "$PWD" != "$LOG_DIR" ]
+  54&nbsp;                            # 如果工作目录不在/var/log里?
+  55&nbsp;then
+  56&nbsp;  echo "Can't change to $LOG_DIR."
+  57&nbsp;  exit $E_XCD
+  58&nbsp;fi  #在操作清空日志文件之前再次检查是否在正确的目录里
+  59&nbsp;
+  60&nbsp;# 可以像下面再次确定是否在正确的目录里：
+  61&nbsp;#
+  62&nbsp;# cd /var/log || {
+  63&nbsp;#   echo "Cannot change to necessary directory." &#62;&#38;2
+  64&nbsp;#   exit $E_XCD;
+  65&nbsp;# }
+  66&nbsp;
+  67&nbsp;
+  68&nbsp;
+  69&nbsp;
+  70&nbsp;tail -$lines messages &#62; mesg.temp # 保存message日志文件最后面几行日志信息到临时文件.
+  71&nbsp;mv mesg.temp messages             # 然后用临时文件覆盖messages日志文件
+  72&nbsp;
+  73&nbsp;
+  74&nbsp;# cat /dev/null &#62; messages
+  75&nbsp;#* 上面这句把messages日志文件全部清空，这样没有上面那样保留最后几行安全
+  76&nbsp;
+  77&nbsp;cat /dev/null &#62; wtmp  #  ': &#62; wtmp' and '&#62; wtmp'  have the same effect.
+  78&nbsp;echo "Logs cleaned up."
+  79&nbsp;
+  80&nbsp;exit 0
+  81&nbsp;#  
+  82&nbsp;#一个脚本以0为退出代码表明脚本执行成功.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>因为你可能并不希望把整个系统日志都清空，所以这个版本的cleanup保留了日志中最后的几行日志记录。如果你继续努力地学下去，将会发现更多精练的写法来代替上面的代码。</P
+><P
+>在脚本开头的
+      <I
+CLASS="FIRSTTERM"
+> sha-bang</I
+>
+      (<SPAN
+CLASS="TOKEN"
+>	 #!</SPAN
+>) 是告诉系统这个文件是由特定命令解释器解释的一组命令。 <A
+NAME="MAGNUMREF"
+></A
+>那个
+      <SPAN
+CLASS="TOKEN"
+>#!</SPAN
+> 实际上是两个字节的
+
+        <A
+NAME="AEN152"
+HREF="#FTN.AEN152"
+>[1]</A
+>
+
+	
+	<I
+CLASS="EMPHASIS"
+>魔数</I
+>, 魔数是指定文件类型的特殊记号，在此是表示这是一个可执行的shell脚本（键入 <TT
+CLASS="USERINPUT"
+><B
+>man magic</B
+></TT
+>可了解更多的信息）。紧跟着<I
+CLASS="EMPHASIS"
+>#!</I
+>的是一个<I
+CLASS="FIRSTTERM"
+>路径名</I
+>.这个路径名是解释这个脚本内命令的命令解释器程序的路径：可能是一个shell，也可能是一个编程语言或者是一个软件包程序。这个命令解释器能执行脚本内的命令语句。它从脚本开头（即从<I
+CLASS="EMPHASIS"
+>#!</I
+>所在行的下一行）起执行，但是忽略注释行。
+
+	  <A
+NAME="AEN163"
+HREF="#FTN.AEN163"
+>[2]</A
+>
+
+	</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/sh
+   2&nbsp;#!/bin/bash
+   3&nbsp;#!/usr/bin/perl
+   4&nbsp;#!/usr/bin/tcl
+   5&nbsp;#!/bin/sed -f
+   6&nbsp;#!/usr/awk -f</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>上面每一个脚本头行都是不同的命令解释器，如果第一行是<TT
+CLASS="FILENAME"
+>/bin/sh</TT
+>, 那就是默认的Shell(Linux系统中<B
+CLASS="COMMAND"
+>bash</B
+>是默认的shell)，否则的话就是其他的解释器.
+
+        <A
+NAME="AEN179"
+HREF="#FTN.AEN179"
+>[3]</A
+>
+
+      如果使用<TT
+CLASS="USERINPUT"
+><B
+>#!/bin/sh</B
+></TT
+>/bin/sh（因为大多不同的商业UNIX都使用Bourne shell为默认shell）可以使脚本能够<A
+HREF="portabilityissues.html"
+>移植</A
+>到非Linux的机器上，虽然这样做你将不能使用Bash许多特有的属性。但这样做的脚本遵循
+      <SPAN
+CLASS="ACRONYM"
+>POSIX</SPAN
+>
+
+	 <A
+NAME="AEN192"
+HREF="#FTN.AEN192"
+>[4]</A
+>
+
+      <B
+CLASS="COMMAND"
+>sh</B
+>标准.</P
+><P
+>值得注意的是，在<SPAN
+CLASS="QUOTE"
+>"#!"</SPAN
+>后面提供的路径必须是正确的，否则你运行脚本只会收到通常像<SPAN
+CLASS="QUOTE"
+>"Command
+      not found"</SPAN
+>那样的错误信息。</P
+>
+  <P
+>如果脚本程序只是由一组普通的系统命令而没有使用Shell内置命令的话<SPAN
+CLASS="TOKEN"
+>#!</SPAN
+><SPAN
+CLASS="TOKEN"
+>将被忽略。上面的第二个例子被要求以#!</SPAN
+>,开头是因为变量赋值<TT
+CLASS="USERINPUT"
+><B
+>(lines=50)</B
+></TT
+>,这就使用了Shell的特有的语句。再次提醒使用<TT
+CLASS="USERINPUT"
+><B
+>#!/bin/sh</B
+></TT
+><TT
+CLASS="FILENAME"
+>将调用默认的命令解释器，这在Linux系统上是/bin/bash</TT
+>.</P
+>
+  <DIV
+CLASS="TIP"
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/tip.png"
+HSPACE="5"
+ALT="Tip"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>这份指南鼓励使用模块化的方法来写脚本。留意记录像“模板”的代码片断以备将来的脚本使用。最后你能生成一个很好的可扩展的例程库。下面的代码片断可以测试脚本是否被正确的数目参数调用。</P
+>
+          <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;E_WRONG_ARGS=65
+   2&nbsp;script_parameters="-a -h -m -z"
+   3&nbsp;#                  -a = all, -h = help, etc.
+   4&nbsp;
+   5&nbsp;if [ $# -ne $Number_of_expected_args ]
+   6&nbsp;then
+   7&nbsp;  echo "Usage: `basename $0` $script_parameters"
+   8&nbsp;  # `basename $0`是指脚本名称（译者：这个内容在后面章节会讲).
+   9&nbsp;  exit $E_WRONG_ARGS
+  10&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+>
+          <P
+>很多时候，你会写一个执行实际功能的脚本。本章的第一个脚本就是一个例子。以后它可能会使你记起把这个脚本扩展以完成类似的任务。使用变量代替固定的字符串常量是好的办法，像这样的办法还有用<A
+HREF="functions.html#FUNCTIONREF"
+>函数</A
+>代替反复使用的代码块。</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT1"
+>
+    <H1
+CLASS="SECT1"
+><A
+NAME="INVOKING"
+>2.1. 运行脚本</A
+></H1
+>
+    <P
+>写完一个脚本，你能够运行它用命令：<TT
+CLASS="USERINPUT"
+><B
+>sh scriptname</B
+></TT
+>, <A
+NAME="AEN223"
+HREF="#FTN.AEN223"
+>[5]</A
+> 另外也也可以用<TT
+CLASS="USERINPUT"
+><B
+>bash scriptname</B
+></TT
+>. 来执行（不推荐使用<b><tt>：</tt></b><TT
+CLASS="USERINPUT"
+><B
+>sh &#60;scriptname</B
+></TT
+>, 因为这样会禁止脚本从标准输入里读数据）。更为方便的是你可以使用<A
+HREF="external.html#CHMODREF"
+>chmod</A
+>命令来使脚本自身变为可执行的. 
+    <DIV
+CLASS="VARIABLELIST"
+> 
+      <DL
+>
+        <DT
+>你可以:</DT
+>
+        <DD
+> 
+          <P
+><TT
+CLASS="USERINPUT"
+><B
+>chmod 555 scriptname</B
+></TT
+> (使每个人都有读和执行的权限) <A
+NAME="AEN236"
+HREF="#FTN.AEN236"
+>[6]</A
+> </P
+>
+        </DD
+>
+        <DT
+>也可以<b><tt>：</tt></b></DT
+>
+        <DD
+> 
+          <P
+><TT
+CLASS="USERINPUT"
+><B
+>chmod +rx scriptname</B
+></TT
+> (使每个人都有读和执行的权限)</P
+>
+          <P
+><TT
+CLASS="USERINPUT"
+><B
+>chmod u+rx scriptname</B
+></TT
+> (仅仅使脚本文件拥有者有读和执行的权限)</P
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+>
+      </P
+>
+    <P
+>在给脚本加上执行权限之后，你可以很容易地使用<TT
+CLASS="USERINPUT"
+><B
+>./scriptname</B
+></TT
+>. <A
+NAME="AEN248"
+HREF="#FTN.AEN248"
+>[7]</A
+> <SPAN
+CLASS="QUOTE"
+>来执行它。如果脚本以"#!"</SPAN
+>行开头，将会调用正确的命令解释器来执行它.</P
+>
+    <P
+>最后，把脚本测试并调试完后，如果想把脚本给系统中所有其他的用户使用，你应该把脚本移到目录<TT
+CLASS="FILENAME"
+>/usr/local/bin</TT
+> 中(当然，这必须要有root的权限),这样只需简单地在命令行输入<B
+CLASS="COMMAND"
+>scriptname</B
+> <B
+CLASS="KEYCAP"
+>[回车]</B
+>就能执行脚本了。</P
+>
+  </DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注释：</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN152"
+HREF="sha-bang.html#AEN152"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>一些令人喜爱的UNIX系统（它们都基于4.2BSD）的脚本是四个字节的魔数，在字符”!”后面要求一个空格 -- <TT
+CLASS="USERINPUT"
+><B
+>#! /bin/sh</B
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN163"
+HREF="sha-bang.html#AEN163"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>The <SPAN
+CLASS="TOKEN"
+>#!</SPAN
+>行将会命令解释器(sh或是bash)在Shell脚本中最先看到的。因为这行以#字符开头，命令解释器最终执行脚本时将会正确的把这一行当做注释行来对待。这行刚刚好只起到了它调用命令解释器的作用。</P
+>
+      <p>事实上，如果脚本包含了额外的#!行，<B
+CLASS="COMMAND"
+>bash</B
+>将会把它当作一个注释. </p>
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo "Part 1 of script."
+   4&nbsp;a=1
+   5&nbsp;
+   6&nbsp;#!/bin/bash
+   7&nbsp;# 这样不会运行一个新的脚本.
+   8&nbsp;
+   9&nbsp;echo "Part 2 of script."
+  10&nbsp;echo $a  # Value of $a stays at 1.</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN179"
+HREF="sha-bang.html#AEN179"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>利用上面所述的特性能找到一些有趣的窍门.</P
+>
+      <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/rm
+   2&nbsp;# 删除自身的脚本.
+   3&nbsp;
+   4&nbsp;# 当你运行这个脚本时，除了这个脚本消失了之外，你不会发现更多其他的东西。
+   5&nbsp;
+   6&nbsp;WHATEVER=65
+   7&nbsp;
+   8&nbsp;echo "This line will never print (betcha!)."
+   9&nbsp;
+  10&nbsp;exit $WHATEVER  # 不要紧，脚本绝不会运行到这儿.</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+      <P
+>也可以写一个以<TT
+CLASS="USERINPUT"
+><B
+>#!/bin/more</B
+></TT
+>,开头的文件，并执行它。执行结果会发现这是一个自我显示的文件。 (一个使用<a
+href="external.html#CATREF"
+>cat</a
+>命令的<A
+HREF="here-docs.html#HEREDOCREF"
+>here document</A
+> 能更好地办到这一点--参考<A
+HREF="here-docs.html#EX71"
+>例子 17-3</A
+>).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN192"
+HREF="sha-bang.html#AEN192"
+>[4]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+NAME="POSIX2REF"
+></A
+>可移植操作系统接口(Portable Operating System Interface),它尝试使类UNIX的操作系统标准化。POSIX的规范可以在站点<A
+HREF="http://www.opengroup.org/onlinepubs/007904975/toc.htm"
+TARGET="_top"
+>Open Group site</A
+>找到.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN223"
+HREF="sha-bang.html#AEN223"
+>[5]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>注意：以<TT
+CLASS="USERINPUT"
+><B
+>sh scriptname</B
+></TT
+>运行一个Bash脚本将会禁止所有Bash的扩展特性。因此脚本可以会因此而运行失败。</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN236"
+HREF="sha-bang.html#AEN236"
+>[6]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>因为运行一个脚本文件需要Shell能读此文件中的命令，因此不仅需要文件的执行权限，也需要文件有读的权限。</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN248"
+HREF="sha-bang.html#AEN248"
+>[7]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>为什么不直接用简单地键入<TT
+CLASS="USERINPUT"
+><B
+>scriptname</B
+></TT
+>来运行脚本? 如果当前目录（由变量<A
+HREF="variables2.html#PWDREF"
+>$PWD</A
+>)的值保存[译者注：也可由命令pwd打印当前目录路径]）就是<I
+CLASS="EMPHASIS"
+>scriptname</I
+> 脚本文件所在的目录，为什么直接键入scriptname不能运行脚本? 这样运行脚本可能失败。因为由于安全的因素[译者注：如果你感兴趣的话，其中一个安全漏洞可在LinuxSir的Shell版中我发的一篇帖子里找到]当前目录默认不加入到用户的<A
+HREF="variables2.html#PATHREF"
+>$PATH</A
+>.变量中。因此你必须明确地指定调用脚本的路径在当前路径<b><tt>：</tt></b><TT
+CLASS="USERINPUT"
+><B
+>./scriptname</B
+></TT
+>.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="why-shell.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="prelimexer.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Why Shell Programming?</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part1.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Preliminary Exercises</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

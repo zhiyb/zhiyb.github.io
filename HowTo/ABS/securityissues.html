@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Security Issues</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Assorted Tips"
+HREF="assortedtips.html"><LINK
+REL="NEXT"
+TITLE="Portability Issues"
+HREF="portabilityissues.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="assortedtips.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 33. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="portabilityissues.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="SECURITYISSUES"
+>33.8. 安全话题</A
+></H1
+>
+  <DIV
+CLASS="SECT2"
+>
+    <H2
+CLASS="SECT2"
+><A
+NAME="INFECTEDSCRIPTS"
+>33.8.1. 被感染的脚本</A
+></H2
+>
+    <P
+>有一个简短的关于脚本安全的介绍是适当的.
+	  脚本程序可能会包含蠕虫病毒,特洛伊木马, 或是其他的病毒.
+	  由于这些原因, 决不要以root身份运行脚本 (或允许它被插入到系统的<tt
+class="FILENAME"
+>/etc/rc.d</tt
+>里的启动脚本中) 除非你确定这是值得信赖的源码或你已经很小心地分析过了脚本并确信它不会有什么危害.</P
+>
+    <P
+>Bell实验室及其他地方的病毒研究人员, 包括 M.
+	  Douglas McIlroy, Tom Duff, 和 Fred Cohen  已经调查过了shell脚本病毒的实现. 他们认为写脚本病毒甚至对于新手来说也是很容易的，就像“脚本小子（<span
+class="QUOTE"
+>script kiddie）</span
+>”也能容易地写出.
+	    <A
+NAME="AEN15781"
+HREF="#FTN.AEN15781"
+>[1]</A
+>
+    </P
+>
+    <P
+>这也是学习脚本编程的原因之一：学习读懂脚本和理解脚本可以保护你的系统免受骇客攻击或破坏.</P
+>
+  </DIV
+><DIV
+CLASS="SECT2"
+>
+	    <H2
+CLASS="SECT2"
+><A
+NAME="HIDINGSOURCE"
+>33.8.2. 隐藏Shell脚本源码</A
+></H2
+>
+	    <P
+>为了安全, 使脚本不可读是有必要的. 如果有软件可以把脚本转化成相应的二进制执行文件就好了. Francisco Rosales的 <A
+HREF="http://www.datsi.fi.upm.es/~frosal/sources/"
+TARGET="_top"
+>shc -
+	  通用的Shell脚本编译器（generic shell script compiler）</A
+> 可以出色地完成目标.</P
+>
+	    <P
+>不幸地, 依照<A
+HREF="http://www.linuxjournal.com/article/8256"
+TARGET="_top"
+>发表在2005年十月的<i
+class="EMPHASIS"
+>Linux Journal</i
+>杂志上的一篇文章</A
+>,
+	 二进制文件可以，至少在某些情况下能被恢复回脚本的原始代码. 但不管怎么说，这对大多数技术不高超的骇客来说仍然是一个保持脚本安全的有效的方法.</P
+>
+	  </DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN15781"
+HREF="securityissues.html#AEN15781"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>参考 Marius van Oers 的文章（<A
+HREF="http://www.virusbtn.com/magazine/archives/200204/malshell.xml"
+TARGET="_top"
+>Unix
+	      Shell Scripting Malware</A
+>）,和列在<a
+href="biblio.html#BIBLIOREF"
+>参考书目（bibliography）</a
+>的参考资料.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="assortedtips.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="portabilityissues.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Assorted Tips</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Portability Issues</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

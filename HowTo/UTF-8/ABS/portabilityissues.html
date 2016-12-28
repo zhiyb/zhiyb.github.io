@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Portability Issues</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Security Issues"
+HREF="securityissues.html"><LINK
+REL="NEXT"
+TITLE="Shell Scripting Under Windows"
+HREF="winscript.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="securityissues.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 33. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="winscript.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="PORTABILITYISSUES"
+>33.9. 移植话题</A
+></H1
+>
+  <P
+>这本书是关于在GNU/Linux系统下的Bash编程. 但同样，<B
+CLASS="COMMAND"
+>sh</B
+>
+	  和 <B
+CLASS="COMMAND"
+>ksh</B
+> 用户也能在这儿得到许多有用的价值.</P
+>
+  <P
+>以现在的情况来看，许多种shell和脚本语言都尽力使自己符合 POSIX 1003.2
+	  标准. 用 <TT
+CLASS="OPTION"
+>--posix</TT
+>
+	  选项调用Bash或在脚本开头插入 <B
+CLASS="COMMAND"
+>set -o posix</B
+> 就能使Bash能以很接近这个标准的方式运行. 在脚本开头用
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/sh</PRE
+></TD
+></TR
+></TABLE
+>
+	  比用
+	  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash</PRE
+></TD
+></TR
+></TABLE
+>
+	  会更好.注意在Linux和一些UNIX风格的系统里<TT
+CLASS="FILENAME"
+>/bin/sh是<tt
+class="FILENAME"
+>/bin/bash</tt
+></TT
+>的一个<A
+HREF="external.html#LINKREF"
+>链接（link）</A
+>, 并且如果脚本以/bin/sh调用时会禁用Bash的扩展功能.
+	  </P
+>
+	  <P
+>大多数的Bash脚本能不作修改就能运行在 <B
+CLASS="COMMAND"
+>ksh</B
+>下, 反之亦然, 因为 Chet Ramey 辛勤地把 <B
+CLASS="COMMAND"
+>ksh</B
+> 的属性移植到了最新的Bash版本.</P
+>
+	  <P
+>在商业的 UNIX 机器上, 使用了GNU扩展属性的标准命令的脚本可能不会工作. 这个问题在最近几年已经有所改观了, 因为GNU软件包完美地代替了在这些&quot;大块头的&quot;UNIX运行的相应工具.
+	  <A
+HREF="http://linux.oreillynet.com/pub/a/linux/2002/02/28/caldera.html"
+TARGET="_top"
+>源码分发</A
+> 给传统UNIX上加快了这种趋势.</P
+>
+	  <P
+>Bash 有传统的 Bourne shell
+	  缺乏的一些属性. 下面是其中一些:
+
+	  <UL
+><LI
+>
+	    <P
+>一些扩展的 <A
+HREF="options.html#INVOCATIONOPTIONSREF"
+>调用选项（invocation options）</A
+></P
+>
+	  </LI
+><LI
+>
+	    <P
+> 使用 <B
+CLASS="COMMAND"
+>$(    )</B
+> 结构来完成<a
+href="commandsub.html#COMMANDSUBREF"
+>命令替换（Command substitution）</a
+></P
+>
+	  </LI
+><LI
+>
+	    <P
+>一些 <A
+HREF="string-manipulation.html#STRINGMANIP"
+>字符串处理（string manipulation）</A
+>
+	  操作符</P
+>
+	  </LI
+><LI
+>
+	    <P
+><A
+HREF="process-sub.html#PROCESSSUBREF"
+>进程替换（Process substitution）</A
+></P
+>
+	  </LI
+><LI
+>
+	    <P
+>Bash的 <A
+HREF="internal.html#BUILTINREF"
+>内建（builtins）</A
+> 命令</P
+>
+	  </LI
+></UL
+>
+	</P
+>
+	<P
+>参考 <A
+HREF="ftp://ftp.cwru.edu/pub/bash/FAQ"
+TARGET="_top"
+>Bash
+	   F.A.Q.</A
+> 查看完整的列表.</P
+>
+</DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="securityissues.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="winscript.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Security Issues</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Shell Scripting Under Windows</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

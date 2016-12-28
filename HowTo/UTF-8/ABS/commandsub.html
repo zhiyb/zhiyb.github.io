@@ -1,0 +1,1133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Command Substitution</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="PREVIOUS"
+TITLE="System and Administrative Commands"
+HREF="system.html"><LINK
+REL="NEXT"
+TITLE="Arithmetic Expansion"
+HREF="arithexp.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default">
+</HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;
+"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="system.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="arithexp.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="COMMANDSUB"
+>Chapter 14. 命令替换</A
+></H1
+>
+  <P
+>	     <A
+NAME="COMMANDSUBREF"
+></A
+><B
+CLASS="COMMAND"
+>命令替换</B
+> 将会重新分配一个命令<A
+NAME="AEN12865"
+HREF="#FTN.AEN12865"
+>[1]</A
+>甚至是多个命令的输出; 它会将命令的输出如实地添加到另一个上下文中.
+	        <A
+NAME="AEN12871"
+HREF="#FTN.AEN12871"
+>[2]</A
+>  </P
+>
+  <P
+><A
+NAME="BACKQUOTESREF"
+></A
+>使用命令替换的典型形式是使用<em>后置引用</em>(`...`). 后置引用形式的命令(就是被反引号括起来)将会产生命令行文本.
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;script_name=`basename $0`
+   2&nbsp;echo "The name of this script is $script_name."</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="FORMALPARA"
+>
+     <P
+><B
+>这样的话, 命令的输出可以被当成传递到另一个命令的参数, 或者保存到变量中, 甚至可以用来产生<A
+HREF="loops.html#FORLOOPREF1"
+>for</A
+>循环的参数列表.</B
+></P
+>
+   </DIV
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;rm `cat filename`   # <SPAN
+CLASS="QUOTE"
+>"filename"</SPAN
+> 包含了需要被删除的文件列表.
+   2&nbsp;#
+   3&nbsp;# S. C. 指出使用这种形式, 可能会产生&quot;参数列表太长&quot;的错误.
+   4&nbsp;# 更好的方法是              xargs rm -- &#60; filename 
+   5&nbsp;# ( -- 同时覆盖了那些以&quot;-&quot;开头的文件所产生的特殊情况 )
+   6&nbsp;
+   7&nbsp;textfile_listing=`ls *.txt`
+   8&nbsp;# 变量中包含了当前工作目录下所有的*.txt文件.
+   9&nbsp;echo $textfile_listing
+  10&nbsp;
+  11&nbsp;textfile_listing2=$(ls *.txt)   # 这是命令替换的另一种形式.
+  12&nbsp;echo $textfile_listing2
+  13&nbsp;# 同样的结果.
+  14&nbsp;
+  15&nbsp;# 将文件列表放入到一个字符串中的一个可能的问题就是
+  16&nbsp;# 可能会混进一个新行.
+  17&nbsp;#
+  18&nbsp;# 一个安全的将文件列表传递到参数中的方法就是使用数组.
+  19&nbsp;#      shopt -s nullglob    # 如果不匹配, 那就不进行文件名扩展.
+  20&nbsp;#      textfile_listing=( *.txt )
+  21&nbsp;#
+  22&nbsp;# Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>命令替换将会调用一个<A
+HREF="subshells.html#SUBSHELLSREF"
+>subshell</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>命令替换可能会引起word splitting.
+	                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;COMMAND `echo a b`     # 2个参数: a and b
+   2&nbsp;
+   3&nbsp;COMMAND "`echo a b`"   # 1个参数: "a b"
+   4&nbsp;
+   5&nbsp;COMMAND `echo`         # 无参数
+   6&nbsp;
+   7&nbsp;COMMAND "`echo`"       # 一个空的参数
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;# Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+>即使没有引起word splitting, 命令替换也会去掉多余的新行.
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# cd "`pwd`"  # 这句总会正常的工作.
+   2&nbsp;# 然而...
+   3&nbsp;
+   4&nbsp;mkdir 'dir with trailing newline
+   5&nbsp;'
+   6&nbsp;
+   7&nbsp;cd 'dir with trailing newline
+   8&nbsp;'
+   9&nbsp;
+  10&nbsp;cd "`pwd`"  # 错误消息:
+  11&nbsp;# bash: cd: /tmp/file with trailing newline: No such file or directory
+  12&nbsp;
+  13&nbsp;cd "$PWD"   # 运行良好.
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;old_tty_setting=$(stty -g)   # 保存老的终端设置.
+  20&nbsp;echo "Hit a key "
+  21&nbsp;stty -icanon -echo           # 对终端禁用"canonical"模式.
+  22&nbsp;                             # 这样的话, 也会禁用了*本地*的echo.
+  23&nbsp;key=$(dd bs=1 count=1 2&#62; /dev/null)   # 使用'dd'命令来取得一个按键.
+  24&nbsp;stty "$old_tty_setting"      # 保存老的设置.
+  25&nbsp;echo "You hit ${#key} key."  # ${#variable} = number of characters in $variable
+  26&nbsp;#
+  27&nbsp;# 按键任何键除了回车, 那么输出就是"You hit 1 key."
+  28&nbsp;# 按下回车, 那么输出就是"You hit 0 key."
+  29&nbsp;# 新行已经被命令替换吃掉了.
+  30&nbsp;
+  31&nbsp;Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>当一个变量是使用命令替换的结果做为值的时候, 然后使用<B
+CLASS="COMMAND"
+>echo</B
+>命令来输出这个变量(并且不引用这个变量, 就是不用引号括起来), 那么命令替换将会从最终的输出中删掉换行符. 这可能会引起一些异常情况.
+                            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;dir_listing=`ls -l`
+   2&nbsp;echo $dir_listing     # 未引用, 就是没用引号括起来
+   3&nbsp;
+   4&nbsp;# 想打出来一个有序的目录列表.Expecting a nicely ordered directory listing.
+   5&nbsp;
+   6&nbsp;# 可惜, 下边将是我们所获得的:
+   7&nbsp;# total 3 -rw-rw-r-- 1 bozo bozo 30 May 13 17:15 1.txt -rw-rw-r-- 1 bozo
+   8&nbsp;# bozo 51 May 15 20:57 t2.sh -rwxr-xr-x 1 bozo bozo 217 Mar 5 21:13 wi.sh
+   9&nbsp;
+  10&nbsp;# 新行消失了.
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;echo "$dir_listing"   # 用引号括起来
+  14&nbsp;# -rw-rw-r--    1 bozo       30 May 13 17:15 1.txt
+  15&nbsp;# -rw-rw-r--    1 bozo       51 May 15 20:57 t2.sh
+  16&nbsp;# -rwxr-xr-x    1 bozo      217 Mar  5 21:13 wi.sh</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+></TD
+></TR
+></TABLE
+></DIV
+>
+              <P
+>命令替换甚至允许将整个文件的内容放到变量中, 可以使用<A
+HREF="io-redirection.html#IOREDIRREF"
+>重定向</A
+>或者<A
+HREF="external.html#CATREF"
+>cat</A
+>命令.</P
+>
+              <P
+>	         <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;variable1=`&#60;file1`      #  将&quot;file1"的内容放到"variable1"中.
+   2&nbsp;variable2=`cat file2`   #  将&quot;file2&quot;的内容放到&quot;variable2&quot;中.
+   3&nbsp;                        #  但是这行将会fork一个新进程, This, however, forks a new process, 
+   4&nbsp;                        #+ 所以这行代码将会比第一行代码执行得慢.
+   5&nbsp;
+   6&nbsp;#  注意:
+   7&nbsp;#  变量中是可以包含空白的,
+   8&nbsp;#+ 甚至是 (厌恶至极的), 控制字符.</PRE
+></TD
+></TR
+></TABLE
+>
+             </P
+><P
+>	         <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#  摘录自系统文件, /etc/rc.d/rc.sysinit
+   2&nbsp;#+ (这是红帽安装中使用的)
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;if [ -f /fsckoptions ]; then
+   6&nbsp;        fsckoptions=`cat /fsckoptions`
+   7&nbsp;...
+   8&nbsp;fi
+   9&nbsp;#
+  10&nbsp;#
+  11&nbsp;if [ -e "/proc/ide/${disk[$device]}/media" ] ; then
+  12&nbsp;             hdmedia=`cat /proc/ide/${disk[$device]}/media`
+  13&nbsp;...
+  14&nbsp;fi
+  15&nbsp;#
+  16&nbsp;#
+  17&nbsp;if [ ! -n "`uname -r | grep -- "-"`" ]; then
+  18&nbsp;       ktag="`cat /proc/version`"
+  19&nbsp;...
+  20&nbsp;fi
+  21&nbsp;#
+  22&nbsp;#
+  23&nbsp;if [ $usb = "1" ]; then
+  24&nbsp;    sleep 5
+  25&nbsp;    mouseoutput=`cat /proc/bus/usb/devices 2&#62;/dev/null|grep -E "^I.*Cls=03.*Prot=02"`
+  26&nbsp;    kbdoutput=`cat /proc/bus/usb/devices 2&#62;/dev/null|grep -E "^I.*Cls=03.*Prot=01"`
+  27&nbsp;...
+  28&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+>
+             </P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>不要将一个<em>非常长</em>的文本文件的内容设置到一个变量中, 除非你有一个非常好的原因非要这么做不可. 不要将2进制文件的内容保存到变量中.</P
+>
+                     <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="STUPSCR"
+></A
+>
+                     <P
+><B
+>Example 14-1. 愚蠢的脚本策略</B
+></P
+>
+                     <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# stupid-script-tricks.sh: 朋友, 别在家这么做.
+   3&nbsp;# 来自于"Stupid Script Tricks," 卷I.
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;dangerous_variable=`cat /boot/vmlinuz`   # 这是压缩过的Linux内核本身.
+   7&nbsp;
+   8&nbsp;echo "string-length of \$dangerous_variable = ${#dangerous_variable}"
+   9&nbsp;# 这个字符串变量的长度是 $dangerous_variable = 794151
+  10&nbsp;# (不要使用'wc -c /boot/vmlinuz'来计算长度.)
+  11&nbsp;
+  12&nbsp;# echo "$dangerous_variable"
+  13&nbsp;# 千万别尝试这么做! 这样将挂起这个脚本.
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;#  文档作者已经意识到将二进制文件设置到
+  17&nbsp;#+ 变量中是一个没用的应用.
+  18&nbsp;
+  19&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+               <P
+>注意, 在这里是不会发生<em>缓冲区溢出</em>错误. 因为这是一个解释型语言的实例, Bash就是一种解释型语言, 解释型语言会比编译型语言提供更多的对程序错误的保护措施.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+             <P
+>变量替换允许将一个<A
+HREF="loops.html#FORLOOPREF1"
+>循环</A
+>的输出放入到一个变量中.这么做的关键就是将循环中<A
+HREF="internal.html#ECHOREF"
+>echo</A
+>命令的输出全部截取.</P
+>
+             <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="CSUBLOOP"
+></A
+>
+             <P
+><B
+>Example 14-2. 从循环的输出中产生一个变量</B
+></P
+>
+             <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# csubloop.sh: 从循环的输出中产生一个变量.
+   3&nbsp;
+   4&nbsp;variable1=`for i in 1 2 3 4 5
+   5&nbsp;do
+   6&nbsp;  echo -n "$i"                 #  对于这里的命令替换来说
+   7&nbsp;done`                          #+ 这个'echo'命令是非常关键的.
+   8&nbsp;
+   9&nbsp;echo "variable1 = $variable1"  # variable1 = 12345
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;i=0
+  13&nbsp;variable2=`while [ "$i" -lt 10 ]
+  14&nbsp;do
+  15&nbsp;  echo -n "$i"                 # 再来一个, 'echo'是必须的.
+  16&nbsp;  let "i += 1"                 # 递增.
+  17&nbsp;done`
+  18&nbsp;
+  19&nbsp;echo "variable2 = $variable2"  # variable2 = 0123456789
+  20&nbsp;
+  21&nbsp;#  这就证明了在一个变量声明中
+  22&nbsp;#+ 嵌入一个循环是可行的.
+  23&nbsp;
+  24&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN12924"
+></A
+>
+  <P
+>命令替换使得扩展有效的Bash工具集变为可能. 这样, 写一段小程序或者一段脚本就可以达到目的, 因为程序或脚本的输出会传到stdout上(就像一个标准的工具所做的那样), 然后重新将这些输出保存到变量中.(译者: 作者的意思就是在这种情况下写脚本和写程序作用是一样的.)</P
+>
+  <P
+>		<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#include &#60;stdio.h&#62;
+   2&nbsp;
+   3&nbsp;/*  "Hello, world." C program  */		
+   4&nbsp;
+   5&nbsp;int main()
+   6&nbsp;{
+   7&nbsp;  printf( "Hello, world." );
+   8&nbsp;  return (0);
+   9&nbsp;}</PRE
+></TD
+></TR
+></TABLE
+>
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>gcc -o hello hello.c</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+		</P
+><P
+>                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# hello.sh		
+   3&nbsp;
+   4&nbsp;greeting=`./hello`
+   5&nbsp;echo $greeting</PRE
+></TD
+></TR
+></TABLE
+>
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>sh hello.sh</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Hello, world.</TT
+>
+ 	        </PRE
+></TD
+></TR
+></TABLE
+>
+	        </P
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>对于命令替换来说,<B
+CLASS="COMMAND"
+>$(COMMAND)</B
+> 形式已经取代了反引号&quot;`&quot;.</P
+>
+	                <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;output=$(sed -n /"$1"/p $file)   # 来自于 "grp.sh"例子.
+   2&nbsp;	      
+   3&nbsp;# 将一个文本的内容保存到变量中.
+   4&nbsp;File_contents1=$(cat $file1)      
+   5&nbsp;File_contents2=$(&#60;$file2)        # Bash 也允许这么做.</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+   <P
+><B
+CLASS="COMMAND"
+>$(...)</B
+> 形式的命令替换在处理双反斜线(\\)时与`...`形式不同.</P
+>
+   <P
+>		
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo `echo \\`</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+></TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $(echo \\)</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>\</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+>
+              <P
+><B
+CLASS="COMMAND"
+>$(...)</B
+> 形式的命令替换是允许嵌套的.
+		  <A
+NAME="AEN12956"
+HREF="#FTN.AEN12956"
+>[3]</A
+>		</P
+>
+              <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;word_count=$( wc -w $(ls -l | awk '{print $9}') )</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+>
+              <P
+>或者, 可以更加灵活. . .</P
+>
+              <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="AGRAM2"
+></A
+>
+              <P
+><B
+>Example 14-3. 找anagram</B
+><B
+>(回文构词法, 可以将一个有意义的单词, 变换为1个或多个有意义的单词, 但是还是原来的子母集合)</B
+></P
+>
+              <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# agram2.sh
+   3&nbsp;# 关于命令替换嵌套的例子.
+   4&nbsp;
+   5&nbsp;#  使用"anagram"工具
+   6&nbsp;#+ 这是作者的"yawl"文字表包中的一部分.
+   7&nbsp;#  http://ibiblio.org/pub/Linux/libs/yawl-0.3.2.tar.gz
+   8&nbsp;#  http://personal.riverusers.com/~thegrendel/yawl-0.3.2.tar.gz
+   9&nbsp;
+  10&nbsp;E_NOARGS=66
+  11&nbsp;E_BADARG=67
+  12&nbsp;MINLEN=7
+  13&nbsp;
+  14&nbsp;if [ -z "$1" ]
+  15&nbsp;then
+  16&nbsp;  echo "Usage $0 LETTERSET"
+  17&nbsp;  exit $E_NOARGS         # 脚本需要一个命令行参数.
+  18&nbsp;elif [ ${#1} -lt $MINLEN ]
+  19&nbsp;then
+  20&nbsp;  echo "Argument must have at least $MINLEN letters."
+  21&nbsp;  exit $E_BADARG
+  22&nbsp;fi
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;FILTER='.......'         # 必须至少有7个字符.
+  27&nbsp;#       1234567
+  28&nbsp;Anagrams=( $(echo $(anagram $1 | grep $FILTER) ) )
+  29&nbsp;#           |     |    嵌套的命令替换        | |
+  30&nbsp;#        (              数组分配                 )
+  31&nbsp;
+  32&nbsp;echo
+  33&nbsp;echo "${#Anagrams[*]}  7+ letter anagrams found"
+  34&nbsp;echo
+  35&nbsp;echo ${Anagrams[0]}      # 第一个anagram.
+  36&nbsp;echo ${Anagrams[1]}      # 第二个anagram.
+  37&nbsp;                         # 等等.
+  38&nbsp;
+  39&nbsp;# echo "${Anagrams[*]}"  # 在一行上列出所有的anagram . . .
+  40&nbsp;
+  41&nbsp;#  考虑到后边还有&quot;数组&quot;作为单独的一章进行讲解,
+  42&nbsp;#+ 这里就不深入了.
+  43&nbsp;
+  44&nbsp;# 可以参阅agram.sh脚本, 这也是一个找出anagram的例子.
+  45&nbsp;
+  46&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></TD
+></TR
+></TABLE
+></DIV
+>
+	        <P
+>命令替换在脚本中使用的例子:
+            <OL
+TYPE="1"
+><LI
+><P
+><A
+HREF="loops.html#BINGREP"
+>Example 10-7</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="testbranch.html#CASECMD"
+>Example 10-26</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="randomvar.html#SEEDINGRANDOM"
+>Example 9-28</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="moreadv.html#EX57"
+>Example 12-3</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="textproc.html#LOWERCASE"
+>Example 12-19</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="textproc.html#GRP"
+>Example 12-15</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="extmisc.html#EX53"
+>Example 12-49</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="loops.html#EX24"
+>Example 10-13</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="loops.html#SYMLINKS"
+>Example 10-10</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="filearchiv.html#STRIPC"
+>Example 12-29</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="redircb.html#REDIR4"
+>Example 16-8</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#TREE"
+>Example A-17</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="procref1.html#PIDID"
+>Example 27-2</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="mathc.html#MONTHLYPMT"
+>Example 12-42</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="mathc.html#BASE"
+>Example 12-43</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="mathc.html#ALTBC"
+>Example 12-44</A
+></P
+></LI
+></OL
+>
+     </P
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注意事项:</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN12865"
+HREF="commandsub.html#AEN12865"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>对于<em>命令替换</em>来说, 这个<strong>命令</strong>可以是外部的系统命令, 也可以是内部脚本的<em>内建</em>命令, 甚至是一个<A
+HREF="assortedtips.html#RVT"
+>脚本函数</A
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN12871"
+HREF="commandsub.html#AEN12871"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>从技术的角度来讲, <em>命令替换</em>将会抽取出一个命令的输出, 然后使用=操作赋值到一个变量中.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN12956"
+HREF="commandsub.html#AEN12956"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>		    事实上, 对于反引号的嵌套是可行的, 但是只能将内部的反引号转义才行, 就像John默认指出的那样.
+		<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;word_count=` wc -w \`ls -l | awk '{print $9}'\` `</PRE
+></TD
+></TR
+></TABLE
+>
+		    </P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="system.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="arithexp.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>System and Administrative Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part3.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Arithmetic Expansion</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

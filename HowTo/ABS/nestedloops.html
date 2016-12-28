@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Nested Loops</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Loops and Branches"
+HREF="loops.html"><LINK
+REL="PREVIOUS"
+TITLE="Loops and Branches"
+HREF="loops.html"><LINK
+REL="NEXT"
+TITLE="Loop Control"
+HREF="loopcontrol.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="loops.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Loops and Branches</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="loopcontrol.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NESTEDLOOPS"
+>10.2. 嵌套循环</A
+></H1
+>
+<P
+>嵌套循环就是在一个循环中还有一个循环,内部循环在外部循环体中.在外部循环的每次执行过程中都会触发内部循环,直到内部循环执行结束.外部循环执行了多少次,内部循环就完成多少次.当然,不论是外部循环或内部循环的break语句都会打断处理过程.</P
+>
+<DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="NESTEDLOOP"
+></A
+>
+<P
+><B
+>例子 10-19. 嵌套循环</B
+></P
+>
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# nested-loop.sh: 嵌套的&quot;for&quot; 循环.
+   3&nbsp;
+   4&nbsp;outer=1             # 设置外部循环计数.
+   5&nbsp;
+   6&nbsp;# 开始外部循环.
+   7&nbsp;for a in 1 2 3 4 5
+   8&nbsp;do
+   9&nbsp;  echo "Pass $outer in outer loop."
+  10&nbsp;  echo "---------------------"
+  11&nbsp;  inner=1           # 重设内部循环的计数.
+  12&nbsp;
+  13&nbsp;  # ===============================================
+  14&nbsp;  # 开始内部循环.
+  15&nbsp;  for b in 1 2 3 4 5
+  16&nbsp;  do
+  17&nbsp;    echo "Pass $inner in inner loop."
+  18&nbsp;    let "inner+=1"  # 增加内部循环计数.
+  19&nbsp;  done
+  20&nbsp;  # 内部循环结束.
+  21&nbsp;  # ===============================================
+  22&nbsp;
+  23&nbsp;  let "outer+=1"    # 增加外部循环的计数.
+  24&nbsp;  echo              # 每次外部循环之间的间隔.
+  25&nbsp;done               
+  26&nbsp;# 外部循环结束.
+  27&nbsp;
+  28&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+<P
+>关于嵌套的<a
+href="loops.html#WHILELOOPREF"
+>while循环</a
+>请参考<A
+HREF="arrays.html#BUBBLE"
+>例子 26-11</A
+>, 关于while循环里嵌套<a
+href="loops.html#UNTILLOOPREF"
+>until循环</a
+>的例子请参考<A
+HREF="arrays.html#EX68"
+>例子 26-13</A
+>.</P
+>
+</DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="loops.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="loopcontrol.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Loops and Branches</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="loops.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Loop Control</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

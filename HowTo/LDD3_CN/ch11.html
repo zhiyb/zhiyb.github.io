@@ -1,0 +1,56 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第11章 内核中的数据类型</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch10s06.html" title="10.6.&#160;快速参考">
+<link rel="next" href="ch11s02.html" title="11.2.&#160;安排一个明确大小给数据项">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第11章&nbsp;内核中的数据类型</H1></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch10s06.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch11s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="chapter" lang="zh-cn">
+<p>在我们进入更高级主题之前, 我们需要停下来快速关注一下可移植性问题. 现代版本的 Linux 内核是高度可移植的, 它正运行在很多不同体系上. 由于 Linux 内核的多平台特性, 打算做认真使用的驱动应当也是可移植的.</p>
+<p>但是内核代码的一个核心问题是不但能够存取已知长度的数据项(例如, 文件系统数据结构或者设备单板上的寄存器), 而且可以使用不同处理器的能力(32-位 和 64-位 体系, 并且也可能是 16 位).</p>
+<p>内核开发者在移植 x86 代码到新体系时遇到的几个问题与不正确的数据类型相关. 坚持严格的数据类型和使用 -Wall -Wstrict-prototypes 进行编译可能避免大部分的 bug.</p>
+<p>内核数据使用的数据类型分为 3 个主要类型: 标准 C 类型例如 int, 明确大小的类型例如 u32, 以及用作特定内核对象的类型, 例如 pid_t. 我们将看到这 3 个类型种类应当什么时候以及应当如何使用. 本章的最后的节谈论一些其他的典型问题, 你在移植 x86 的驱动到其他平台时可能遇到的问题, 并且介绍近期内核头文件输出的链表的常用支持.</p>
+<p>如果你遵照我们提供的指引, 你的驱动应当编译和运行在你无法测试的平台上.</p>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><h2 class="title" style="CLEAR: both">
+<a name="UseofStandardCTypes.sect"></a>
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch10s06.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch11s01.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">10.6.&nbsp;快速参考&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;11.1.&nbsp;标准 C 
+类型的使用</td>
+</tr>
+</table>  </h2></div></div></div>
+</div>
+</div>
+</body>
+</html>

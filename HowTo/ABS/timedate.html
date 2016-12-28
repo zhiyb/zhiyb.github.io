@@ -1,0 +1,848 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Time / Date Commands</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="External Filters, Programs and Commands"
+HREF="external.html"><LINK
+REL="PREVIOUS"
+TITLE="Complex Commands"
+HREF="moreadv.html"><LINK
+REL="NEXT"
+TITLE="Text Processing Commands"
+HREF="textproc.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default">
+</HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;
+"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="moreadv.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. External Filters, Programs and Commands</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="textproc.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="TIMEDATE"
+>12.3. 时间/日期 命令</A
+></H1
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="TDLISTING1"
+></A
+>时间/日期 和计时</B
+></P
+>
+    <DL
+><DT
+><A
+NAME="DATEREF"
+></A
+><B
+CLASS="COMMAND"
+>date</B
+></DT
+><DD
+>
+      <P
+>直接调用, <B
+CLASS="COMMAND"
+>date</B
+> 就会打印日期和时间到 stdout 上. 这个命令有趣的地方在于它的格式化和分析选项上.</P
+>
+      <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX51"
+></A
+>
+      <P
+><B
+>Example 12-10. 使用 <B
+CLASS="COMMAND"
+>date</B
+></B
+> <strong>命令</strong></P
+>
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 练习 'date' 命令
+   3&nbsp;
+   4&nbsp;echo "The number of days since the year's beginning is `date +%j`."
+   5&nbsp;# 需要在调用格式的前边加上一个 '+' 号.
+   6&nbsp;# %j 给出今天是本年度的第几天.
+   7&nbsp;
+   8&nbsp;echo "The number of seconds elapsed since 01/01/1970 is `date +%s`."
+   9&nbsp;#  %s 将产生从 &quot;UNIX 元年&quot; 到现在为止的秒数,yields number of seconds since "UNIX epoch" began,
+  10&nbsp;#+ 但是这东西有用么?
+  11&nbsp;
+  12&nbsp;prefix=temp
+  13&nbsp;suffix=$(date +%s)  # 'date'命令的 "+%s" 选项是 GNU-特性.
+  14&nbsp;filename=$prefix.$suffix
+  15&nbsp;echo $filename
+  16&nbsp;#  这是一种非常好的产生 &quot;唯一&quot; 的临时文件的办法,
+  17&nbsp;#+ 甚至比使用 $$ 都强.
+  18&nbsp;
+  19&nbsp;# 如果想了解 'date' 命令的更多选项, 请查阅这个命令的 man 页.
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+      <P
+><TT
+CLASS="OPTION"
+>-u</TT
+> 选项将给出 UTC   时间(Universal
+	      Coordinated Time).</P
+>
+      <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>date</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Fri Mar 29 21:07:39 MST 2002</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>date -u</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Sat Mar 30 04:07:42 UTC 2002</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><P
+><A
+NAME="DATERANDREF"
+></A
+></P
+>
+	      <P
+><B
+CLASS="COMMAND"
+>date</B
+> 命令有许多的输出选项. 比如  <TT
+CLASS="OPTION"
+>%N</TT
+> 将以10亿分之一为单位表示当前时间. 这个选项的一个有趣的用法就是用来产生一个6位的随机数.
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;date +%N | sed -e 's/000$//' -e 's/^0//'
+   2&nbsp;           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   3&nbsp;# 去掉开头和结尾的0.</PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+>
+	      <P
+>当然,还有许多其它的选项 (请查看  <B
+CLASS="COMMAND"
+>man date</B
+>).
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;date +%j
+   2&nbsp;# 显示今天是本年度的第几天(从1月1日开始计算).
+   3&nbsp;
+   4&nbsp;date +%k%M
+   5&nbsp;# 显示当前小时数和分钟数.
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;#  'TZ' 参数允许改变当前的默认时区.
+  10&nbsp;date                 # Mon Mar 28 21:42:16 MST 2005
+  11&nbsp;TZ=EST date          # Mon Mar 28 23:42:16 EST 2005
+  12&nbsp;# Thanks, Frank Kannemann and Pete Sjoberg, for the tip.
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;SixDaysAgo=$(date --date='6 days ago')
+  16&nbsp;OneMonthAgo=$(date --date='1 month ago')  # 4周前(不是一个月).
+  17&nbsp;OneYearAgo=$(date --date='1 year ago')</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+>参见 <A
+HREF="special-chars.html#EX58"
+>Example 3-4</A
+>.</P
+>
+    </DD
+><DT
+><B
+CLASS="COMMAND"
+>zdump</B
+></DT
+><DD
+>
+      <P
+>查看特定时区的当前时间.</P
+>
+      <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>zdump EST</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>EST  Tue Sep 18 22:09:22 2001 EST</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+></DD
+><DT
+><A
+NAME="TIMREF"
+></A
+><B
+CLASS="COMMAND"
+>time</B
+></DT
+><DD
+>
+	        <P
+>输出统计出来的命令执行的时间.</P
+>
+	      <P
+><TT
+CLASS="USERINPUT"
+><B
+>time ls -l /</B
+></TT
+> 给出的输出大概是如下格式:
+	                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="COMPUTEROUTPUT"
+>0.00user 0.01system 0:00.05elapsed 16%CPU (0avgtext+0avgdata 0maxresident)k
+ 0inputs+0outputs (149major+27minor)pagefaults 0swaps</TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+>
+	  <P
+>参见前边章节所讲的一个类似的命令  <A
+HREF="internal.html#TIMESREF"
+>times</A
+> .</P
+>
+	  <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>在Bash的 <A
+HREF="bash2.html#BASH2REF"
+> 2.0版本</A
+> 中, <B
+CLASS="COMMAND"
+>time</B
+> 成为了shell的一个保留字, 并且在一个带有管道的命令行中,这个命令的行为有些小的变化.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="TOUCHREF"
+></A
+><B
+CLASS="COMMAND"
+>touch</B
+></DT
+><DD
+>
+	    <P
+>这是一个用来更新文件被存取或修改的时间的工具,这个时间可以是当前系统的时间,也可以是指定的时间, 这个命令也用来产生一个新文件.命令
+	      <TT
+CLASS="USERINPUT"
+><B
+>touch zzz</B
+></TT
+> 将产生一个以zzz为名字的0字节长度文件, 当然前提是zzz文件不存在.
+	      为了存储时间信息, 就需要一个时间戳为空的文件, 比如当你想跟踪一个工程的修改时间的时候,这就非常有用了.</P
+>
+	    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><B
+CLASS="COMMAND"
+>touch</B
+> 命令等价于 <TT
+CLASS="USERINPUT"
+><B
+>: &#62;&#62; newfile</B
+></TT
+>
+	      或 <TT
+CLASS="USERINPUT"
+><B
+>&#62;&#62; newfile</B
+></TT
+> (对于一个普通文件).</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="ATREF"
+></A
+><B
+CLASS="COMMAND"
+>at</B
+></DT
+><DD
+>
+	        <P
+><B
+CLASS="COMMAND"
+>at </B
+>命令是一个作业控制命令, 用来在指定时间执行给定的命令集合.它有点像 <A
+HREF="system.html#CRONREF"
+>cron</A
+> 命令, 然而,
+	      <B
+CLASS="COMMAND"
+>at</B
+> 命令主要还是用来执行那种一次性执行的命令集合.</P
+>
+	        <P
+><TT
+CLASS="USERINPUT"
+><B
+>at 2pm January 15</B
+></TT
+> 将会提示让你输入需要在这个时间你要执行的命令序列. 这些命令应该是可以和shell脚本兼容的,因为, 实际上, 在一个可执行的脚本中, 用户每次只能敲一行. 输入以  <A
+HREF="special-chars.html#CTLDREF"
+>Ctl-D</A
+> 结束.</P
+>
+	        <P
+>你可以使用-f选项或者使用 (&lt;)重定向操作符, 来让 <B
+CLASS="COMMAND"
+>at</B
+>
+	      命令从一个文件中读取命令集合. 这个文件其实就一个可执行的的脚本, 虽然它是一个不可交互的脚本. 在文件中包含一个
+	      <A
+HREF="extmisc.html#RUNPARTSREF"
+>run-parts</A
+> 命令, 对于执行一套不同的脚本来说是非常聪明的做法.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>at 2:30 am Friday &#60; at-jobs.list</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>job 2 at 2000-10-27 02:30</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>batch</B
+></DT
+><DD
+>
+	      <P
+><B
+CLASS="COMMAND"
+>batch</B
+> 作业控制命令与
+	      <B
+CLASS="COMMAND"
+>at</B
+> 命令的行为很相像,   但 <strong>batch</strong>  命令被用来在系统平均载量降到 0.8 以下时执行一次性的任务。  与
+	      <B
+CLASS="COMMAND"
+>at</B
+> 命令相似的是, 它也可以使用 -f 选项来从文件中读取命令.</P
+>
+	    </DD
+><DT
+><B
+CLASS="COMMAND"
+>cal</B
+></DT
+><DD
+>
+	      <P
+>从stdout中输出一个格式比较整齐的日历. 也可以指定年和月来显示那个月的日历.</P
+>
+	    </DD
+><DT
+><B
+CLASS="COMMAND"
+>sleep</B
+></DT
+><DD
+>
+	      <P
+>这个命令与一个等待循环的效果一样. 你可以指定需要暂停的秒数, 这段时间将什么都不干.当一个后台运行的进程需要偶尔检测一个事件时,这个功能很有用. 也可用于计时.
+	      参见 <A
+HREF="debugging.html#ONLINE"
+>Example 29-6</A
+>.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;sleep 3     # Pauses 3 seconds.</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><B
+CLASS="COMMAND"
+>sleep</B
+> 命令默认为秒, 但是你也可以指定天数, 小时数或分钟数.
+	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;sleep 3 h   # Pauses 3 hours!</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>如果你想每隔一段时间来运行一个命令的话, 那么 <A
+HREF="system.html#WATCHREF"
+>watch</A
+> 命令将比 <strong>sleep</strong> 命令好得多.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>usleep</B
+></DT
+><DD
+>
+	      <P
+><I
+CLASS="EMPHASIS"
+>Microsleep</I
+> 睡眠微秒( <SPAN
+CLASS="QUOTE"
+>"u"</SPAN
+>
+	      会被希腊人读成 <SPAN
+CLASS="QUOTE"
+>"mu"</SPAN
+>, 或者是 micro-
+	      前缀). 与上边的  <B
+CLASS="COMMAND"
+>sleep </B
+>命令作用相同, 但这个命令是以百万分之一秒为单位的. 当需要精确计时, 或者需要非常频繁的监控一个正在运行的进程的时候, 这个命令非常有用.</P
+><P
+>  
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;usleep 30     # 暂停 30 microseconds.</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+>
+	    <P
+>这个命令是 Red Hat <I
+CLASS="EMPHASIS"
+>initscripts /
+	      rc-scripts</I
+> 包的一部分.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>事实上 <B
+CLASS="COMMAND"
+>usleep</B
+> 命令并不能提供非常精确的计时, 所以如果你需要一个实时的任务的话, 这个命令并不适合.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>hwclock</B
+>, <B
+CLASS="COMMAND"
+>clock</B
+></DT
+><DD
+>
+	      <P
+><B
+CLASS="COMMAND"
+>hwclock</B
+> 命令可以存取或调整硬件时钟. 这个命令的一些选项需要 root 权限. 在系统启动的时候, 
+	      <TT
+CLASS="FILENAME"
+>/etc/rc.d/rc.sysinit</TT
+> 这个启动文件，会使用 <B
+CLASS="COMMAND"
+>hwclock</B
+> 来从硬件时钟中读取并设置系统时间.clock at bootup.</P
+>
+	      <P
+><B
+CLASS="COMMAND"
+>clock</B
+> 命令与
+	      <B
+CLASS="COMMAND"
+>hwclock</B
+>命令完全相同.</P
+>
+	      </DD
+></DL
+>
+  </DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="moreadv.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="textproc.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Complex Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="external.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Text Processing Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

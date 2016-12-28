@@ -1,0 +1,907 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Testing and Branching</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Loops and Branches"
+HREF="loops.html"><LINK
+REL="PREVIOUS"
+TITLE="Loop Control"
+HREF="loopcontrol.html"><LINK
+REL="NEXT"
+TITLE="Internal Commands and Builtins"
+HREF="internal.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="loopcontrol.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Loops and Branches</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="internal.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="TESTBRANCH"
+>10.4. 测试与分支</A
+></H1
+>
+  <P
+><b
+class="COMMAND"
+>case</b
+>和<b
+class="COMMAND"
+>select</b
+>结构在技术上说不是循环,因为它们并不对可执行的代码块进行迭代.但是和循环相似的是,它们也依靠在代码块的顶部或底部的条件判断来决定程序的分支.</P
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="CASEESAC1"
+></A
+>在代码块中控制程序分支</B
+></P
+>
+    <DL
+><DT
+><B
+CLASS="COMMAND"
+>case (in) / esac</B
+></DT
+><DD
+>
+      <P
+>在shell中的<b
+class="COMMAND"
+>case</b
+>同C/C++中的<b
+class="COMMAND"
+>switch</b
+>结构是相同的.它允许通过判断来选择代码块中多条路径中的一条.它的作用和多个<span
+class="TOKEN"
+>if/then/else</span
+>语句相同，是它们的简化结构，特别适用于创建目录.</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>case</B
+>   "$<TT
+CLASS="REPLACEABLE"
+><I
+>variable</I
+></TT
+>"   in <BR><BR>  ?"$<TT
+CLASS="REPLACEABLE"
+><I
+>condition1</I
+></TT
+>" ) <BR>  ?<TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>... <BR>  ?;; <BR><BR>  ?"$<TT
+CLASS="REPLACEABLE"
+><I
+>condition2</I
+></TT
+>" ) <BR>  ?<TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>... <BR>  ?;; <BR><BR>  esac </P
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	      <UL
+><LI
+>
+        <P
+>对变量使用&quot;&quot;并不是强制的,因为不会发生单词分离.</P
+>
+      </LI
+><LI
+>
+        <P
+>每句测试行,都以右小括号)结尾.</P
+>
+      </LI
+><LI
+>
+        <P
+>每个条件块都以两个分号结尾;;.</P
+>
+      </LI
+><LI
+>
+        <P
+><b
+class="COMMAND"
+>case</b
+>块的结束以esac(case的反向拼写)结尾.</P
+>
+      </LI
+></UL
+>
+	    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX29"
+></A
+>
+	      <P
+><B
+>例子 10-24. 使用case</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 测试字符串范围
+   3&nbsp;
+   4&nbsp;echo; echo "Hit a key, then hit return."
+   5&nbsp;read Keypress
+   6&nbsp;
+   7&nbsp;case "$Keypress" in
+   8&nbsp;  [[:lower:]]   ) echo "Lowercase letter";;
+   9&nbsp;  [[:upper:]]   ) echo "Uppercase letter";;
+  10&nbsp;  [0-9]         ) echo "Digit";;
+  11&nbsp;  *             ) echo "Punctuation, whitespace, or other";;
+  12&nbsp;esac      #  允许字符串的范围出现在[]中,
+  13&nbsp;          #+ 或者POSIX风格的[[中.
+  14&nbsp;
+  15&nbsp;#  在这个例子的第一个版本中,
+  16&nbsp;#+ 测试大写和小写字符串使用的是
+  17&nbsp;#+ [a-z] 和 [A-Z].
+  18&nbsp;#  这种用法将不会在某些特定的场合或Linux发行版中正常工作.
+  19&nbsp;#  POSIX 风格更具可移植性.
+  20&nbsp;#  感谢Frank Wang 指出这点.
+  21&nbsp;
+  22&nbsp;#  练习:
+  23&nbsp;#  --------
+  24&nbsp;#  就像这个脚本所表现的,它只允许单次的按键,然后就结束了.
+  25&nbsp;#  修改这个脚本,让它能够接受重复输入,
+  26&nbsp;#+ 报告每个按键,并且只有在&quot;X&quot;被键入时才结束.
+  27&nbsp;#  暗示: 将这些代码都用&quot;while&quot;循环圈起来.
+  28&nbsp;
+  29&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX30"
+></A
+>
+    <P
+><B
+>例子 10-25. 使用case来创建菜单</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# 未经处理的地址资料
+   4&nbsp;
+   5&nbsp;clear # 清屏.
+   6&nbsp;
+   7&nbsp;echo "          Contact List"
+   8&nbsp;echo "          ------- ----"
+   9&nbsp;echo "Choose one of the following persons:" 
+  10&nbsp;echo
+  11&nbsp;echo "[E]vans, Roland"
+  12&nbsp;echo "[J]ones, Mildred"
+  13&nbsp;echo "[S]mith, Julie"
+  14&nbsp;echo "[Z]ane, Morris"
+  15&nbsp;echo
+  16&nbsp;
+  17&nbsp;read person
+  18&nbsp;
+  19&nbsp;case "$person" in
+  20&nbsp;# 注意,变量是被引用的.
+  21&nbsp;
+  22&nbsp;  "E" | "e" )
+  23&nbsp;  # 接受大写或小写输入.
+  24&nbsp;  echo
+  25&nbsp;  echo "Roland Evans"
+  26&nbsp;  echo "4321 Floppy Dr."
+  27&nbsp;  echo "Hardscrabble, CO 80753"
+  28&nbsp;  echo "(303) 734-9874"
+  29&nbsp;  echo "(303) 734-9892 fax"
+  30&nbsp;  echo "revans@zzy.net"
+  31&nbsp;  echo "Business partner &#38; old friend"
+  32&nbsp;  ;;
+  33&nbsp;# 注意,在每个选项后边都需要以;;结尾.
+  34&nbsp;
+  35&nbsp;  "J" | "j" )
+  36&nbsp;  echo
+  37&nbsp;  echo "Mildred Jones"
+  38&nbsp;  echo "249 E. 7th St., Apt. 19"
+  39&nbsp;  echo "New York, NY 10009"
+  40&nbsp;  echo "(212) 533-2814"
+  41&nbsp;  echo "(212) 533-9972 fax"
+  42&nbsp;  echo "milliej@loisaida.com"
+  43&nbsp;  echo "Ex-girlfriend"
+  44&nbsp;  echo "Birthday: Feb. 11"
+  45&nbsp;  ;;
+  46&nbsp;
+  47&nbsp;# 后边的Smith和Zane的信息在这里就省略了.
+  48&nbsp;
+  49&nbsp;          * )
+  50&nbsp;   # 默认选项.
+  51&nbsp;   # 空输入(敲RETURN).
+  52&nbsp;   echo
+  53&nbsp;   echo "Not yet in database."
+  54&nbsp;  ;;
+  55&nbsp;
+  56&nbsp;esac
+  57&nbsp;
+  58&nbsp;echo
+  59&nbsp;
+  60&nbsp;#  练习:
+  61&nbsp;#  --------
+  62&nbsp;#  修改这个脚本,让它能够接受多输入,
+  63&nbsp;#+ 并且能够显示多个地址.
+  64&nbsp;
+  65&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>一个case的特殊用法,用来测试命令行参数.  
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;
+   3&nbsp;case "$1" in
+   4&nbsp;"") echo "Usage: ${0##*/} &#60;filename&#62;"; exit $E_PARAM;;  # 没有命令行参数,
+   5&nbsp;                                                        # 或者第一个参数为空.
+   6&nbsp;# 注意:${0##*/} 是${var##pattern} 这种模式的替换. 得到的结果是$0.
+   7&nbsp;
+   8&nbsp;-*) FILENAME=./$1;;   #  如果传递进来的文件名参数($1)以一个破折号开头,
+   9&nbsp;                      #+ 那么用./$1来代替
+  10&nbsp;                      #+ 这样后边的命令将不会把它作为一个选项来解释.
+  11&nbsp;
+  12&nbsp;* ) FILENAME=$1;;     # 否则, $1.
+  13&nbsp;esac</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+>这是一个更容易懂的命令行参数处理的一个例子：
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;
+   3&nbsp;
+   4&nbsp;while [ $# -gt 0 ]; do    # 直到你用完所有的参数...
+   5&nbsp;  case "$1" in
+   6&nbsp;    -d|--debug)
+   7&nbsp;              # 是"-d" 或 "--debug" 参数吗?
+   8&nbsp;              DEBUG=1
+   9&nbsp;              ;;
+  10&nbsp;    -c|--conf)
+  11&nbsp;              CONFFILE="$2"
+  12&nbsp;              shift
+  13&nbsp;              if [ ! -f $CONFFILE ]; then
+  14&nbsp;                echo "Error: Supplied file doesn't exist!"
+  15&nbsp;                exit $E_CONFFILE     # 文件没发现错误.
+  16&nbsp;              fi
+  17&nbsp;              ;;
+  18&nbsp;  esac
+  19&nbsp;  shift       # 检查剩下的参数.
+  20&nbsp;done
+  21&nbsp;
+  22&nbsp;#  来自Stefano Falsetto的 &quot;Log2Rot&quot; 脚本,
+  23&nbsp;#+ 他的&quot;rottlog&quot; 包的一部分.
+  24&nbsp;#  已得到使用许可</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="CASECMD"
+></A
+>
+    <P
+><B
+>例子 10-26. 使用命令替换来产生case变量</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# case-cmd.sh: 使用命令替换来产生&quot;case&quot;变量
+   3&nbsp;
+   4&nbsp;case $( arch ) in   # arch&quot; 返回机器的类型.
+   5&nbsp;                    # 等价于 'uname -m' ...
+   6&nbsp;i386 ) echo "80386-based machine";;
+   7&nbsp;i486 ) echo "80486-based machine";;
+   8&nbsp;i586 ) echo "Pentium-based machine";;
+   9&nbsp;i686 ) echo "Pentium2+-based machine";;
+  10&nbsp;*    ) echo "Other type of machine";;
+  11&nbsp;esac
+  12&nbsp;
+  13&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+><b
+class="COMMAND"
+>case</b
+>结构也可以过滤<a
+href="globbingref.html"
+>通配扩展（globbing）</a
+>模式的字符串.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="MATCHSTRING"
+></A
+>
+	        <P
+><B
+>例子 10-27. 简单字符串匹配</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# match-string.sh: 简单字符串匹配
+   3&nbsp;
+   4&nbsp;match_string ()
+   5&nbsp;{
+   6&nbsp;  MATCH=0
+   7&nbsp;  NOMATCH=90
+   8&nbsp;  PARAMS=2     # 函数需要2个参数.
+   9&nbsp;  BAD_PARAMS=91
+  10&nbsp;
+  11&nbsp;  [ $# -eq $PARAMS ] || return $BAD_PARAMS
+  12&nbsp;
+  13&nbsp;  case "$1" in
+  14&nbsp;  "$2") return $MATCH;;
+  15&nbsp;  *   ) return $NOMATCH;;
+  16&nbsp;  esac
+  17&nbsp;
+  18&nbsp;}  
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;a=one
+  22&nbsp;b=two
+  23&nbsp;c=three
+  24&nbsp;d=two
+  25&nbsp;
+  26&nbsp;
+  27&nbsp;match_string $a     # 参数个数错误.
+  28&nbsp;echo $?             # 91
+  29&nbsp;
+  30&nbsp;match_string $a $b  # 不匹配
+  31&nbsp;echo $?             # 90
+  32&nbsp;
+  33&nbsp;match_string $b $d  # 匹配
+  34&nbsp;echo $?             # 0
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;exit 0		    </PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ISALPHA"
+></A
+>
+    <P
+><B
+>例子 10-28. 检查是否是字母输入</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# isalpha.sh: 使用&quot;case&quot;结构来过滤字符串.
+   3&nbsp;
+   4&nbsp;SUCCESS=0
+   5&nbsp;FAILURE=-1
+   6&nbsp;
+   7&nbsp;isalpha ()  # 检查输入的*第一个字符*是不是字母表上的字符.
+   8&nbsp;{
+   9&nbsp;if [ -z "$1" ]                # 没有参数传进来?
+  10&nbsp;then
+  11&nbsp;  return $FAILURE
+  12&nbsp;fi
+  13&nbsp;
+  14&nbsp;case "$1" in
+  15&nbsp;[a-zA-Z]*) return $SUCCESS;;  # 以一个字母开头?
+  16&nbsp;*        ) return $FAILURE;;
+  17&nbsp;esac
+  18&nbsp;}             # 同C语言的&quot;isalpha()&quot;函数相比较.
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;isalpha2 ()   # 测试是否*整个字符串*为字母表字符.
+  22&nbsp;{
+  23&nbsp;  [ $# -eq 1 ] || return $FAILURE
+  24&nbsp;
+  25&nbsp;  case $1 in
+  26&nbsp;  *[!a-zA-Z]*|"") return $FAILURE;;
+  27&nbsp;               *) return $SUCCESS;;
+  28&nbsp;  esac
+  29&nbsp;}
+  30&nbsp;
+  31&nbsp;isdigit ()    # 测试是否*整个字符串*都是数字.
+  32&nbsp;{             # 换句话说就是测试是否是整数变量.
+  33&nbsp;  [ $# -eq 1 ] || return $FAILURE
+  34&nbsp;
+  35&nbsp;  case $1 in
+  36&nbsp;  *[!0-9]*|"") return $FAILURE;;
+  37&nbsp;            *) return $SUCCESS;;
+  38&nbsp;  esac
+  39&nbsp;}
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;
+  43&nbsp;check_var ()  # 测试 isalpha ().
+  44&nbsp;{
+  45&nbsp;if isalpha "$@"
+  46&nbsp;then
+  47&nbsp;  echo "\"$*\" begins with an alpha character."
+  48&nbsp;  if isalpha2 "$@"
+  49&nbsp;  then        # 不需要测试第一个字符是否是non-alpha.
+  50&nbsp;    echo "\"$*\" contains only alpha characters."
+  51&nbsp;  else
+  52&nbsp;    echo "\"$*\" contains at least one non-alpha character."
+  53&nbsp;  fi  
+  54&nbsp;else
+  55&nbsp;  echo "\"$*\" begins with a non-alpha character."
+  56&nbsp;              # 如果没有参数传递进来,也是&quot;non-alpha&quot;.
+  57&nbsp;fi
+  58&nbsp;
+  59&nbsp;echo
+  60&nbsp;
+  61&nbsp;}
+  62&nbsp;
+  63&nbsp;digit_check ()  # 测试 isdigit ().
+  64&nbsp;{
+  65&nbsp;if isdigit "$@"
+  66&nbsp;then
+  67&nbsp;  echo "\"$*\" contains only digits [0 - 9]."
+  68&nbsp;else
+  69&nbsp;  echo "\"$*\" has at least one non-digit character."
+  70&nbsp;fi
+  71&nbsp;
+  72&nbsp;echo
+  73&nbsp;
+  74&nbsp;}
+  75&nbsp;
+  76&nbsp;a=23skidoo
+  77&nbsp;b=H3llo
+  78&nbsp;c=-What?
+  79&nbsp;d=What?
+  80&nbsp;e=`echo $b`   #命令替换.
+  81&nbsp;f=AbcDef
+  82&nbsp;g=27234
+  83&nbsp;h=27a34
+  84&nbsp;i=27.34
+  85&nbsp;
+  86&nbsp;check_var $a
+  87&nbsp;check_var $b
+  88&nbsp;check_var $c
+  89&nbsp;check_var $d
+  90&nbsp;check_var $e
+  91&nbsp;check_var $f
+  92&nbsp;check_var     # 没有参数传进来,将发生什么?
+  93&nbsp;#
+  94&nbsp;digit_check $g
+  95&nbsp;digit_check $h
+  96&nbsp;digit_check $i
+  97&nbsp;
+  98&nbsp;
+  99&nbsp;exit 0        # S.C改进过这个脚本.
+ 100&nbsp;
+ 101&nbsp;# 练习:
+ 102&nbsp;# --------
+ 103&nbsp;#  编写一个 'isfloat ()'函数来测试浮点数.
+ 104&nbsp;#  暗示: 这个函数基本上与'isdigit ()'一样,
+ 105&nbsp;#+ 但是要添加一部分小数点的处理.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="SELECTREF"
+></A
+><B
+CLASS="COMMAND"
+>select</B
+></DT
+><DD
+>
+   <P
+><b
+class="COMMAND"
+>select</b
+>结构是建立菜单的另一种工具,这种结构是从ksh中引入的.</P
+><P
+><P
+><B
+CLASS="COMMAND"
+>select</B
+>   <TT
+CLASS="REPLACEABLE"
+><I
+>variable</I
+></TT
+>  [in <TT
+CLASS="REPLACEABLE"
+><I
+>list</I
+></TT
+>]<BR>  do <BR>  ?<TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>... <BR>  ?break <BR>  done </P
+></P
+>
+   <P
+>提示用户输入选择的内容(比如放在变量列表中).注意:<b
+class="COMMAND"
+>select</b
+>命令使用PS3提示符[默认为(#? )],但是可以修改PS3.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX31"
+></A
+>
+		  <P
+><B
+>例子 10-29. 用select来创建菜单</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;PS3='Choose your favorite vegetable: ' # 设置提示符字串.
+   4&nbsp;
+   5&nbsp;echo
+   6&nbsp;
+   7&nbsp;select vegetable in "beans" "carrots" "potatoes" "onions" "rutabagas"
+   8&nbsp;do
+   9&nbsp;  echo
+  10&nbsp;  echo "Your favorite veggie is $vegetable."
+  11&nbsp;  echo "Yuck!"
+  12&nbsp;  echo
+  13&nbsp;  break  # 如果这里没有'break'会发生什么?
+  14&nbsp;done
+  15&nbsp;
+  16&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+   <P
+>如果忽略了<tt
+class="USERINPUT"
+><b
+>in <tt
+class="REPLACEABLE"
+><i
+>list</i
+></tt
+></b
+></tt
+>列表,那么<b
+class="COMMAND"
+>select</b
+>命令将使用传递到脚本的命令行参数(<tt
+class="VARNAME"
+>$@</tt
+>),或者是函数参数(当<b
+class="COMMAND"
+>select</b
+>是在函数中时）.</P
+>
+   <P
+>与忽略<tt
+class="USERINPUT"
+><b
+>in <tt
+class="REPLACEABLE"
+><i
+>list</i
+></tt
+></b
+></tt
+>时的for语句相比较:<P
+><B
+CLASS="COMMAND"
+>for</B
+>   <TT
+CLASS="REPLACEABLE"
+><I
+>variable</I
+></TT
+>  [in <TT
+CLASS="REPLACEABLE"
+><I
+>list</I
+></TT
+>]</P
+>
+	      <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX32"
+></A
+>
+          <P
+><B
+>例子 10-30. 用函数中select结构来创建菜单</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;PS3='Choose your favorite vegetable: '
+   4&nbsp;
+   5&nbsp;echo
+   6&nbsp;
+   7&nbsp;choice_of()
+   8&nbsp;{
+   9&nbsp;select vegetable
+  10&nbsp;# [in list] 被忽略, 所以'select'用传递给函数的参数.
+  11&nbsp;do
+  12&nbsp;  echo
+  13&nbsp;  echo "Your favorite veggie is $vegetable."
+  14&nbsp;  echo "Yuck!"
+  15&nbsp;  echo
+  16&nbsp;  break
+  17&nbsp;done
+  18&nbsp;}
+  19&nbsp;
+  20&nbsp;choice_of beans rice carrots radishes tomatoes spinach
+  21&nbsp;#         $1    $2   $3      $4       $5       $6
+  22&nbsp;#         传递给choice_of() 函数的参数
+  23&nbsp;
+  24&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+	      <P
+>参见<A
+HREF="bash2.html#RESISTOR"
+>例子 34-3</A
+>.</P
+>
+ </DD
+></DL
+>
+  </DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="loopcontrol.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="internal.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Loop Control</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="loops.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Internal Commands and Builtins</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

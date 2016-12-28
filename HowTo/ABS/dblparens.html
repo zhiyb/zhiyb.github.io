@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>The Double Parentheses Construct</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Variables Revisited"
+HREF="variables2.html"><LINK
+REL="PREVIOUS"
+TITLE="$RANDOM: generate random integer"
+HREF="randomvar.html"><LINK
+REL="NEXT"
+TITLE="Loops and Branches"
+HREF="loops.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="randomvar.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Variables Revisited</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="loops.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="DBLPARENS"
+>9.7. 双括号结构</A
+></H1
+>
+  <P
+>类似于<A
+HREF="internal.html#LETREF"
+>let</A
+>命令,<B
+CLASS="COMMAND"
+>((...))</B
+>结构允许算术计算和求值. 它最简单的形式<TT
+CLASS="USERINPUT"
+><B
+>a=$(( 5 + 3 ))</B
+></TT
+> 会把变量<SPAN
+CLASS="QUOTE"
+>"a"的值</SPAN
+>设置成<SPAN
+CLASS="QUOTE"
+>"5 + 3"</SPAN
+>或8. 但是，在Bash中双括号结构也是遵循C风格的变量操作的一种机制.</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="CVARS"
+></A
+>
+    <P
+><B
+>例子 9-30. C风格的变量操作</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 用((...))结构来使用C风格操作符来处理变量.
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;echo
+   6&nbsp;
+   7&nbsp;(( a = 23 ))  # 以C风格来设置一个值，在"="两边可以有空格.
+   8&nbsp;echo "a (initial value) = $a"
+   9&nbsp;
+  10&nbsp;(( a++ ))     # C风格的计算后自增.
+  11&nbsp;echo "a (after a++) = $a"
+  12&nbsp;
+  13&nbsp;(( a-- ))     # C风格的计算后自减.
+  14&nbsp;echo "a (after a--) = $a"
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;(( ++a ))     # C风格的计算前自增.
+  18&nbsp;echo "a (after ++a) = $a"
+  19&nbsp;
+  20&nbsp;(( --a ))     # C风格的计算前自减.
+  21&nbsp;echo "a (after --a) = $a"
+  22&nbsp;
+  23&nbsp;echo
+  24&nbsp;
+  25&nbsp;########################################################
+  26&nbsp;#  注意，就像在C中一样，计算前自增自减和计算后自增自减有一点不同的的副作用
+  27&nbsp;#
+  28&nbsp;
+  29&nbsp;n=1; let --n &#38;&#38; echo "True" || echo "False"  # False
+  30&nbsp;n=1; let n-- &#38;&#38; echo "True" || echo "False"  # True
+  31&nbsp;
+  32&nbsp;#  多谢Jeroen Domburg.
+  33&nbsp;########################################################
+  34&nbsp;
+  35&nbsp;echo
+  36&nbsp;
+  37&nbsp;(( t = a&#60;45?7:11 ))   # C风格的三元计算.
+  38&nbsp;echo "If a &#60; 45, then t = 7, else t = 11."
+  39&nbsp;echo "t = $t "        # Yes!
+  40&nbsp;
+  41&nbsp;echo
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;# -----------------
+  45&nbsp;# 复活节彩蛋大礼!
+  46&nbsp;# -----------------
+  47&nbsp;#  Chet Ramey显然在此偷偷地隐瞒了Bash中双括号的C风格结构
+  48&nbsp;#+ (实际上是从ksh中继承来的，两者非常的接近).
+  49&nbsp;#  在Bash的文档里, Ramey称((...))为shell算术计算,
+  50&nbsp;#+ 但它所能做的远远超出这个.
+  51&nbsp;#  不好意思, Chet,现在秘密已经被揭开了.
+  52&nbsp;
+  53&nbsp;# 参考"for"和"while"循环中使用((...))结构的章节.
+  54&nbsp;
+  55&nbsp;# 这个只能在Bash版本 2.04以上才能工作.
+  56&nbsp;
+  57&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>参考<A
+HREF="loops.html#FORLOOPC"
+>例子 10-12</A
+>.</P
+>
+</DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="randomvar.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="loops.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>$RANDOM: generate random integer</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Loops and Branches</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

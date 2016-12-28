@@ -1,0 +1,338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Terminal Control Commands</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="External Filters, Programs and Commands"
+HREF="external.html"><LINK
+REL="PREVIOUS"
+TITLE="Communications Commands"
+HREF="communications.html"><LINK
+REL="NEXT"
+TITLE="Math Commands"
+HREF="mathc.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default">
+</HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;
+"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="communications.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. External Filters, Programs and Commands</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mathc.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="TERMINALCCMDS"
+>12.7. 终端控制命令</A
+></H1
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="TERMCOMMANDLISTING1"
+></A
+>影响控制台或终端的命令</B
+></P
+>
+    <DL
+><DT
+><B
+CLASS="COMMAND"
+>tput</B
+></DT
+><DD
+>
+      <P
+>初始化终端或者从 terminfo data 中取得终端信息. 不同的选项允许特定的终端操作.  <B
+CLASS="COMMAND"
+>tput clear</B
+>
+	      与下边的 <strong>clear</strong> 等价. <B
+CLASS="COMMAND"
+>tput reset</B
+> 与下边的 <B
+CLASS="COMMAND"
+>reset</B
+> 等价. <B
+CLASS="COMMAND"
+>tput
+	      sgr0</B
+> 也可以重置终端, 但是并不清除屏幕.</P
+>
+      <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>tput longname</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>xterm terminal emulator (XFree86 4.0 Window System)</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+>
+	    <P
+>使用 <B
+CLASS="COMMAND"
+>tput cup X Y</B
+> 将会把光标移动到当前终端的(X,Y)坐标上.  使用这个命令之前一边都要先使用一下 <B
+CLASS="COMMAND"
+>clear</B
+> 命令, 把屏幕清除一下.</P
+>
+	    <P
+>注意: <A
+HREF="system.html#STTYREF"
+>stty</A
+> 提供了一个更强力的命令专门用来设置如何控制终端.</P
+>
+    </DD
+><DT
+><B
+CLASS="COMMAND"
+>infocmp</B
+></DT
+><DD
+>
+	      <P
+>这个命令会打印出大量的当前终端的信息. 事实上它是引用了 <em>terminfo</em> 数据库.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>infocmp</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>#       通过来自于文件的 infocmp 显示出来:
+ /usr/share/terminfo/r/rxvt
+ rxvt|rxvt terminal emulator (X Window System), 
+         am, bce, eo, km, mir, msgr, xenl, xon, 
+         colors#8, cols#80, it#8, lines#24, pairs#64, 
+         acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+         bel=^G, blink=\E[5m, bold=\E[1m,
+         civis=\E[?25l, 
+         clear=\E[H\E[2J, cnorm=\E[?25h, cr=^M, 
+         ...</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>reset</B
+></DT
+><DD
+>
+	      <P
+>重置终端参数并且清除屏幕. 与
+	    <B
+CLASS="COMMAND"
+>clear</B
+> 命令一样, 光标和提示符将会重新出现在终端的左上角.</P
+>
+	    </DD
+><DT
+><A
+NAME="CLEARREF"
+></A
+><B
+CLASS="COMMAND"
+>clear</B
+></DT
+><DD
+>
+	      <P
+><B
+CLASS="COMMAND"
+>clear</B
+> 命令只不过是简单的清除控制台或者 <em>xterm</em> 的屏幕. 光标和提示符将会重新出现在屏幕或者 xterm window 的左上角. 这个命令既可以用在命令行中也可以用在脚本中. 参见 <A
+HREF="testbranch.html#EX30"
+>Example 10-25</A
+>.</P
+>
+	    </DD
+><DT
+><B
+CLASS="COMMAND"
+>script</B
+></DT
+><DD
+>
+	      <P
+>这个工具将会记录(保存到一个文件中)所有的用户在控制台下的或在 xterm window下的按键信息. 这其实就是创建了一个会话记录.</P
+>
+	    </DD
+></DL
+>
+  </DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="communications.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mathc.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Communications Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="external.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Math Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

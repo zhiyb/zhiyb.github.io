@@ -1,0 +1,515 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Process Substitution</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="Restricted Shells"
+HREF="restricted-sh.html"><LINK
+REL="NEXT"
+TITLE="Functions"
+HREF="functions.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="restricted-sh.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="functions.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="PROCESS-SUB"
+>第22章. 进程替换</A
+></H1
+>
+  <P
+><A
+NAME="PROCESSSUBREF"
+></A
+><TT
+CLASS="REPLACEABLE"
+><I
+>进程替换</I
+></TT
+>与<a
+href="commandsub.html#COMMANDSUBREF"
+>命令替换（command substitution）</a
+>很相似. 命令替换把一个命令的结果赋给一个变量，例如<B
+CLASS="COMMAND"
+> dir_contents=`ls -al`</B
+>或<B
+CLASS="COMMAND"
+>xref=$( grep word datafile)</B
+>. 进程替换则是把一个进程的输出回馈给另一个进程 (换句话说，它把一个命令的结果发送给另一个命令).</P
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="COMMANDSPARENS1"
+></A
+>命令替换的一般形式</B
+></P
+>
+    <DL
+>
+      <DT
+>由圆括号括起的命令</DT
+>
+      <DD
+><P
+><B
+CLASS="COMMAND"
+>&#62;(command)</B
+></P
+><P
+><B
+CLASS="COMMAND"
+>&#60;(command)</B
+></P
+>
+        <P
+>启动进程替换. 它是用<TT
+CLASS="FILENAME"
+>/dev/fd/&#60;n&#62;</TT
+>文件把在圆括号内的进程的处理结果发送给另外一个进程. <A
+NAME="AEN14032"
+HREF="#FTN.AEN14032"
+>[1]</A
+> (译者注：实际上现代的UNIX类操作系统提供的/dev/fd/n文件是与文件描述相关的，整数n指的就是在进程运行时对应数字的文件描述符)</P
+>
+        <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>在<SPAN
+CLASS="QUOTE"
+>"&#60;"</SPAN
+> 或or <SPAN
+CLASS="QUOTE"
+>"&#62;"</SPAN
+> 与圆括号之间是没有空格的. 如果加了空格将会引起错误信息.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+></DL
+></DIV
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo &#62;(true)</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/dev/fd/63</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo &#60;(true)</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/dev/fd/63</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+
+	  Bash在两个<a
+href="io-redirection.html#FDREF"
+>文件描述符（file descriptors）</a
+>之间创建了一个管道, <TT
+CLASS="FILENAME"
+>--fIn</TT
+> 和 <TT
+CLASS="FILENAME"
+>fOut--</TT
+>. <a
+href="internal.html#TRUEREF"
+>true</a
+>命令的标准输入被连接到fOut(dup2(fOut, 0)), 然后Bash把<tt
+class="FILENAME"
+>/dev/fd/fIn</tt
+>作为参数传给<B
+CLASS="COMMAND"
+>echo</B
+>.如果系统的<tt
+class="FILENAME"
+>/dev/fd/&#60;n&#62;</tt
+>文件不够时，Bash会使用临时文件. (Thanks, S.C.)
+	  </P
+> 
+      <P
+>进程替换能比较两个不同命令之间的输出，或者甚至相同命令不同选项的输出.</P
+>
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>comm &#60;(ls -l) &#60;(ls -al)</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>total 12
+-rw-rw-r--    1 bozo bozo       78 Mar 10 12:58 File0
+-rw-rw-r--    1 bozo bozo       42 Mar 10 12:58 File2
+-rw-rw-r--    1 bozo bozo      103 Mar 10 12:58 t2.sh
+        total 20
+        drwxrwxrwx    2 bozo bozo     4096 Mar 10 18:10 .
+        drwx------   72 bozo bozo     4096 Mar 10 17:58 ..
+        -rw-rw-r--    1 bozo bozo       78 Mar 10 12:58 File0
+        -rw-rw-r--    1 bozo bozo       42 Mar 10 12:58 File2
+        -rw-rw-r--    1 bozo bozo      103 Mar 10 12:58 t2.sh</TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+  <P
+> 用进程替换来比较两个不同目录的内容 
+    (考察哪些文件名是相同的，哪些是不同的): 
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;diff &#60;(ls $first_directory) &#60;(ls $second_directory)</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+>
+  <P
+>其他一些进程替换的用法和技巧:</P
+>
+  <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat &#60;(ls -l)
+   2&nbsp;# 等同于     ls -l | cat
+   3&nbsp;
+   4&nbsp;sort -k 9 &#60;(ls -l /bin) &#60;(ls -l /usr/bin) &#60;(ls -l /usr/X11R6/bin)
+   5&nbsp;# 列出系统中3个主要的'bin'目录的所有文件，并且按文件名排序.
+   6&nbsp;# 注意是三个明显不同的命令输出回馈给'sort'.
+   7&nbsp;
+   8&nbsp; 
+   9&nbsp;diff &#60;(command1) &#60;(command2)    # 给出两个命令输出的不同之处.
+  10&nbsp;
+  11&nbsp;tar cf &#62;(bzip2 -c &#62; file.tar.bz2) $directory_name
+  12&nbsp;# 调用"tar cf /dev/fd/?? $directory_name",和"bzip2 -c &#62; file.tar.bz2".
+  13&nbsp;#
+  14&nbsp;# 因为/dev/fd/&#60;n&#62;的系统属性,
+  15&nbsp;# 所以两个命令之间的管道不必是命名的.
+  16&nbsp;#
+  17&nbsp;# 这种效果可以模仿出来.
+  18&nbsp;#
+  19&nbsp;bzip2 -c &#60; pipe &#62; file.tar.bz2&#38;
+  20&nbsp;tar cf pipe $directory_name
+  21&nbsp;rm pipe
+  22&nbsp;#        或者
+  23&nbsp;exec 3&#62;&#38;1
+  24&nbsp;tar cf /dev/fd/4 $directory_name 4&#62;&#38;1 &#62;&#38;3 3&#62;&#38;- | bzip2 -c &#62; file.tar.bz2 3&#62;&#38;-
+  25&nbsp;exec 3&#62;&#38;-
+  26&nbsp;
+  27&nbsp;
+  28&nbsp;# Thanks, St磒hane Chazelas</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+>有个读者给我发来下面关于进程替换的有趣例子A.</P
+>
+  <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 摘自SuSE发行版中的代码片断:
+   2&nbsp;
+   3&nbsp;while read  des what mask iface; do
+   4&nbsp;# 这里省略了一些命令 ...
+   5&nbsp;done &#60; &#60;(route -n)  
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;# 为了测试它，我们来做些动作.
+   9&nbsp;while read  des what mask iface; do
+  10&nbsp;  echo $des $what $mask $iface
+  11&nbsp;done &#60; &#60;(route -n)  
+  12&nbsp;
+  13&nbsp;# 输出:
+  14&nbsp;# Kernel IP routing table
+  15&nbsp;# Destination Gateway Genmask Flags Metric Ref Use Iface
+  16&nbsp;# 127.0.0.0 0.0.0.0 255.0.0.0 U 0 0 0 lo
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;# 由 St閜hane Chazelas给出的,一个更容易理解的等价代码是:
+  21&nbsp;route -n |
+  22&nbsp;  while read des what mask iface; do   # 管道的输出被赋给了变量.
+  23&nbsp;    echo $des $what $mask $iface
+  24&nbsp;  done  #  这样就取回了和上面一样的输出.
+  25&nbsp;        #  但是, Ulrich Gayer指出 . . .
+  26&nbsp;        #+ 这个简单版本的等价代码在while循环中使用了一个子shell,
+  27&nbsp;        #+ 因此当管道结束后变量会被毁掉.
+  28&nbsp;	
+  29&nbsp;
+  30&nbsp;	
+  31&nbsp;#  更进一步, Filip Moritz解释了上面两个例子之间有一个细微的不同之处
+  32&nbsp;#+ 如下所示.
+  33&nbsp;
+  34&nbsp;(
+  35&nbsp;route -n | while read x; do ((y++)); done
+  36&nbsp;echo $y # $y 仍然没有被声明或设置
+  37&nbsp;
+  38&nbsp;while read x; do ((y++)); done &#60; &#60;(route -n)
+  39&nbsp;echo $y # $y的值为 route -n 输出的行数
+  40&nbsp;)
+  41&nbsp;
+  42&nbsp;# 一般来说
+  43&nbsp;(
+  44&nbsp;: | x=x
+  45&nbsp;# 看上去是启动了一个子shell
+  46&nbsp;: | ( x=x )
+  47&nbsp;# 但
+  48&nbsp;x=x &#60; &#60;(:)
+  49&nbsp;# 实际上不是
+  50&nbsp;)
+  51&nbsp;
+  52&nbsp;# 当解析csv或类似的东西时非常有用.
+  53&nbsp;# 事实上，这就是SuSE原本的代码片断所要实现的功能.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14032"
+HREF="process-sub.html#AEN14032"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>这与<a
+href="extmisc.html#NAMEDPIPEREF"
+>命名管道（named pipe）</a
+>(临时文件)有相同的作用, 事实上命名管道同样在进程替换中被使用.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="restricted-sh.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="functions.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Restricted Shells</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

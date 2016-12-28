@@ -1,0 +1,1595 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Parameter Substitution</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Variables Revisited"
+HREF="variables2.html"><LINK
+REL="PREVIOUS"
+TITLE="Manipulating Strings"
+HREF="string-manipulation.html"><LINK
+REL="NEXT"
+TITLE="Typing variables: declare or
+	  typeset"
+HREF="declareref.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="string-manipulation.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Variables Revisited</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="declareref.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+>
+<DIV
+CLASS="SECT1"
+> 
+  <H1
+CLASS="SECT1"
+><A
+NAME="PARAMETER-SUBSTITUTION"
+>9.3. 参数替换</A
+></H1
+>
+  <P
+><A
+NAME="PARAMSUBREF"
+></A
+></P
+><DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="PSSUB1"
+></A
+>处理或/并扩展变量</B
+></P
+>
+    <DL
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>和$parameter是相同的，都是表示变量parameter的值。在一些环境中，使用${parameter}比较不会引起误解.</P
+>
+        <P
+>可以把变量和字符串连接.</P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;your_id=${USER}-on-${HOSTNAME}
+   2&nbsp;echo "$your_id"
+   3&nbsp;#
+   4&nbsp;echo "Old \$PATH = $PATH"
+   5&nbsp;PATH=${PATH}:/opt/bin  #在脚本的生存期内，能额外增加路径/opt/bin到环境变量$PATH中去.
+   6&nbsp;echo "New \$PATH = $PATH"</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter-default}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:-default}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>如果变量没有被设置，使用默认值。</P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo ${username-`whoami`}
+   2&nbsp;# 如果变量$username还没有被设置，则把命令`whoami`的结果赋给该变量.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <DIV
+CLASS="NOTE"
+> 
+          <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+            <TR
+> 
+              <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+              <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>${parameter-default}和${parameter:-default}几乎是相等的。它们之间的差别是：当一个参数已被声明，但是值是NULL的时候两者不同. 
+                </P
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DIV
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# param-sub.sh
+   3&nbsp;
+   4&nbsp;#  变量是否被声明，
+   5&nbsp;#+ 即使它的值是空的(null)
+   6&nbsp;#+ 也会影响是否使用默认值.
+   7&nbsp;
+   8&nbsp;username0=
+   9&nbsp;echo "username0 has been declared, but is set to null."
+  10&nbsp;echo "username0 = ${username0-`whoami`}"
+  11&nbsp;# 不会有输出.
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;echo username1 has not been declared.
+  16&nbsp;echo "username1 = ${username1-`whoami`}"
+  17&nbsp;# 会输出默认值.
+  18&nbsp;
+  19&nbsp;username2=
+  20&nbsp;echo "username2 has been declared, but is set to null."
+  21&nbsp;echo "username2 = ${username2:-`whoami`}"
+  22&nbsp;#                            ^
+  23&nbsp;# 和上面一个实例比较.
+  24&nbsp;# 有输出是因为:-比-多一个测试条件.
+  25&nbsp;
+  26&nbsp;
+  27&nbsp;#
+  28&nbsp;
+  29&nbsp;# 再来一次:
+  30&nbsp;
+  31&nbsp;variable=
+  32&nbsp;# 变量已声明，但被设置了空值(null).
+  33&nbsp;
+  34&nbsp;echo "${variable-0}"    # (没有输出)
+  35&nbsp;echo "${variable:-1}"   # 1
+  36&nbsp;#               ^
+  37&nbsp;
+  38&nbsp;unset variable
+  39&nbsp;
+  40&nbsp;echo "${variable-2}"    # 2
+  41&nbsp;echo "${variable:-3}"   # 3
+  42&nbsp;
+  43&nbsp;exit 0</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>默认值结构可以在脚本中提供一个没有传递命令行参数时的默认值.</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;DEFAULT_FILENAME=generic.data
+   2&nbsp;filename=${1:-$DEFAULT_FILENAME}
+   3&nbsp;#  如果没有指定值,下面的代码会使用filename变量的默认值&quot;generic.data&quot;.
+   4&nbsp;#
+   5&nbsp;#
+   6&nbsp;#  其他的代码...</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>参考<A
+HREF="special-chars.html#EX58"
+>例子 3-4</A
+>, <A
+HREF="zeros.html#EX73"
+>例子 28-2</A
+>,和<A
+HREF="contributed-scripts.html#COLLATZ"
+>例子 A-6</A
+>.</P
+>
+        <P
+>与<a
+href="list-cons.html#ANDDEFAULT"
+>使用一个and list来提供一个默认的命令行参数</a
+>作比较.</P
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter=default}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:=default}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+><A
+NAME="DEFPARAM"
+></A
+></P
+>
+        <P
+>如果变量parameter没有设置，把它设置成默认值.</P
+>
+        <P
+>两种形式几乎相同，只是和上面的一样<a
+name="AEN4824"
+href="#FTN.AEN4824"
+>[1]</a
+>：只有当$parameter变量被声明且被设置成null值时不同. </P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo ${username=`whoami`}
+   2&nbsp;# 变量&quot;username&quot;现在已经被设置成`whoami`的输出.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter+alt_value}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:+alt_value}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>如果变量parameter设置，使用alt_value作为新值，否则使用空字符串。</P
+>
+        <P
+>除了引起的当变量被声明且值是空值时有些不同外，两种形式几乎相等。请看下面的例子.</P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo "###### \${parameter+alt_value} ########"
+   2&nbsp;echo
+   3&nbsp;
+   4&nbsp;a=${param1+xyz}
+   5&nbsp;echo "a = $a"      # a =
+   6&nbsp;
+   7&nbsp;param2=
+   8&nbsp;a=${param2+xyz}
+   9&nbsp;echo "a = $a"      # a = xyz
+  10&nbsp;
+  11&nbsp;param3=123
+  12&nbsp;a=${param3+xyz}
+  13&nbsp;echo "a = $a"      # a = xyz
+  14&nbsp;
+  15&nbsp;echo
+  16&nbsp;echo "###### \${parameter:+alt_value} ########"
+  17&nbsp;echo
+  18&nbsp;
+  19&nbsp;a=${param4:+xyz}
+  20&nbsp;echo "a = $a"      # a =
+  21&nbsp;
+  22&nbsp;param5=
+  23&nbsp;a=${param5:+xyz}
+  24&nbsp;echo "a = $a"      # a =
+  25&nbsp;# 产生与a=${param5+xyz}不同。
+  26&nbsp;
+  27&nbsp;param6=123
+  28&nbsp;a=${param6+xyz}
+  29&nbsp;echo "a = $a"      # a = xyz</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+><A
+NAME="QERRMSG"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter?err_msg}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:?err_msg}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>如果变量parameter已经设置，则使用该值，否则打印err_msg错误信息。</P
+>
+        <P
+>这两种形式几乎相同，仅有和上面所说的一点不同：带有:使当变量已声明但值是空值时不同.</P
+>
+      </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="EX6"
+></A
+> 
+    <P
+><B
+>例子 9-14. 使用参数替换和错误信息</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  检查一些系统环境变量
+   4&nbsp;#  这是很好的预防性防护.
+   5&nbsp;#  例如，如果$USER(用户在控制台的名字)没有被设置,
+   6&nbsp;#+ 系统将不接受你.
+   7&nbsp;
+   8&nbsp;: ${HOSTNAME?} ${USER?} ${HOME?} ${MAIL?}
+   9&nbsp;  echo
+  10&nbsp;  echo "Name of the machine is $HOSTNAME."
+  11&nbsp;  echo "You are $USER."
+  12&nbsp;  echo "Your home directory is $HOME."
+  13&nbsp;  echo "Your mail INBOX is located in $MAIL."
+  14&nbsp;  echo
+  15&nbsp;  echo "If you are reading this message,"
+  16&nbsp;  echo "critical environmental variables have been set."
+  17&nbsp;  echo
+  18&nbsp;  echo
+  19&nbsp;
+  20&nbsp;# ------------------------------------------------------
+  21&nbsp;
+  22&nbsp;#  ${variablename?}结构也能检查一个脚本中变量的设置情况
+  23&nbsp;#
+  24&nbsp;
+  25&nbsp;ThisVariable=Value-of-ThisVariable
+  26&nbsp;#  注意，顺便说一下字符串变量可能被设置成不允许的字符
+  27&nbsp;#
+  28&nbsp;: ${ThisVariable?}
+  29&nbsp;echo "Value of ThisVariable is $ThisVariable".
+  30&nbsp;echo
+  31&nbsp;echo
+  32&nbsp;
+  33&nbsp;
+  34&nbsp;: ${ZZXy23AB?"ZZXy23AB has not been set."}
+  35&nbsp;#  如果变量ZZXy23AB没有被设置,
+  36&nbsp;#+ 则脚本会打印一个错误信息而结束。
+  37&nbsp;
+  38&nbsp;# 你可以指定错误信息.
+  39&nbsp;# : ${variablename?"ERROR MESSAGE"}
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;# 等同于:              dummy_variable=${ZZXy23AB?}
+  43&nbsp;#                      dummy_variable=${ZZXy23AB?"ZXy23AB has not been set."}
+  44&nbsp;#
+  45&nbsp;#                      echo ${ZZXy23AB?} &#62;/dev/null
+  46&nbsp;
+  47&nbsp;#  使用命令&quot;set -u&quot;后，再比较这些检查变量是否被设置的方法的不同...
+  48&nbsp;#
+  49&nbsp;
+  50&nbsp;
+  51&nbsp;
+  52&nbsp;echo "You will not see this message, because script already terminated."
+  53&nbsp;
+  54&nbsp;HERE=0
+  55&nbsp;exit $HERE   # 不会执行到这儿.
+  56&nbsp;
+  57&nbsp;# 实际上，这个脚本会返回退出状态码为1(echo $?).</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="USAGEMESSAGE"
+></A
+> 
+    <P
+><B
+>例子 9-15. 变量替换和&quot;usage&quot;信息[译者注：通常就是帮助信息]</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# usage-message.sh
+   3&nbsp;
+   4&nbsp;: ${1?"Usage: $0 ARGUMENT"}
+   5&nbsp;#  如果没有提供命令行参数则脚本在这儿就退出了,
+   6&nbsp;#+ 并打印了错误信息.
+   7&nbsp;#    usage-message.sh: 1: Usage: usage-message.sh ARGUMENT
+   8&nbsp;
+   9&nbsp;echo "These two lines echo only if command-line parameter given."
+  10&nbsp;echo "command line parameter = \"$1\""
+  11&nbsp;
+  12&nbsp;exit 0  # 仅在命令行参数提供时，才会在这儿退出.
+  13&nbsp;
+  14&nbsp;# 分别检查有命令行参数和没有命令行参数时的退出状态。
+  15&nbsp;# 如果有命令行参数,则&quot;$?&quot;为0.
+  16&nbsp;# 否则, &quot;$?&quot;为1.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <DIV
+CLASS="FORMALPARA"
+> 
+    <P
+><B
+>变量替换与/或扩展. </B
+><A
+NAME="PSUB2"
+></A
+>下面的各种表达式是<strong>expr</strong>字符串操作中<strong>match</strong>的补充(参考<A
+HREF="moreadv.html#EX45"
+>Example 12-9</A
+>). 它们通常都用来解析文件路径名.</P
+>
+  </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="PSOREX1"
+></A
+>变量长度/子串提取</B
+></P
+>
+    <DL
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${#var}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+><strong>字符串长度</strong>（即变量$var的字符个数）。对于<a
+href="arrays.html#ARRAYREF"
+>数组</a
+>来说，<strong>${#array}</strong>是数组的第一个元素的升序.</P
+>
+        <DIV
+CLASS="NOTE"
+> 
+          <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+            <TR
+> 
+              <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+              <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> 例外情况: 
+                <UL
+>
+                  <LI
+> 
+                    <P
+> <B
+CLASS="COMMAND"
+>${#*}</B
+>和<B
+CLASS="COMMAND"
+>${#@}</B
+> 表示位置参数的个数. </P
+>
+                  </LI
+>
+                  <LI
+> 
+                    <P
+> 对于一个数组来说，<strong>${#array[*]}</strong>和<strong>${#array[@]}</strong>表示数组中元素的个数. 
+                    </P
+>
+                  </LI
+>
+                </UL
+></P
+>
+                </TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DIV
+>
+        <DIV
+CLASS="EXAMPLE"
+> 
+          <HR>
+          <A
+NAME="LENGTH"
+></A
+> 
+          <P
+><B
+>例子 9-16. 变量值的长度</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# length.sh
+   3&nbsp;
+   4&nbsp;E_NO_ARGS=65
+   5&nbsp;
+   6&nbsp;if [ $# -eq 0 ]  # 必须要有命令行参数给这个演示程序.
+   7&nbsp;then
+   8&nbsp;  echo "Please invoke this script with one or more command-line arguments."
+   9&nbsp;  exit $E_NO_ARGS
+  10&nbsp;fi  
+  11&nbsp;
+  12&nbsp;var01=abcdEFGH28ij
+  13&nbsp;echo "var01 = ${var01}"
+  14&nbsp;echo "Length of var01 = ${#var01}"
+  15&nbsp;# 现在,让我们在变量值内嵌入一个空格.
+  16&nbsp;var02="abcd EFGH28ij"
+  17&nbsp;echo "var02 = ${var02}"
+  18&nbsp;echo "Length of var02 = ${#var02}"
+  19&nbsp;
+  20&nbsp;echo "Number of command-line arguments passed to script = ${#@}"
+  21&nbsp;echo "Number of command-line arguments passed to script = ${#*}"
+  22&nbsp;
+  23&nbsp;exit 0</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var#Pattern}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${var##Pattern}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>删除从$var前端开始的最短或最长匹配$Pattern的字符串。</P
+>
+        <P
+><A
+HREF="contributed-scripts.html#DAYSBETWEEN"
+>例子 A-7</A
+>中的用法示例: 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 摘自&quot;days-between.sh&quot;例子的函数
+   2&nbsp;# 剥去传递来的参数的前引0.
+   3&nbsp;
+   4&nbsp;strip_leading_zero () #  剥去传递的参数中可能存在的前导0
+   5&nbsp;{                     #
+   6&nbsp;  return=${1#0}       #  &quot;1&quot;表示变量&quot;$1&quot; -- 传给函数的参数.
+   7&nbsp;}                     #  而&quot;0&quot;表示要从&quot;$1&quot;前端剥掉的字符 -- 剥掉0</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>Manfred Schwarb给出了比上面更多的细节的例子：
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;strip_leading_zero2 () # 剥除前导的0字符,因为不这样
+   2&nbsp;{                      # Bash会把这串字符当成八进制值.
+   3&nbsp;  shopt -s extglob     # 激活扩展匹配.
+   4&nbsp;  local val=${1##+(0)} # 使用局部变量,匹配最长的0.
+   5&nbsp;  shopt -u extglob     # 禁用扩展匹配.
+   6&nbsp;  _strip_leading_zero2=${val:-0}
+   7&nbsp;                       # 如果输入是0,返回0来替换返回&quot;&quot;.
+   8&nbsp;}</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>另外一个usage(帮助信息)示例：
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo `basename $PWD`        # 当前工作目录的基本名字.
+   2&nbsp;echo "${PWD##*/}"           # 当前工作目录的基本名字.
+   3&nbsp;echo
+   4&nbsp;echo `basename $0`          # 脚本名.
+   5&nbsp;echo $0                     # 脚本名.
+   6&nbsp;echo "${0##*/}"             # 脚本名.
+   7&nbsp;echo
+   8&nbsp;filename=test.data
+   9&nbsp;echo "${filename##*.}"      # data
+  10&nbsp;                            # 文件的扩展名.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+><A
+NAME="PCTPATREF"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${var%Pattern}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${var%%Pattern}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>删除从$var前端开始的最短或最长匹配$Pattern的字符串。</P
+>
+      </DD
+>
+    </DL
+>
+  Bash的<a
+href="bash2.html#BASH2REF"
+>版本2</a
+>增加了附加的选项。</DIV
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="PATTMATCHING"
+></A
+> 
+    <P
+><B
+>例子 9-17. 在参数替换中的模式匹配</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# patt-matching.sh
+   3&nbsp;
+   4&nbsp;# 使用# ## % %%的参数替换操作的模式匹配.
+   5&nbsp;
+   6&nbsp;var1=abcd12345abc6789
+   7&nbsp;pattern1=a*c  # * (星号)匹配a - c的所有字符.
+   8&nbsp;
+   9&nbsp;echo
+  10&nbsp;echo "var1 = $var1"           # abcd12345abc6789
+  11&nbsp;echo "var1 = ${var1}"         # abcd12345abc6789
+  12&nbsp;                              # (另一种形式)
+  13&nbsp;echo "Number of characters in ${var1} = ${#var1}"
+  14&nbsp;echo
+  15&nbsp;
+  16&nbsp;echo "pattern1 = $pattern1"   # a*c  (此表达式匹配'a'与'c'之间的所有字符)
+  17&nbsp;echo "--------------"
+  18&nbsp;echo '${var1#$pattern1}  =' "${var1#$pattern1}"    #         d12345abc6789
+  19&nbsp;# 匹配开头的最短字串　　　　　　　　　　　　　　　　　　  abcd12345abc6789
+  20&nbsp;#     ^^^^^                                               |-|
+  21&nbsp;echo '${var1##$pattern1} =' "${var1##$pattern1}"   #                  6789      
+  22&nbsp;# 最长匹配,剥掉开头的12个字符　　　　　　　　　　　　　   abcd12345abc6789
+  23&nbsp;#              ^^^^^                                      |----------|
+  24&nbsp;
+  25&nbsp;echo; echo; echo
+  26&nbsp;
+  27&nbsp;pattern2=b*9            # 匹配'b'和'9'之间的所有字符
+  28&nbsp;echo "var1 = $var1"     # 仍然是  abcd12345abc6789
+  29&nbsp;echo
+  30&nbsp;echo "pattern2 = $pattern2"
+  31&nbsp;echo "--------------"
+  32&nbsp;echo '${var1%pattern2}  =' "${var1%$pattern2}"     #     abcd12345a
+  33&nbsp;# 最短匹配, 剥去后面的6个字符      abcd12345abc6789
+  34&nbsp;#               ^^^^                         |----|
+  35&nbsp;echo '${var1%%pattern2} =' "${var1%%$pattern2}"    #     a
+  36&nbsp;# 最长匹配, 剥去后面的12个字符  　　　　　　　　　　　　 abcd12345abc6789
+  37&nbsp;#               ^^^^                                      |-------------|
+  38&nbsp;
+  39&nbsp;# 记住, #和##表示在字符串的左边（即开头）操作，
+  40&nbsp;#       %和%%表示在字符串的右边（即结尾）操作.
+  41&nbsp;
+  42&nbsp;echo
+  43&nbsp;
+  44&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="RFE"
+></A
+> 
+    <P
+><B
+>例子 9-18. 更改文件扩展名（后缀）:</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# rfe.sh: 更改文件扩展名.
+   3&nbsp;#
+   4&nbsp;#         rfe old_extension new_extension
+   5&nbsp;#
+   6&nbsp;# 例如:
+   7&nbsp;# T为了把当前目录下所有的*.gif文件改成*.jpg,如下执行：
+   8&nbsp;#          rfe gif jpg
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;E_BADARGS=65
+  12&nbsp;
+  13&nbsp;case $# in
+  14&nbsp;  0|1)             # 在这里，竖线(|)意味着&quot;或&quot;。
+  15&nbsp;  echo "Usage: `basename $0` old_file_suffix new_file_suffix"
+  16&nbsp;  exit $E_BADARGS  # 如果是0或1，就退出脚本
+  17&nbsp;  ;;
+  18&nbsp;esac
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;for filename in *.$1
+  22&nbsp;# 把文件名以第一个参数为后缀的文件全部列举出来
+  23&nbsp;do
+  24&nbsp;  mv $filename ${filename%$1}$2
+  25&nbsp;  #  剥去文件名中匹配第一个参数的部分,
+  26&nbsp;  #+ 然后加上第二个参数.
+  27&nbsp;done
+  28&nbsp;
+  29&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="EXPREPL1"
+></A
+>变量扩展/子串替换</B
+></P
+>
+    <DL
+>
+      <DT
+></DT
+>
+      <DD
+> 
+        <P
+>这些结构从<I
+CLASS="EMPHASIS"
+>ksh</I
+>中学习而来.<b></b></P
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var:pos}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>变量<TT
+CLASS="REPLACEABLE"
+><I
+>var</I
+></TT
+>被展开成从位移<TT
+CLASS="REPLACEABLE"
+><I
+>pos</I
+></TT
+>个字符往后的值. </P
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var:pos:len}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>从变量<tt
+class="REPLACEABLE"
+><i
+>var</i
+></tt
+>中展开成从位移<tt
+class="REPLACEABLE"
+><i
+>pos</i
+></tt
+>的字符往后最长为<TT
+CLASS="REPLACEABLE"
+><I
+>len</I
+></TT
+>的字符串。参考<A
+HREF="contributed-scripts.html#PW"
+>例子 A-14</A
+>中这个操作符的创造性用法。</P
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var/Pattern/Replacement}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>在变量<tt
+class="REPLACEABLE"
+><i
+>var</i
+></tt
+>第一个匹配<TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>的字符串用<TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>代替.</P
+>
+        <P
+>如果省略了<TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+> ，则第一个匹配<TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>的字符串会被删除.</P
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var//Pattern/Replacement}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <DIV
+CLASS="FORMALPARA"
+> 
+          <P
+><B
+>全局替换Global replacement.</B
+>所有在变量<tt
+class="REPLACEABLE"
+><i
+>var</i
+></tt
+>中被<TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>匹配到的都由<TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>代替.</P
+>
+        </DIV
+>
+        <P
+>和上面的一样,如果<TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>被省略,则所有的匹配<TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>的字符串都会被删除.</P
+>
+        <DIV
+CLASS="EXAMPLE"
+> 
+          <HR>
+          <A
+NAME="EX7"
+></A
+> 
+          <P
+><B
+>例子 9-19. 用模式匹配来解析任意的字符串</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;var1=abcd-1234-defg
+   4&nbsp;echo "var1 = $var1"
+   5&nbsp;
+   6&nbsp;t=${var1#*-*}
+   7&nbsp;echo "var1 (with everything, up to and including first - stripped out) = $t"
+   8&nbsp;#  t=${var1#*-}  也一样,
+   9&nbsp;#+ 因为 # 匹配最短的字符串,
+  10&nbsp;#+ 并且 * 匹配前面所说的所有字符，也包括空字符串.
+  11&nbsp;# (多谢Stephane Chazelas指出这一点.)
+  12&nbsp;
+  13&nbsp;t=${var1##*-*}
+  14&nbsp;echo "If var1 contains a \"-\", returns empty string...   var1 = $t"
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;t=${var1%*-*}
+  18&nbsp;echo "var1 (with everything from the last - on stripped out) = $t"
+  19&nbsp;
+  20&nbsp;echo
+  21&nbsp;
+  22&nbsp;# -------------------------------------------
+  23&nbsp;path_name=/home/bozo/ideas/thoughts.for.today
+  24&nbsp;# -------------------------------------------
+  25&nbsp;echo "path_name = $path_name"
+  26&nbsp;t=${path_name##/*/}
+  27&nbsp;echo "path_name, stripped of prefixes = $t"
+  28&nbsp;# 在这个特例中，和   t=`basename $path_name`  效果一样.
+  29&nbsp;#  t=${path_name%/}; t=${t##*/}   是更一般的解决办法,
+  30&nbsp;#+ 但有时还是会失败.
+  31&nbsp;#  如果$path_name 以一个新行符结尾，那么 `basename $path_name` 就不能正常工作了,
+  32&nbsp;#+ 但上面的表达式可以正常工作.
+  33&nbsp;# (多谢, S.C.)
+  34&nbsp;
+  35&nbsp;t=${path_name%/*.*}
+  36&nbsp;# 效果和   t=`dirname $path_name`   一样
+  37&nbsp;echo "path_name, stripped of suffixes = $t"
+  38&nbsp;# 有时这会失败,比如"../", "/foo////", # "foo/", "/".
+  39&nbsp;#  移除前缀,特别当basename没有前缀时,
+  40&nbsp;#+ 但目录名可以，但也使问题也更复杂了.
+  41&nbsp;# (多谢, S.C.)
+  42&nbsp;
+  43&nbsp;echo
+  44&nbsp;
+  45&nbsp;t=${path_name:11}
+  46&nbsp;echo "$path_name, with first 11 chars stripped off = $t"
+  47&nbsp;t=${path_name:11:5}
+  48&nbsp;echo "$path_name, with first 11 chars stripped off, length 5 = $t"
+  49&nbsp;
+  50&nbsp;echo
+  51&nbsp;
+  52&nbsp;t=${path_name/bozo/clown}
+  53&nbsp;echo "$path_name with \"bozo\" replaced  by \"clown\" = $t"
+  54&nbsp;t=${path_name/today/}
+  55&nbsp;echo "$path_name with \"today\" deleted = $t"
+  56&nbsp;t=${path_name//o/O}
+  57&nbsp;echo "$path_name with all o's capitalized = $t"
+  58&nbsp;t=${path_name//o/}
+  59&nbsp;echo "$path_name with all o's deleted = $t"
+  60&nbsp;
+  61&nbsp;exit 0</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var/#Pattern/Replacement}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>如果变量<tt
+class="REPLACEABLE"
+><i
+>var</i
+></tt
+>的<I
+CLASS="EMPHASIS"
+>前缀</I
+>匹配模式<TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>,则用<TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>代替匹配模式的字符串<TT
+CLASS="REPLACEABLE"
+></TT
+>.</P
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var/%Pattern/Replacement}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>如果变量<tt
+class="REPLACEABLE"
+><i
+>var</i
+></tt
+>的<i
+class="EMPHASIS"
+>后缀</i
+>匹配模式<TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>,则用<TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>代替匹配模式的字符串.</P
+>
+        <DIV
+CLASS="EXAMPLE"
+> 
+          <HR>
+          <A
+NAME="VARMATCH"
+></A
+> 
+          <P
+><B
+>例子 9-20. 匹配字符串前缀和后缀的模式</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# var-match.sh:
+   3&nbsp;# Demo of pattern replacement at prefix / suffix of string.
+   4&nbsp;
+   5&nbsp;v0=abc1234zip1234abc    # 初值.
+   6&nbsp;echo "v0 = $v0"         # abc1234zip1234abc
+   7&nbsp;echo
+   8&nbsp;
+   9&nbsp;# 匹配字符串的前缀(开头).
+  10&nbsp;v1=${v0/#abc/ABCDEF}    # abc1234zip1234abc
+  11&nbsp;                        # |-|
+  12&nbsp;echo "v1 = $v1"         # ABCDEF1234zip1234abc
+  13&nbsp;                        # |----|
+  14&nbsp;
+  15&nbsp;# 匹配字符串的后缀(尾部).
+  16&nbsp;v2=${v0/%abc/ABCDEF}    # abc1234zip123abc
+  17&nbsp;                        #              |-|
+  18&nbsp;echo "v2 = $v2"         # abc1234zip1234ABCDEF
+  19&nbsp;                        #               |----|
+  20&nbsp;
+  21&nbsp;echo
+  22&nbsp;
+  23&nbsp;#  ----------------------------------------------------
+  24&nbsp;#  必须匹配字符串的开头/尾部,
+  25&nbsp;#+ 否则不会发生替换.
+  26&nbsp;#  ----------------------------------------------------
+  27&nbsp;v3=${v0/#123/000}       # 匹配，但不是在开头.
+  28&nbsp;echo "v3 = $v3"         # abc1234zip1234abc
+  29&nbsp;                        # 不会被替换.
+  30&nbsp;v4=${v0/%123/000}       # 匹配,但不是尾部.
+  31&nbsp;echo "v4 = $v4"         # abc1234zip1234abc
+  32&nbsp;                        # 不会被替换.
+  33&nbsp;
+  34&nbsp;exit 0			</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+      </DD
+>
+      <DT
+><TT
+CLASS="USERINPUT"
+><B
+>${!varprefix*}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${!varprefix@}</B
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>匹配所有前面声明过的变量，并且变量名以<I
+CLASS="EMPHASIS"
+>varprefix</I
+>开头. 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;xyz23=whatever
+   2&nbsp;xyz24=
+   3&nbsp;
+   4&nbsp;a=${!xyz*}      # 展开为声明过的并以"xyz".
+   5&nbsp;echo "a = $a"   # a = xyz23 xyz24
+   6&nbsp;a=${!xyz@}      # Same as above.
+   7&nbsp;echo "a = $a"   # a = xyz23 xyz24
+   8&nbsp;
+   9&nbsp;# Bash, 版本2.04,增加了这个属性.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+    </DL
+>
+  </DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN4824"
+HREF="parameter-substitution.html#AEN4824"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>如果变量$parameter在一个非交互的脚本中为null,它会以<A
+HREF="exitcodes.html#EXITCODESREF"
+><SPAN
+CLASS="RETURNVALUE"
+>127</SPAN
+> 退出状态码</A
+>终结(Bash错误代码表示<SPAN
+CLASS="QUOTE"
+>"command not found"(命令没有发现)</SPAN
+>).</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="string-manipulation.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="declareref.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Manipulating Strings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Typing variables: <B
+CLASS="COMMAND"
+>declare</B
+> or
+	  <B
+CLASS="COMMAND"
+>typeset</B
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

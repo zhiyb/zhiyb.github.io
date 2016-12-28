@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Testing Your Knowledge of Tests</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tests"
+HREF="tests.html"><LINK
+REL="PREVIOUS"
+TITLE="Nested if/then Condition Tests"
+HREF="nestedifthen.html"><LINK
+REL="NEXT"
+TITLE="Operations and Related Topics"
+HREF="operations.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="nestedifthen.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Tests</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="operations.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="TESTTEST"
+>7.5. 检测你对测试命令掌握</A
+></H1
+>
+  <P
+>一个<tt
+class="FILENAME"
+>xinitrc</tt
+>系统文件能用来启动一个X服务器。这个文件包含了相当多的<i
+class="EMPHASIS"
+>if/then</i
+>测试，就像下面这个文件的一个摘录展示的一样。</P
+>
+  <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ -f $HOME/.Xclients ]; then
+   2&nbsp;  exec $HOME/.Xclients
+   3&nbsp;elif [ -f /etc/X11/xinit/Xclients ]; then
+   4&nbsp;  exec /etc/X11/xinit/Xclients
+   5&nbsp;else
+   6&nbsp;     # 失败后的安全设置。　虽然我们决不该执行到这儿
+   7&nbsp;     # (我们也在X客户提供可靠保证) 它不能被破坏.
+   8&nbsp;     xclock -geometry 100x100-5+5 &#38;
+   9&nbsp;     xterm -geometry 80x50-50+150 &#38;
+  10&nbsp;     if [ -f /usr/bin/netscape -a -f /usr/share/doc/HTML/index.html ]; then
+  11&nbsp;             netscape /usr/share/doc/HTML/index.html &#38;
+  12&nbsp;     fi
+  13&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+>解释上面摘录的test结构，然后检查整个<tt
+class="FILENAME"
+>/etc/X11/xinit/xinitrc</tt
+>文件并分析那儿的所有<i
+class="EMPHASIS"
+>if/then</i
+>测试结构。你可能涉及到还没讨论过的<a
+href="textproc.html#GREPREF"
+>grep</a
+>,<a
+href="sedawk.html#SEDREF"
+>sed</a
+>和<a
+href="regexp.html#REGEXREF"
+>正则表达式</a
+>的主题。</P
+>
+</DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="nestedifthen.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="operations.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Nested if/then Condition Tests</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tests.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Operations and Related Topics</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

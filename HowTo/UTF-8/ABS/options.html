@@ -1,0 +1,816 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Options</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="Debugging"
+HREF="debugging.html"><LINK
+REL="NEXT"
+TITLE="Gotchas"
+HREF="gotchas.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="debugging.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="gotchas.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="OPTIONS"
+>&#31532; 30 &#31456;. &#36873;&#39033;</A
+></H1
+>
+  <P
+><A
+NAME="OPTIONSREF"
+></A
+></P
+>
+  <P
+>选项用来更改shell或/和脚本行为的机制.</P
+>
+  <P
+><A
+HREF="internal.html#SETREF"
+>set</A
+> 命令用来在脚本里激活各种选项. 在脚本中任何你想让选项生效的地方，插入 <B
+CLASS="COMMAND"
+>set
+	-o option-name</B
+> 或, 用更简短的格式, <B
+CLASS="COMMAND"
+>set
+	-option-abbrev</B
+>. 这两种格式都是等价的.</P
+>
+  <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;      #!/bin/bash
+   2&nbsp;
+   3&nbsp;      set -o verbose
+   4&nbsp;      # 执行前打印命令.
+   5&nbsp;      </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;      #!/bin/bash
+   2&nbsp;
+   3&nbsp;      set -v
+   4&nbsp;      # 和上面的有完全相同的效果.
+   5&nbsp;      </PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>为了在脚本里停用一个选项，
+	插入 <B
+CLASS="COMMAND"
+>set +o option-name</B
+> 或 <B
+CLASS="COMMAND"
+>set
+	+option-abbrev</B
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;      #!/bin/bash
+   2&nbsp;
+   3&nbsp;      set -o verbose
+   4&nbsp;      # 激活命令回显.
+   5&nbsp;      command
+   6&nbsp;      ...
+   7&nbsp;      command
+   8&nbsp;
+   9&nbsp;      set +o verbose
+  10&nbsp;      # 停用命令回显.
+  11&nbsp;      command
+  12&nbsp;      # 没有回显命令了.
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;      set -v
+  16&nbsp;      # 激活命令回显.
+  17&nbsp;      command
+  18&nbsp;      ...
+  19&nbsp;      command
+  20&nbsp;
+  21&nbsp;      set +v
+  22&nbsp;      # 停用命令回显.
+  23&nbsp;      command
+  24&nbsp;
+  25&nbsp;      exit 0
+  26&nbsp;      </PRE
+></TD
+></TR
+></TABLE
+></P
+>
+  <P
+>另一个在脚本里启用选项的方法是在脚本头部的<TT
+CLASS="REPLACEABLE"
+><I
+>#!</I
+></TT
+>后面指定选项.</P
+>
+  <P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;      #!/bin/bash -x
+   2&nbsp;      #
+   3&nbsp;      # 下面是脚本的主要内容.
+   4&nbsp;      </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><A
+NAME="INVOCATIONOPTIONSREF"
+></A
+></P
+>
+   <P
+>从命令行来激活脚本的选项也是可以办到的. 一些不能和<B
+CLASS="COMMAND"
+>set</B
+>一起用的选项可以用在命令行指定. <TT
+CLASS="REPLACEABLE"
+><I
+>-i</I
+></TT
+>是其中之一, 可以使脚本以交互方式运行.</P
+>
+   <P
+><TT
+CLASS="USERINPUT"
+><B
+>bash -v script-name</B
+></TT
+></P
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>bash -o verbose script-name</B
+></TT
+></P
+>
+   <P
+>下面的表格列举了一些有用的选项. 它们都可以用简短格式来指定（以一个短横线开头）也可以用完整的名字来指定（用双短横线开头或用-o来指定）.</P
+>
+   <DIV
+CLASS="TABLE"
+><HR><A
+NAME="AEN14976"
+></A
+>
+   <P
+><B
+>表 30-1. Bash 选项</B
+></P
+>
+   <TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+>
+     <TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>缩写</TH
+>
+     <TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>名称</TH
+>
+     <TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>作用</TH
+>
+   </TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="NOCLOBBERREF"
+></A
+><TT
+CLASS="OPTION"
+>-C</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>noclobber</TD
+>
+   <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>防止重定向时覆盖文件 (此作用会被<SPAN
+CLASS="TOKEN"
+>&#62;|</SPAN
+>覆盖)</TD
+>
+   </TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-D</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>(none)</TD
+>
+   <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>列出双引号引起的含有$前缀的字符串，但不执行脚本中的命令</TD
+>
+   </TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-a</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>allexport</TD
+>
+	      <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>导出所有定义的变量到环境变量中</TD
+>
+	      </TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-b</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>notify</TD
+>
+	      <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>当后台任务终止时给出通知 (在脚本中用的不多)</TD
+>
+	      </TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-c ...</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>(none)</TD
+>
+	        <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>从<b
+class="COMMAND"
+>...</b
+>读命令</TD
+>
+	        </TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-e</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>errexit</TD
+>
+	        <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>脚本发生第一个错误时就中止脚本运行，即当一个命令返回非零值时退出脚本 (除了<A
+HREF="loops.html#UNTILLOOPREF"
+>until</A
+> 或 <A
+HREF="loops.html#WHILELOOPREF"
+>while loops</A
+>, <A
+HREF="tests.html#TESTCONSTRUCTS1"
+>if-tests</A
+>, <A
+HREF="list-cons.html#LCONS1"
+>list constructs</A
+>)</TD
+>
+	        </TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-f</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>noglob</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>文件名替换停用（指像*这样的符号不能替换为文件名了）</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-i</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>interactive</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>使脚本以交互式方式运行</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-n</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>noexec</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>从脚本里读命令但不执行它们（语法检查）</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-o Option-Name</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>(none)</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>调用<I
+CLASS="EMPHASIS"
+>Option-Name</I
+>
+	        选项</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-o posix</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>POSIX</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>更改Bash或脚本的行为，使之符合<A
+HREF="sha-bang.html#POSIX2REF"
+>POSIX</A
+>标准.</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-p</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>privileged</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>脚本作为<SPAN
+CLASS="QUOTE"
+>"suid"程序来运行</SPAN
+> (小心!)</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-r</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>restricted</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>脚本在受限模式中运行 (参考<A
+HREF="restricted-sh.html"
+>第21章</A
+>).</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-s</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>stdin</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="FILENAME"
+>从标准输入读命令</TT
+></TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-t</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>(none)</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>第一个命令后就退出</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-u</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>nounset</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>当使用一个未定义的变量时产生一个错误信息，并强制退出脚本。</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-v</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>verbose</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>执行命令之前打印命令到标准输出</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-x</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>xtrace</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>与<TT
+CLASS="OPTION"
+>-v相似</TT
+>, 但打印完整的命令</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>(none)</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>选项列表结束的标志. 后面的参数是<A
+HREF="variables2.html#POSPARAMREF"
+>位置参数（positional
+		parameters）</A
+>.</TD
+>
+		</TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>--</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>(none)</TD
+>
+		<TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>释放位置参数.
+		如果参数列表被指定了(<TT
+CLASS="VARNAME"
+>-- arg1 arg2</TT
+>),
+		则位置参数被依次设置为参数列表中的值.</TD
+>
+		</TR
+></TBODY
+></TABLE
+><HR></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="debugging.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="gotchas.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Debugging</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Gotchas</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

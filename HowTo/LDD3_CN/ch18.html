@@ -1,0 +1,109 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第18章 TTY 驱动</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch17s16.html" title="17.16 快速参考">
+<link rel="next" href="ch18s02.html" title="18.2 tty_driver 函数指针">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第18章&nbsp;TTY 驱动</H1> </th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch17s16.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch18s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="chapter" lang="zh-cn">
+<p>一个 tty 设备得名于电传打字机的很老的简称, 并且起初只和连接到一台 UNIX 机器的物理或者虚拟终端有关联. 长时间以来, 这个名子还逐渐表示任何串口类型的设备, 因为终端连接也能够在这样的一个连接上建立. 一些物理 tty 设备的例子是串口, USB-串口 转换器, 以及某些类型的需要特殊处理来正确工作的调制解调器(例如传统的 Win-Modem 类型设备). tty 虚拟设备支持虚拟控制台以用来登录到一台计算机, 或者从键盘, 或者从网络连接, 或者通过一个 xterm 会话.</p>
+<p>Linux tty 驱动的核心正好位于标准字符驱动级别之下, 并且提供了一些特性集中在为使用终端类型设备提供一个接口. 这个核心负责控制跨越一个 tty 设备的数据流和数据格式. 这允许 tty 驱动以一种一致的方式集中于处理到硬件和出自硬件的数据, 而不必担心如何控制对用户空间的接口. 为控制数据流, 有几个不同的线路规程可以虚拟地"插入"任何一个 tty 设备. 这由不同的 tty 线路规程驱动来完成.</p>
+<p>如同图<A title="图&nbsp;18.1.&nbsp;tty 核心概览" href="ch18.html#ldd3-18-1.fig" >tty 核心概览</A>所示, tty 核心从一个用户获取将要发送给一个 tty 设备的数据. 它接着传递它到一个 tty 线路规程驱动, 接着传递它到一个 tty 驱动. 这个 tty 驱动转换数据为可以发送给硬件的格式. 从 tty 硬件收到的数据向上回流通过 tty 驱动, 进入 tty 线路规程驱动, 再进入 tty 核心, 在这里它被一个用户获取. 有时 tty 驱动直接和 tty 核心通讯, 并且 tty 核心直接发送数据到 tty 驱动, 但是常常 tty 线路规程有机会修改在 2 者之间发送的数据.</p>
+<div class="figure">
+<a name="ldd3-18-1.fig"></a><p class="title"><b>图&nbsp;18.1.&nbsp;tty 核心概览</b></p>
+<div><IMG alt="tty 核心概览" src="images/snagitldd3/ldd3-18-1.png" ></div>
+</div>
+<p>tty 驱动从未看见 tty 线路规程. 这个驱动不能直接和线路规程通讯, 它甚至也不知道它存在. 驱动的工作是以硬件能够理解的方式格式化发送给它的数据, 并且从硬件接收数据. tty 线路规程的工作是以特殊的方式格式化从一个用户或者硬件收到的数据. 这种格式化常常采用一个协议转换的形式, 例如 PPP 和 Bluetooth. </p>
+<p>有 3 种不同类型 tty 驱动: 控制台, 串口, 和 pty. 控制台和 pty 驱动硬件已经被编写以及可能是唯一需要的 tty 驱动的类型. 这使得任何使用 tty 核心来与用户和系统交互的新驱动作为串口驱动.</p>
+<p>为知道什么类型的 tty 驱动当前被加载到内核以及什么 tty 设备当前存在, 查看 /proc/tty/drivers 文件. 这个文件包括一个当前存在的不同 tty 驱动的列表, 显示驱动的名子, 缺省的节点名子, 驱动的主编号, 这个驱动使用的次编号范围, 以及 tty 驱动的类型. 下面是一个这个文件的例子:</p>
+<pre class="screen">
+/dev/tty      /dev/tty      5     0     system:/dev/tty  
+/dev/console  /dev/console  5     1     system:console  
+/dev/ptmx     /dev/ptmx     5     2     system  
+/dev/vc/0     /dev/vc/0     4     0     system:vtmaster  
+usbserial     /dev/ttyUSB   188   0-254 serial  
+serial        /dev/ttyS     4     64-67 serial  
+pty_slave     /dev/pts      136   0-255 pty:slave  
+pty_master    /dev/ptm      128   0-255 pty:master  
+pty_slave     /dev/ttyp     3     0-255 pty:slave  
+pty_master    /dev/pty      2     0-255 pty:master  
+unknown       /dev/tty      4     1-63  console  
+</pre>
+<p>/proc/tty/driver/ 目录给一些 tty 驱动包含了单独的文件, 如果它们实现这个功能. 缺省的串口驱动创建一个文件在这个目录中来展示许多串口特定的硬件信息. 如何在这个目录建立一个文件的信息后面描述.</p>
+<p>所有的当前注册的以及在内核中出现的 tty 设备有它们自己的子目录在 /sys/class/tty 下面. 在那个子目录下, 有一个 "dev" 文件包含有分配给那个 tty 设备的主次编号. 如果这个驱动告知内核物理设备和关联到这个 tty 设备的驱动的所在, 它创建符号连接到它们. 这个树的一个例子是:</p>
+<pre class="screen">
+/sys/class/tty/
+|-- console
+| `-- dev
+|-- ptmx
+| `-- dev
+|-- tty
+| `-- dev
+|-- tty0
+| `-- dev
+ ...
+|-- ttyS1
+| `-- dev
+|-- ttyS2
+| `-- dev
+|-- ttyS3
+| `-- dev
+ ...
+|-- ttyUSB0
+|  |-- dev  
+|  |-- device -&gt; ../../../devices/pci0000:00/0000:00:09.0/usb3/3-1/3-1:1.0/ttyUSB0  
+|  `-- driver -&gt; ../../../bus/usb-serial/drivers/keyspan_4  
+|-- ttyUSB1
+| |-- dev
+| |-- device -&gt; ../../../devices/pci0000:00/0000:00:09.0/usb3/3-1/3-1:1.0/ttyUSB1
+| `-- driver -&gt; ../../../bus/usb-serial/drivers/keyspan_4
+|-- ttyUSB2
+| |-- dev
+| |-- device -&gt; ../../../devices/pci0000:00/0000:00:09.0/usb3/3-1/3-1:1.0/ttyUSB2
+| `-- driver -&gt; ../../../bus/usb-serial/drivers/keyspan_4
+`-- ttyUSB3
+|-- dev
+|-- device -&gt; ../../../devices/pci0000:00/0000:00:09.0/usb3/3-1/3-1:1.0/ttyUSB3
+`-- driver -&gt; ../../../bus/usb-serial/drivers/keyspan_4 
+</pre>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><h2 class="title" style="CLEAR: both">
+<a name="ASmallTTYDriver.sect"></a>
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch17s16.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch18s01.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">17.16.&nbsp;快速参考&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top"> &nbsp;18.1.&nbsp;一个小TTY驱动</td>
+</tr>
+</table>  </h2></div></div></div>        </div>
+</div>
+</body>
+</html>

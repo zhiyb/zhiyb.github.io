@@ -1,0 +1,649 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Typing variables: declare or
+	  typeset</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Variables Revisited"
+HREF="variables2.html"><LINK
+REL="PREVIOUS"
+TITLE="Parameter Substitution"
+HREF="parameter-substitution.html"><LINK
+REL="NEXT"
+TITLE="Indirect References to Variables"
+HREF="ivr.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="parameter-substitution.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Variables Revisited</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ivr.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DECLAREREF"
+>9.4. Typing variables: <B
+CLASS="COMMAND"
+>declare</B
+> or
+	  <B
+CLASS="COMMAND"
+>typeset</B
+></A
+></H1
+>
+  <P
+><i
+class="FIRSTTERM"
+>declare</i
+>或<i
+class="FIRSTTERM"
+>typeset</i
+><a
+href="internal.html#BUILTINREF"
+>内建</a
+>命令(它们是完全相同的)可以用来限定变量的属性.这是在某些编程语言中使用的定义类型不严格的方式。命令<b
+class="COMMAND"
+>declare</b
+>是bash版本2之后才有的。命令<b
+class="COMMAND"
+>typeset</b
+>也可以在ksh脚本中运行。</P
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="DECLAREOPSREF1"
+></A
+>declare/typeset 选项</B
+></P
+>
+    <DL
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-r</SPAN
+> <TT
+CLASS="REPLACEABLE"
+><I
+>只读</I
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;declare -r var1</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>(<TT
+CLASS="USERINPUT"
+><B
+>declare -r var1</B
+></TT
+>与<TT
+CLASS="USERINPUT"
+><B
+>readonly var1</B
+></TT
+>作用相同)</P
+>
+        <P
+>这大致和C的<b
+class="COMMAND"
+>const</b
+>限定词相同.一个试图改变只读变量值的操作将会引起错误信息而失败.</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-i</SPAN
+> <TT
+CLASS="REPLACEABLE"
+><I
+>整数</I
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;declare -i number
+   2&nbsp;# 脚本余下的部分会把"number"当作整数看待.		
+   3&nbsp;
+   4&nbsp;number=3
+   5&nbsp;echo "Number = $number"     # Number = 3
+   6&nbsp;
+   7&nbsp;number=three
+   8&nbsp;echo "Number = $number"     # Number = 0
+   9&nbsp;# 脚本尝试把字符串"three"作为整数来求值(译者注：当然会失败，所以出现值为0).</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>某些算术计算允许在被声明为整数的变量中完成，而不需要特别使用<a
+href="moreadv.html#EXPRREF"
+>expr</a
+>或<a
+href="internal.html#LETREF"
+>let</a
+>来完成。</P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;n=6/3
+   2&nbsp;echo "n = $n"       # n = 6/3
+   3&nbsp;
+   4&nbsp;declare -i n
+   5&nbsp;n=6/3
+   6&nbsp;echo "n = $n"       # n = 2</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-a</SPAN
+> <TT
+CLASS="REPLACEABLE"
+><I
+>数组</I
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;declare -a indices</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>变量<TT
+CLASS="VARNAME"
+>indices</TT
+>会被当作数组.</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-f</SPAN
+> <TT
+CLASS="REPLACEABLE"
+><I
+>函数</I
+></TT
+></DT
+>
+      <DD
+> 
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;declare -f</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>在脚本中没有带任何参数的<TT
+CLASS="USERINPUT"
+><B
+>declare -f</B
+></TT
+> 会列出所有在此脚本前面已定义的函数出来。</P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;declare -f function_name</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>而<TT
+CLASS="USERINPUT"
+><B
+>declare -f function_name</B
+></TT
+>则只会列出指定的函数.</P
+>
+      </DD
+>
+      <DT
+><SPAN
+CLASS="TOKEN"
+>-x</SPAN
+> <A
+HREF="internal.html#EXPORTREF"
+>export</A
+></DT
+>
+      <DD
+> 
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;declare -x var3</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>这样将声明一个变量作为脚本的环境变量而被导出。</P
+>
+      </DD
+>
+      <DT
+>-x var=$value</DT
+>
+      <DD
+> 
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;declare -x var3=373</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+><B
+CLASS="COMMAND"
+>declare</B
+>命令允许在声明变量类型的时候同时给变量赋值。</P
+>
+      </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX20"
+></A
+>
+    <P
+><B
+>例子 9-21. 用<B
+CLASS="COMMAND"
+>declare来声明变量类型</B
+></B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;func1 ()
+   4&nbsp;{
+   5&nbsp;echo This is a function.
+   6&nbsp;}
+   7&nbsp;
+   8&nbsp;declare -f        # 列出上面的函数.
+   9&nbsp;
+  10&nbsp;echo
+  11&nbsp;
+  12&nbsp;declare -i var1   # var1是一个整数.
+  13&nbsp;var1=2367
+  14&nbsp;echo "var1 declared as $var1"
+  15&nbsp;var1=var1+1       # 整数声明后，不需要使用'let'.
+  16&nbsp;echo "var1 incremented by 1 is $var1."
+  17&nbsp;# 试图将已声明为整数的变量的值更改为浮点值.
+  18&nbsp;echo "Attempting to change var1 to floating point value, 2367.1."
+  19&nbsp;var1=2367.1       # 引起一个错误信息，此变量的值保持原样.
+  20&nbsp;echo "var1 is still $var1"
+  21&nbsp;
+  22&nbsp;echo
+  23&nbsp;
+  24&nbsp;declare -r var2=13.36         # 'declare'允许设置变量的属性，
+  25&nbsp;                              #+ 同时也给变量赋值.
+  26&nbsp;echo "var2 declared as $var2" # 试图更改只读变量的值.
+  27&nbsp;var2=13.37                    # 引起错误，并且从脚本退出.
+  28&nbsp;
+  29&nbsp;echo "var2 is still $var2"    # 这行不会被执行.
+  30&nbsp;
+  31&nbsp;exit 0                        # 脚本不会从这儿退出.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>使用内建的<i
+class="EMPHASIS"
+>declare</i
+>来限定变量的范围. 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;foo ()
+   2&nbsp;{
+   3&nbsp;FOO="bar"
+   4&nbsp;}
+   5&nbsp;
+   6&nbsp;bar ()
+   7&nbsp;{
+   8&nbsp;foo
+   9&nbsp;echo $FOO
+  10&nbsp;}
+  11&nbsp;
+  12&nbsp;bar   # 打印 bar.</PRE
+></TD
+></TR
+></TABLE
+></P
+>
+          <P
+>然而 . . . 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;foo (){
+   2&nbsp;declare FOO="bar"
+   3&nbsp;}
+   4&nbsp;
+   5&nbsp;bar ()
+   6&nbsp;{
+   7&nbsp;foo
+   8&nbsp;echo $FOO
+   9&nbsp;}
+  10&nbsp;
+  11&nbsp;bar  # 什么也不打印.
+  12&nbsp;
+  13&nbsp;
+  14&nbsp;# 多谢Michael Iatrou指出这一点.</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="parameter-substitution.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ivr.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Parameter Substitution</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Indirect References to Variables</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

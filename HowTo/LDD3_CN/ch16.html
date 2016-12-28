@@ -1,0 +1,57 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第16章 块驱动</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch15s05.html" title="15.5.&#160;快速参考">
+<link rel="next" href="ch16s02.html" title="16.2.&#160;块设备操作">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第16章&nbsp;块驱动</H1></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch15s05.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch16s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="chapter" lang="zh-cn">
+<p>至今, 我们的讨论一直限于字符驱动. 但是, 在 Linux 系统中有其他类型的驱动, 并且到时候要开阔我们的视野了. 因此, 本章讨论块驱动.</p>
+<p>一个块驱动提供设备的存取, 这个设备可随机地以固定大小的块传送数据--主要的是, 磁盘驱动. Linux 内核看待块设备根本上不同于字符设备; 结果, 块驱动有明显不同的接口和它们自己的特殊的挑战.</p>
+<p>高效的块驱动对于性能是重要的 -- 不只是为在用户应用程序的明确的读和写. 现代的有虚拟内存的系统将不需要的数据移向(希望地)二级存储中, 它常常是一个磁盘驱动器. 块驱动是核心内存和二级存储之间的导管; 因此, 它们可组成虚拟内存子系统的一部分. 虽然可能编写一个块驱动不必知道 struct page 和其他重要的内存概念, 任何需要编写一个高性能驱动的人必须使用 15 章所涉及的内容.</p>
+<p>许多块层的设计围绕性能. 许多字符设备可在它们的最大速率以下运行, 并且系统的总体性能不被影响. 但是如果它的块 I/O 子系统没有调整好, 系统不能很好地运行. Linux 块驱动接口允许你从一个块设备中获得最多输出, 但是有必要, 施加一些你必须处理的复杂性. 好的是, 2.6 的块接口比之前的内核很大提高.</p>
+<p>如你会期望的, 本章的讨论集中在一个例子驱动, 它实现了一个面向块的, 基于内存的设备. 基本上, 它是一个 ramdisk. 内核硬件包含了一个很高级的 ramdisk 实现, 但是我们的驱动(称为 sbull)让我们演示创建一个块驱动, 同时最小化无关的复杂性.</p>
+<p>在进入细节之前, 我们精确定义几个词语. 一个块是一个固定大小的数据块, 大小由内核决定. 块常常是 4096 字节, 但是这个值可依赖体系和使用的文件系统而变化. 一个扇区, 相反, 是一个小块, 它的大小常常由底层的硬件决定. 内核期望处理实现 512-字节扇区的设备. 如果你的设备使用不同的大小, 内核调整并且避免产生硬件无法处理的 I/O 请求. 但是, 它值得记住, 任何时候内核给你一个扇区号, 它是工作在一个 512-字节扇区的世界. 如果你使用不同的硬件扇区大小, 你必须相应地调整内核的扇区号. 我们在 sbull 驱动中见如何完成这个.</p>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><h2 class="title" style="CLEAR: both">
+<a name="Registration.sect1"></a>
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch15s05.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch16s01.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">15.5.&nbsp;快速参考&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;16.1. 
+    注册</td>
+</tr>
+</table></h2></div></div></div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>10.2. 安装一个中断处理</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="ch10.html" title="第&#160;10&#160;章&#160;中断处理">
+<link rel="prev" href="ch10.html" title="第&#160;10&#160;章&#160;中断处理">
+<link rel="next" href="ch10s03.html" title="10.3.&#160;前和后半部">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H2>10.1.&nbsp;准备并口</H2></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch10.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle"></th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch10s02.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><div class="sect1" lang=zh-cn >
+<p >尽管并口简单, 它能够触发中断. 这个能力被打印机用来通知 lp 驱动它准备好接收缓存中的下一个字符.</p><p>
+如同大部分设备, 并口实际上不产生中断, 在它被指示这样作之前; 并口标准规定设置 port 2 (0x37a, 
+0x27a, 或者任何)的 bit 4 就使能中断报告. short 在模块初始化时进行一个简单的 outb 调用来设置这个位.
+</p>
+<p>一旦中断使能, 任何时候在管脚 10 (所谓的 ACK 位)上的电信号从低变到高, 并口产生一个中断. 
+最简单的方法来强制接口产生中断( 没有挂一个打印机到端口 )是连接并口连接器的管脚 9 和 管脚 10. 一根短线, 插到你的系统后面的并口连接器的合适的孔中, 
+就建立这个连接. 并口外面的管脚图示于图<A title=图&nbsp;9.1.&nbsp;并口的管脚 href="ch09s03.html#ldd3-9-1.fig" >并口的管脚</A></p><p>管脚 9 是并口数据字节的最高位. 如果你写二进制数据到 /dev/short0, 你产生几个中断. 然而, 写 
+ASCII 文本到这个端口不会产生任何中断, 因为 ASCII 字符集没有最高位置位的项. </p>
+<p>如果你宁愿避免连接管脚到一起, 而你手上确实有一台打印机, 你可用使用一个真正的打印机来运行例子中断处理, 
+如同下面展示的. 但是, 注意我们介绍的探测函数依赖管脚 9 和管脚 10 之间的跳线在位置上, 并且你需要它使用你的代码来试验探测.</p></div>
+<a name="InstallinganInterruptHandler.sect"></a></div>
+<DIV>
+<H2 class=title style="CLEAR: both">
+<hr>
+</H2>
+<H2 class=title style="CLEAR: both">
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch10.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=u href="ch10.html">上一级</A></td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch10s02.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">第&nbsp;10&nbsp;章&nbsp;中断处理&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">10.2.&nbsp;安装一个中断处理</td>
+</tr>
+</table></H2></DIV></div></div>
+</div>
+</body>
+</html>

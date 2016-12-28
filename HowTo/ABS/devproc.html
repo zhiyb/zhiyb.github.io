@@ -1,0 +1,606 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>/dev and /proc</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="Arrays"
+HREF="arrays.html"><LINK
+REL="NEXT"
+TITLE="/proc"
+HREF="procref1.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="arrays.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="procref1.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="DEVPROC"
+>第27章. /dev 和 /proc</A
+></H1
+>
+  <P
+><A
+NAME="DEVPROCREF"
+></A
+></P
+>
+  <P
+>Linux 或 UNIX 机器都带有<TT
+CLASS="FILENAME"
+>/dev</TT
+>和<TT
+CLASS="FILENAME"
+>/proc</TT
+>目录用于特殊目的.</P
+>
+  <DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEVREF1"
+>27.1. <TT
+CLASS="FILENAME"
+>/dev</TT
+></A
+></H1
+>
+    <P
+><tt>在</tt> <TT
+CLASS="FILENAME"
+>/dev</TT
+> 目录内包含以或不以硬件形式出现的物理设备条目. <A
+NAME="AEN14570"
+HREF="#FTN.AEN14570"
+>[1]</A
+> 包含被挂载的文件系统的硬设备分区在/dev目录下都有对应的条目, 就像<A
+HREF="system.html#DFREF"
+>df</A
+>命令所展示的. 
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>df</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Filesystem           1k-blocks      Used Available Use%
+ Mounted on
+ /dev/hda6               495876    222748    247527  48% /
+ /dev/hda1                50755      3887     44248   9% /boot
+ /dev/hda8               367013     13262    334803   4% /home
+ /dev/hda5              1714416   1123624    503704  70% /usr</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+>
+    <P
+><A
+NAME="LOOPBACKREF"
+></A
+>在其他方面, <TT
+CLASS="FILENAME"
+>/dev</TT
+> 目录也包含<I
+CLASS="EMPHASIS"
+>环回设备(loopback </I
+>devices) , 例如<TT
+CLASS="FILENAME"
+>/dev/loop0</TT
+>. 环回设备是一个使普通文件能被像对待块设备一样来进行存取的机制. <A
+NAME="AEN14588"
+HREF="#FTN.AEN14588"
+>[2]</A
+> 这使我们可以将一个大文件内的整个文件系统挂载到系统目录下. 参考<A
+HREF="system.html#CREATEFS"
+>例子 13-8</A
+>和<A
+HREF="system.html#ISOMOUNTREF"
+>例子 13-7</A
+>.</P
+>
+    <P
+>/dev还有少量的伪设备用于特殊的用途, 例如<A
+HREF="zeros.html#ZEROSREF"
+><TT
+CLASS="FILENAME"
+>/dev/null</TT
+></A
+>, <A
+HREF="zeros.html#ZEROSREF1"
+><TT
+CLASS="FILENAME"
+>/dev/zero</TT
+></A
+>, <A
+HREF="randomvar.html#URANDOMREF"
+><TT
+CLASS="FILENAME"
+>/dev/urandom</TT
+></A
+>, <TT
+CLASS="FILENAME"
+>/dev/sda1</TT
+>, <TT
+CLASS="FILENAME"
+>/dev/udp</TT
+>, 和<TT
+CLASS="FILENAME"
+>/dev/tcp</TT
+>.</P
+>
+    <P
+>例如:</P
+>
+    <P
+>为了<A
+HREF="system.html#MOUNTREF"
+>挂载(mount)</A
+> 一个USB闪盘设备, 将下面一行添加到<TT
+CLASS="FILENAME"
+>/etc/fstab</TT
+>. <A
+NAME="AEN14609"
+HREF="#FTN.AEN14609"
+>[3]</A
+> 
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;/dev/sda1    /mnt/flashdrive    auto    noauto,user,noatime    0 0</PRE
+></TD
+></TR
+></TABLE
+>
+
+         (也请参考<A
+HREF="contributed-scripts.html#USBINST"
+>例子 A-23</A
+>.)</P
+> 
+    <P
+><A
+NAME="SOCKETREF"
+></A
+></P
+>
+    <P
+>当对<TT
+CLASS="FILENAME"
+>/dev/tcp/$host/$port</TT
+> 伪设备文件执行一个命令时, Bash会打开一个相关的TCP的<I
+CLASS="EMPHASIS"
+>socket</I
+>. <A
+NAME="AEN14624"
+HREF="#FTN.AEN14624"
+>[4]</A
+> </P
+>
+    <P
+>从<TT
+CLASS="FILENAME"
+>nist.gov</TT
+>得到时间:</P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat &#60;/dev/tcp/time.nist.gov/13</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>53082 04-03-18 04:26:54 68 0 0 502.3 UTC(NIST) *</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+    <P
+>[Mark贡献了上面的例子.]</P
+>
+    <P
+>下载一个 URL:</P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>exec 5&#60;&#62;/dev/tcp/www.net.cn/80</B
+></TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e "GET / HTTP/1.0\n" &#62;&#38;5</B
+></TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat &#60;&#38;5</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+    <P
+>[Thanks, Mark 和 Mihai Maties.]</P
+>
+    <DIV
+CLASS="EXAMPLE"
+><HR>
+      <A
+NAME="DEVTCP"
+></A
+> 
+      <P
+><B
+>例子 27-1. 利用<TT
+CLASS="FILENAME"
+>/dev/tcp</TT
+> 来检修故障</B
+></P
+>
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# dev-tcp.sh: 用/dev/tcp 重定向来检查Internet连接.
+   3&nbsp;
+   4&nbsp;# Troy Engel编写.
+   5&nbsp;# 已得到作者允许.
+   6&nbsp; 
+   7&nbsp;TCP_HOST=www.dns-diy.com   # 一个已知的 ISP.
+   8&nbsp;TCP_PORT=80                # http的端口是80 .
+   9&nbsp;  
+  10&nbsp;# 尝试连接. (有些像 'ping' . . .) 
+  11&nbsp;echo "HEAD / HTTP/1.0" &#62;/dev/tcp/${TCP_HOST}/${TCP_PORT}
+  12&nbsp;MYEXIT=$?
+  13&nbsp;
+  14&nbsp;: &#60;&#60;EXPLANATION
+  15&nbsp;If bash was compiled with --enable-net-redirections, it has the capability of
+  16&nbsp;using a special character device for both TCP and UDP redirections. These
+  17&nbsp;redirections are used identically as STDIN/STDOUT/STDERR. The device entries
+  18&nbsp;are 30,36 for /dev/tcp:
+  19&nbsp;
+  20&nbsp;  mknod /dev/tcp c 30 36
+  21&nbsp;
+  22&nbsp;&#62;From the bash reference:
+  23&nbsp;/dev/tcp/host/port
+  24&nbsp;    If host is a valid hostname or Internet address, and port is an integer
+  25&nbsp;port number or service name, Bash attempts to open a TCP connection to the
+  26&nbsp;corresponding socket.
+  27&nbsp;EXPLANATION
+  28&nbsp;
+  29&nbsp;   
+  30&nbsp;if [ "X$MYEXIT" = "X0" ]; then
+  31&nbsp;  echo "Connection successful. Exit code: $MYEXIT"
+  32&nbsp;else
+  33&nbsp;  echo "Connection unsuccessful. Exit code: $MYEXIT"
+  34&nbsp;fi
+  35&nbsp;
+  36&nbsp;exit $MYEXIT</PRE
+></TD
+></TR
+></TABLE
+><HR>
+      <p>译者补充上面这个例子输出的解释(EXPLANATION)译文：</p>
+      <p>如果bash以--enable-net-redirections选项来编译，它就拥有了使用一个特殊字符设备来完成TCP和UDP重定向功能的能力。这种重定向能力就像STDIN/STDOUT/STDERR一样被标识。该字符设备/dev/tcp的主次设备号是30，36:</p>
+      <p> mknod /dev/tcp c 30 36</p>
+      <p>&gt;摘自bash参考手册：</p>
+      <p>/dev/tcp/host/port</p>
+      <p>如果host是一个有效的主机名或因特网有效地址，并且port是一个整数的端口号或是服务名称，Bash会尝试打开一个相对应的TCP连接socket.</p>
+    </DIV
+></DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14570"
+HREF="devproc.html#AEN14570"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>在/dev目录中的条目是为各种物理设备和虚拟设备提供的挂载点. 这些条目使用非常少的设备空间.</P
+>
+      <P
+> 一些像<TT
+CLASS="FILENAME"
+>/dev/null</TT
+>, <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+>, 和 <TT
+CLASS="FILENAME"
+>/dev/urandom</TT
+>的设备是虚拟的. 它们不是真正的物理设备，而只是存在于软件的虚拟设备.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14588"
+HREF="devproc.html#AEN14588"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>块设备读或写（或两者兼之）数据都是以块为单位的进行的, 与之相对应的字符设备则使用字符为单位来进行存取。块设备典型的有硬盘和CD-ROM设备，字符设备典型的例子如键盘。</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14609"
+HREF="devproc.html#AEN14609"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>当然，<TT
+CLASS="FILENAME"
+>挂载点/mnt/flashdrive</TT
+>必须存在，如果不存在，以root用户来执行<B
+CLASS="COMMAND"
+>mkdir /mnt/flashdrive</B
+>.</P
+>
+          <P
+>为了最终能挂载设备，用下面的命令:
+	       <B
+CLASS="COMMAND"
+>mount /mnt/flashdrive</B
+></P
+>
+          <P
+>较新的Linux发行版自动把闪盘设备挂载到<TT
+CLASS="FILENAME"
+>/media</TT
+>目录.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14624"
+HREF="devproc.html#AEN14624"
+>[4]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>socket是一种特殊的用于通信的I/O端口. 它允许同一台主机内不同硬件设备间的数据传输，允许在相同网络中的主机间的数据传输，也允许穿越不同网络的主机间的数据传输，当然，也允许在Internet上不同位置主机间的数据传输.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="arrays.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="procref1.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Arrays</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><TT
+CLASS="FILENAME"
+>/proc</TT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,716 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Shell Wrappers</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="NEXT"
+TITLE="Tests and Comparisons: Alternatives"
+HREF="testsandcomparisons.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="miscellany.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 33. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="testsandcomparisons.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="WRAPPER"
+>33.2. Shell &#21253;&#35013;</A
+></H1
+>
+  <P
+><A
+NAME="SHWRAPPER"
+></A
+></P
+>
+<P
+>&#21253;&#35013;&#33050;&#26412;&#26159;&#25351;&#23884;&#26377;&#19968;&#20010;&#31995;&#32479;&#21629;&#20196;&#21644;&#31243;&#24207;&#30340;&#33050;&#26412;&#65292;&#20063;&#20445;&#23384;&#20102;&#19968;&#32452;&#20256;&#32473;&#35813;&#21629;&#20196;&#30340;&#21442;&#25968;.
+
+      <A
+NAME="AEN15329"
+HREF="#FTN.AEN15329"
+>[1]</A
+>
+	
+	&#21253;&#35013;&#33050;&#26412;&#20351;&#21407;&#26412;&#24456;&#22797;&#26434;&#30340;&#21629;&#20196;&#34892;&#31616;&#21333;&#21270;.  &#36825;&#23545; <A
+HREF="sedawk.html#SEDREF"
+>sed</A
+> &#21644; <A
+HREF="awk.html#AWKREF"
+>awk</A
+> &#29305;&#21035;&#26377;&#29992;.</P
+>
+<P
+><B
+CLASS="COMMAND"
+>sed</B
+> &#21644;<B
+CLASS="COMMAND"
+>	   
+	    awk</B
+> &#21629;&#20196;&#19968;&#33324;&#20174;&#21629;&#20196;&#34892;&#19978;&#20197; <TT
+CLASS="USERINPUT"
+><B
+>sed -e
+	    <TT
+CLASS="REPLACEABLE"
+><I
+>'commands'</I
+></TT
+></B
+></TT
+>
+	    &#21644; <TT
+CLASS="USERINPUT"
+><B
+>awk
+	    <TT
+CLASS="REPLACEABLE"
+><I
+>'commands'</I
+></TT
+></B
+></TT
+> &#26469;&#35843;&#29992;.	&#25226;sed&#21644;awk&#30340;&#21629;&#20196;&#23884;&#20837;&#21040;Bash&#33050;&#26412;&#37324;&#20351;&#35843;&#29992;&#21464;&#24471;&#26356;&#31616;&#21333;,
+	    &#24182;&#19988;&#20063;&#21487;&#22810;&#27425;&#20351;&#29992;. &#20063;&#21487;&#20197;&#32508;&#21512;&#22320;&#21033;&#29992; <B
+CLASS="COMMAND"
+>sed</B
+>
+	    &#21644; <B
+CLASS="COMMAND"
+>awk</B
+> &#30340;&#21151;&#33021;, &#20363;&#22914;<A
+HREF="special-chars.html#PIPEREF"
+>&#31649;&#36947;&#65288;piping&#65289;</A
+>&#36830;&#25509;<B
+CLASS="COMMAND"
+>sed</B
+> &#21629;&#20196;&#30340;&#36755;&#20986;&#21040;<B
+CLASS="COMMAND"
+>awk</B
+>&#21629;&#20196;&#20013;.
+	    &#20445;&#23384;&#20026;&#21487;&#25191;&#34892;&#30340;&#25991;&#20214;, &#20320;&#21487;&#20197;&#29992;&#33050;&#26412;&#32534;&#20889;&#30340;&#25110;&#20462;&#25913;&#30340;&#35843;&#29992;&#26684;&#24335;&#22810;&#27425;&#30340;&#35843;&#29992;&#23427;, &#32780;&#19981;&#24517;&#22312;&#21629;&#20196;&#34892;&#19978;&#37325;&#22797;&#38190;&#20837;&#22797;&#26434;&#30340;&#21629;&#20196;&#34892;.</P
+>
+<DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX3"
+></A
+>
+<P
+><B
+>&#20363;&#23376; 33-1. <B
+CLASS="COMMAND"
+>shell 包装</B
+></B
+></P
+>
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# 这是一个把文件中的空行删除的简单脚本.
+   4&nbsp;# 没有参数检查.
+   5&nbsp;#
+   6&nbsp;# 你可能想增加类似下面的代码:
+   7&nbsp;#
+   8&nbsp;# E_NOARGS=65
+   9&nbsp;# if [ -z "$1" ]
+  10&nbsp;# then
+  11&nbsp;#  echo "Usage: `basename $0` target-file"
+  12&nbsp;#  exit $E_NOARGS
+  13&nbsp;# fi
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;# 就像从命令行调用下面的命令：
+  17&nbsp;#    sed -e '/^$/d' filename
+  18&nbsp;#
+  19&nbsp;
+  20&nbsp;sed -e /^$/d "$1"
+  21&nbsp;#  The '-e' 意味着后面跟的是编辑命令 (这是可选的).
+  22&nbsp;#  '^' 匹配行的开头, '$' 则是行的结尾.
+  23&nbsp;#  这个表达式匹配行首和行尾之间什么也没有的行,
+  24&nbsp;#+ 即空白行.
+  25&nbsp;#  'd'是删除命令.
+  26&nbsp;
+  27&nbsp;#  引号引起命令行参数就允许在文件名中使用空白字符和特殊字符
+  28&nbsp;#
+  29&nbsp;
+  30&nbsp;#  注意这个脚本不能真正的修改目标文件.
+  31&nbsp;#  如果你需要保存修改，就要重定向到某个输出文件里.
+  32&nbsp;
+  33&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX4"
+></A
+>
+  <P
+><B
+>例子 33-2.  稍微复杂一些的<B
+CLASS="COMMAND"
+>shell包装</B
+></B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  "subst", 把一个文件中的一个模式替换成一个模式的脚本
+   4&nbsp;#
+   5&nbsp;#  例如, "subst Smith Jones letter.txt".
+   6&nbsp;
+   7&nbsp;ARGS=3         # 脚本要求三个参数.
+   8&nbsp;E_BADARGS=65   # 传递了错误的参数个数给脚本.
+   9&nbsp;
+  10&nbsp;if [ $# -ne "$ARGS" ]
+  11&nbsp;# 测试脚本参数的个数 (这是好办法).
+  12&nbsp;then
+  13&nbsp;  echo "Usage: `basename $0` old-pattern new-pattern filename"
+  14&nbsp;  exit $E_BADARGS
+  15&nbsp;fi
+  16&nbsp;
+  17&nbsp;old_pattern=$1
+  18&nbsp;new_pattern=$2
+  19&nbsp;
+  20&nbsp;if [ -f "$3" ]
+  21&nbsp;then
+  22&nbsp;    file_name=$3
+  23&nbsp;else
+  24&nbsp;    echo "File \"$3\" does not exist."
+  25&nbsp;    exit $E_BADARGS
+  26&nbsp;fi
+  27&nbsp;
+  28&nbsp;
+  29&nbsp;#  这儿是实现功能的代码.
+  30&nbsp;
+  31&nbsp;# -----------------------------------------------
+  32&nbsp;sed -e "s/$old_pattern/$new_pattern/g" $file_name
+  33&nbsp;# -----------------------------------------------
+  34&nbsp;
+  35&nbsp;#  's' 在sed命令里表示替换,
+  36&nbsp;#+ /pattern/表示匹配地址.
+  37&nbsp;#  The "g"也叫全局标志使sed会在每一行有$old_pattern模式出现的所有地方替换,
+  38&nbsp;#+ 而不只是匹配第一个出现的地方.
+  39&nbsp;#  参考'sed'的有关书籍了解更深入的解释.
+  40&nbsp;
+  41&nbsp;exit 0    # 脚本成功调用会返回 0.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="LOGGINGWRAPPER"
+></A
+>
+  <P
+><B
+>例子 33-3.  写到日志文件的shell包装</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;#  普通的shell包装，执行一个操作并记录在日志里
+   3&nbsp;#
+   4&nbsp;
+   5&nbsp;# 需要设置下面的两个变量.
+   6&nbsp;OPERATION=
+   7&nbsp;#         可以是一个复杂的命令链,
+   8&nbsp;#+        例如awk脚本或是管道 . . .
+   9&nbsp;LOGFILE=
+  10&nbsp;#         不管怎么样，命令行参数还是要提供给操作的.
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;OPTIONS="$@"
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;# 记录操作.
+  17&nbsp;echo "`date` + `whoami` + $OPERATION "$@"" &#62;&#62; $LOGFILE
+  18&nbsp;# 现在, 执行操作.
+  19&nbsp;exec $OPERATION "$@"
+  20&nbsp;
+  21&nbsp;# 在操作之前记录日志是必须的.
+  22&nbsp;# 为什么?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PRASC"
+></A
+>
+  <P
+><B
+>例子 33-4.  包装awk的脚本</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# pr-ascii.sh: 打印 ASCII 码的字符表.
+   3&nbsp;
+   4&nbsp;START=33   # 可打印的 ASCII 字符的范围 (十进制).
+   5&nbsp;END=125
+   6&nbsp;
+   7&nbsp;echo " Decimal   Hex     Character"   # 表头.
+   8&nbsp;echo " -------   ---     ---------"
+   9&nbsp;
+  10&nbsp;for ((i=START; i&#60;=END; i++))
+  11&nbsp;do
+  12&nbsp;  echo $i | awk '{printf("  %3d       %2x         %c\n", $1, $1, $1)}'
+  13&nbsp;# 在这个上下文，不会运行Bash的内建printf命令:
+  14&nbsp;#     printf "%c" "$i"
+  15&nbsp;done
+  16&nbsp;
+  17&nbsp;exit 0
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;#  Decimal   Hex     Character
+  21&nbsp;#  -------   ---     ---------
+  22&nbsp;#    33       21         !
+  23&nbsp;#    34       22         "
+  24&nbsp;#    35       23         #
+  25&nbsp;#    36       24         $
+  26&nbsp;#
+  27&nbsp;#    . . .
+  28&nbsp;#
+  29&nbsp;#   122       7a         z
+  30&nbsp;#   123       7b         {
+  31&nbsp;#   124       7c         |
+  32&nbsp;#   125       7d         }
+  33&nbsp;
+  34&nbsp;
+  35&nbsp;#  把脚本的输出重定向到一个文件或是管道给more命令来查看:
+  36&nbsp;#+   sh pr-asc.sh | more</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COLTOTALER"
+></A
+>
+  <P
+><B
+>例子 33-5.  另一个包装awk的脚本</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# 给目标文件增加一列由数字指定的列.
+   4&nbsp;
+   5&nbsp;ARGS=2
+   6&nbsp;E_WRONGARGS=65
+   7&nbsp;
+   8&nbsp;if [ $# -ne "$ARGS" ] # 检查命令行参数个数是否正确.
+   9&nbsp;then
+  10&nbsp;   echo "Usage: `basename $0` filename column-number"
+  11&nbsp;   exit $E_WRONGARGS
+  12&nbsp;fi
+  13&nbsp;
+  14&nbsp;filename=$1
+  15&nbsp;column_number=$2
+  16&nbsp;
+  17&nbsp;#  传递shell变量给脚本的awk部分需要一点技巧.
+  18&nbsp;#  方法之一是在awk脚本中使用强引用来引起bash脚本的变量
+  19&nbsp;#
+  20&nbsp;#     $'$BASH_SCRIPT_VAR'
+  21&nbsp;#      ^                ^
+  22&nbsp;#  这个方法在下面的内嵌的awk脚本中出现.
+  23&nbsp;#  参考awk文档了解更多的细节.
+  24&nbsp;
+  25&nbsp;# 多行的awk脚本调用格式为:  awk ' ..... '
+  26&nbsp;
+  27&nbsp;
+  28&nbsp;# 开始 awk 脚本.
+  29&nbsp;# -----------------------------
+  30&nbsp;awk '
+  31&nbsp;
+  32&nbsp;{ total += $'"${column_number}"'
+  33&nbsp;}
+  34&nbsp;END {
+  35&nbsp;     print total
+  36&nbsp;}     
+  37&nbsp;
+  38&nbsp;' "$filename"
+  39&nbsp;# -----------------------------
+  40&nbsp;# awk脚本结束.
+  41&nbsp;
+  42&nbsp;
+  43&nbsp;#   把shell变量传递给awk变量可能是不安全的,
+  44&nbsp;#+  因此Stephane Chazelas提出了下面另外一种方法:
+  45&nbsp;#   ---------------------------------------
+  46&nbsp;#   awk -v column_number="$column_number" '
+  47&nbsp;#   { total += $column_number
+  48&nbsp;#   }
+  49&nbsp;#   END {
+  50&nbsp;#       print total
+  51&nbsp;#   }' "$filename"
+  52&nbsp;#   ---------------------------------------
+  53&nbsp;
+  54&nbsp;
+  55&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+><A
+NAME="PERLREF"
+></A
+>对于要实现这些功能而只用一种多合一的瑞士军刀应该用Perl. Perl兼有<B
+CLASS="COMMAND"
+>sed</B
+>和<B
+CLASS="COMMAND"
+>awk</B
+>的能力, 并且具有C的一个很大的子集. 它是标准的并支持面向对象编程的方方面面，甚至是很琐碎的东西. 短的Perl脚本也可以嵌入到shell脚本中去，以至于有些人宣称Perl能够完全地代替shell编程（本文作者对此持怀疑态度）.</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX56"
+></A
+>
+	<P
+><B
+>例子 33-6. 把Perl嵌入Bash脚本</B
+></P
+>
+	<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# Shell命令可以包含 Perl 脚本.
+   4&nbsp;echo "This precedes the embedded Perl script within \"$0\"."
+   5&nbsp;echo "==============================================================="
+   6&nbsp;
+   7&nbsp;perl -e 'print "This is an embedded Perl script.\n";'
+   8&nbsp;# 像sed脚本, Perl 也使用"-e"选项.
+   9&nbsp;
+  10&nbsp;echo "==============================================================="
+  11&nbsp;echo "However, the script may also contain shell and system commands."
+  12&nbsp;
+  13&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>把Bash脚本和Perl脚本放在同一个文件是可能的. 依赖于脚本如何被调用, 要么是Bash部分被执行，要么是Perl部分被执行.</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BASHANDPERL"
+></A
+>
+	<P
+><B
+>例子 33-7. Bash 和 Perl 脚本联合使用</B
+></P
+>
+	<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# bashandperl.sh
+   3&nbsp;
+   4&nbsp;echo "Greetings from the Bash part of the script."
+   5&nbsp;# 下面可以有更多的Bash命令.
+   6&nbsp;
+   7&nbsp;exit 0
+   8&nbsp;# 脚本的Bash部分结束.
+   9&nbsp;
+  10&nbsp;# =======================================================
+  11&nbsp;
+  12&nbsp;#!/usr/bin/perl
+  13&nbsp;# 脚本的这个部分必须用-x选项来调用.
+  14&nbsp;
+  15&nbsp;print "Greetings from the Perl part of the script.\n";
+  16&nbsp;# 下面可以有更多的Perl命令.
+  17&nbsp;
+  18&nbsp;# 脚本的Perl部分结束.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>bash bashandperl.sh</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Greetings from the Bash part of the script.</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>perl -x bashandperl.sh</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Greetings from the Perl part of the script.</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN15329"
+HREF="wrapper.html#AEN15329"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>事实上，相当数量的Linux软件工具包是shell包装脚本. 例如<TT
+CLASS="FILENAME"
+>/usr/bin/pdf2ps</TT
+>,
+	<TT
+CLASS="FILENAME"
+>/usr/bin/batch</TT
+>, 和 <TT
+CLASS="FILENAME"
+>/usr/X11R6/bin/xmkmf</TT
+>.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="testsandcomparisons.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Miscellany</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tests and Comparisons: Alternatives</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

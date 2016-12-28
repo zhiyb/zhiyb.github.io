@@ -1,0 +1,60 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第17章 网络驱动</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch16s05.html" title="16.5.&#160;快速参考">
+<link rel="next" href="ch17s02.html" title="17.2.&#160;连接到内核">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第17章&nbsp;网络驱动</H1></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch16s05.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch17s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="chapter" lang="zh-cn">
+<p>我们已经讨论了字符和块驱动, 现在准备好转移到网络世界里. 网络接口是第 3 类标准的 Linux 设备, 本章描述它们如何与内核其他部分交互.</p>
+<p>一个网络接口的在系统内的角色与一个被加载的块设备的角色类似. 一个块设备注册它的磁盘和工作方法到内核, 随之通过它的请求函数按需求"发送"和"接收"块. 类似的, 一个网络接口必须注册它自己到特定的内核数据结构中, 以便在与外部世界交换报文时被调用.</p>
+<p>在被加载的磁盘和报文递送接口之间有几个重要的区别. 首先, 磁盘作为一个特殊的文件存在于 /dev 目录下, 然而一个网络接口没有这样的入口点. 正常的文件操作( read, write, 等等 )对于网络接口没有意义, 因此不可能适用 Unix 的"一切皆文件"的方法给它们. 从而, 网络接口存在于它们自己的名子空间里, 并且对外输出了一套不同的操作.</p>
+<p>尽管你可能会反驳说, 应用程序在使用 socket 时可以使用 read 和 write 系统调用, 这些系统调用作用于一个软件对象上, 而它与接口是明显不同的. 几百个 socket 可以在同一个物理接口上复用.</p>
+<p>但是两者最重要的不同在于, 块驱动的运行只是响应来自内核的请求, 但是网络驱动从外边异步地接收报文. 因此, 不同于一个块驱动被要求向内核发送一个缓存区, 网络设备要求向内核推送进入的报文. 网络驱动使用的内核接口为这个不同的操作模式而设计.</p>
+<p>网络驱动也不得不准备支持很多的管理任务, 例如设置地址, 修改发送参数, 以及维护流量和错误统计. 网络驱动使用的 API 反映了这种需要, 并且因此, 能看出一些与我们之前看到的接口的不同.</p>
+<p>Linux 内核的网络子系统被设计成是完全独立于协议的. 这适用于网络协议( 互联网协议 [IP], 相对于 IPX, 或者其他协议 )和硬件协议( 以太网, 相对的令牌环, 等等 ). 一个网络驱动和内核互相作用在同一时间正确处理一个网络报文; 这允许对驱动巧妙地隐藏了协议的信息, 以及对协议隐藏了物理发送.</p>
+<p>本章描述了网络接口如何适用于 Linux 内核的其他部分, 并以一个基于内存模块化网络接口的形式提供了例子, 它称做( 你猜一下 ) snull. 为简化讨论, 这个接口使用以太网硬件协议和发送 IP 报文.  你从测验 snull 中获得的知识已能够应用到非 IP 的协议上, 并且编写一个非以太网驱动只是有极小的与实际网络协议相关的区别.</p>
+<p>本章不讨论 IP 编号方案, 网络协议, 以及其他通用的网络概念. 这样的话题不是( 常常地 )驱动编写者所关心的, 并且不可能提供一个满意的网络技术的概述在不足几百页里面. 建议感兴趣的读者去参考其他的描述网络方面的书籍.</p>
+<p>在进入网络设备之前, 提及一个技术方面的注意问题. 网络世界使用术语 octet 来表示一个 8 个位的组, 它通常是网络设备和协议能理解的最小单元. 术语 byte 在这个上下文中极少遇到. 为紧跟标准用法, 我们将使用 octet, 在谈论网络设备的时候.</p>
+<p>术语" header "也值得一提. 一个 header 是一组字节(错了, 是 octet), 要安排到一个报文里, 当它穿过网络子系统的各层时. 当一个应用程序通过一个 TCP socket 发送了一个数据块, 网络子系统拆开数据, 填充到报文里, 在报文开始安上一个 TCP header 来描述每个报文在流里面的位置. 下面的协议层接着在 TCP header 之前安上一个 IP header, 用来路由这个报文到它的目的地. 如果这个报文在类似以太网的介质上移动, 一个以太网 header, 由硬件来解析的, 加在在余下的前面. 网络驱动(常常)不需要让自己去理睬高层的 header, 但是它们经常必须参与硬件级别的 header 的创建.</p>
+</div>
+<div class="navfooter">
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch16s05.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch17s01.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">16.5.&nbsp;快速参考&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;17.1. 
+      snull 是如何设计的</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

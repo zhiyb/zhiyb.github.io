@@ -1,0 +1,54 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第5章 并发和竞争情况</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch04s06.html" title="4.6.&#160;调试器和相关工具">
+<link rel="next" href="ch05s02.html" title="5.2.&#160;并发和它的管理">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第&nbsp;5&nbsp;章&nbsp;并发和竞争情况</H1></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch04s06.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch05s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+&nbsp;
+</div>
+<div class="chapter" lang="zh-cn">
+<p>迄今, 我们未曾关心并发的问题 -- 就是说, 当系统试图一次做多件事时发生的情况. 然而, 并发的管理是操作系统编程的核心问题之一. 并发相关的错误是一些最易出现又最难发现的问题. 即便是专家级 Linux 内核程序员偶尔也会出现并发相关的错误.</p>
+<p>早期的 Linux 内核, 较少有并发的源头. 内核不支持对称多处理器(SMP)系统, 并发执行的唯一原因是硬件中断服务. 那个方法提供了简单性, 但是在有越来越多处理器的系统上注重性能并且坚持系统要快速响应事件的世界中它不再可行了. 为响应现代硬件和应用程序的要求, Linux 内核已经发展为很多事情在同时进行. 这个进步已经产生了很大的性能和可扩展性. 然而, 它也很大地使内核编程任务复杂化. 设备启动程序员现在必须从一开始就将并发作为他们设计的要素, 并且他们必须对内核提供的并发管理设施有很强的理解.</p>
+<p>本章的目的是开始建立那种理解的过程. 为此目的, 我们介绍一些设施来立刻应用到第 3 章的 scull 驱动. 展示的其他设施暂时还不使用. 但是首先, 我们看一下我们的简单 scull 驱动可能哪里出问题并且如何避免这些潜在的问题.</p>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><h2 class="title" style="CLEAR: both">
+<a name="Pitfallsinscull.sect"></a>
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch04s06.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="file://C:\Documents and Settings\zhurp\桌面\LDD3_CHN\ch05s01.html" >下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.6.&nbsp;调试器和相关工具&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;5.2.&nbsp;并发和它的管理</td>
+</tr>
+</table> </h2></div></div></div>
+</div>
+</div>
+</body>
+</html>

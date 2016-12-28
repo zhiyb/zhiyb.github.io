@@ -1,0 +1,316 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Arithmetic Expansion</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="PREVIOUS"
+TITLE="Command Substitution"
+HREF="commandsub.html"><LINK
+REL="NEXT"
+TITLE="I/O Redirection"
+HREF="io-redirection.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default">
+</HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;
+"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="commandsub.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="io-redirection.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="ARITHEXP"
+>Chapter 15. 算术扩展</A
+></H1
+>
+  <P
+><A
+NAME="ARITHEXPREF"
+></A
+>算术扩展提供了一种强力的工具, 可以在脚本中执行(整型)算法操作. 可以使用<A
+HREF="commandsub.html#BACKQUOTESREF"
+>backticks</A
+>, <A
+HREF="dblparens.html"
+>double parentheses</A
+>, 或 <A
+HREF="internal.html#LETREF"
+>let</A
+>来将字符串转换为数字表达式.</P
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="ARITHEXPVAR1"
+></A
+>一些变化</B
+></P
+>
+    <DL
+>
+	  <DT
+>使用反引号的算术扩展(通常都是和<A
+HREF="moreadv.html#EXPRREF"
+>expr</A
+>一起使用)</DT
+>
+	  <DD
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;z=`expr $z + 3`          # 'expr'命令将会执行这个扩展.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+>
+	  <DT
+>使用双括号, 和<strong>let</strong>形式的算术扩展</DT
+><DD
+>
+	    <P
+>反引号形式的算术扩展已经被双括号形式所替代了 --
+	      <TT
+CLASS="USERINPUT"
+><B
+>((...))</B
+></TT
+> 和
+	      <TT
+CLASS="USERINPUT"
+><B
+>$((...))</B
+></TT
+> -- 当然也可以使用非常方便的<strong>let</strong>形式.</P
+>
+	    <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;z=$(($z+3))
+   2&nbsp;z=$((z+3))                                  #  也正确.
+   3&nbsp;                                            #  使用双括号的形式,
+   4&nbsp;                                            #+ 参数解引用
+   5&nbsp;                                            #+ 是可选的.
+   6&nbsp;
+   7&nbsp;# $((EXPRESSION)) is arithmetic expansion.  #  不要与命令
+   8&nbsp;                                            #+ 替换相混淆.
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;# 使用双括号的形式也可以不用给变量赋值.
+  13&nbsp;
+  14&nbsp;  n=0
+  15&nbsp;  echo "n = $n"                             # n = 0
+  16&nbsp;
+  17&nbsp;  (( n += 1 ))                              # 递增.
+  18&nbsp;# (( $n += 1 )) is incorrect!
+  19&nbsp;  echo "n = $n"                             # n = 1
+  20&nbsp;
+  21&nbsp;
+  22&nbsp;let z=z+3
+  23&nbsp;let "z += 3"  #  使用引用的形式, 允许在变量赋值的时候存在空格.
+  24&nbsp;              #  'let'操作事实上执行得的是算术赋值,
+  25&nbsp;              #+ 而不是算术扩展.</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+>
+	    <P
+>下边是一些在脚本中使用算术扩展的例子:
+	     <OL
+TYPE="1"
+><LI
+><P
+><A
+HREF="moreadv.html#EX45"
+>Example 12-9</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="loops.html#EX25"
+>Example 10-14</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="arrays.html#EX66"
+>Example 26-1</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="arrays.html#BUBBLE"
+>Example 26-11</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#TREE"
+>Example A-17</A
+></P
+></LI
+></OL
+>
+     </P
+></DD
+></DL
+>
+  </DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="commandsub.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="io-redirection.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Command Substitution</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part3.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>I/O Redirection</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,490 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Indirect References to Variables</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Variables Revisited"
+HREF="variables2.html"><LINK
+REL="PREVIOUS"
+TITLE="Typing variables: declare or
+	  typeset"
+HREF="declareref.html"><LINK
+REL="NEXT"
+TITLE="$RANDOM: generate random integer"
+HREF="randomvar.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="declareref.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Variables Revisited</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="randomvar.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+>
+<DIV
+CLASS="SECT1"
+> 
+  <H1
+CLASS="SECT1"
+><A
+NAME="IVR"
+>9.5. 变量间接引用</A
+></H1
+>
+  <P
+><A
+NAME="IVRREF"
+></A
+></P
+>
+  <P
+>假设一个变量的值是第二个变量的名字. 这样要如何才能从第一个变量处重新获得第二个变量的值？例如,<TT
+CLASS="REPLACEABLE"
+><I
+>a=letter_of_alphabet</I
+></TT
+>和<TT
+CLASS="REPLACEABLE"
+><I
+>letter_of_alphabet=z</I
+></TT
+>, 是否能由<TT
+CLASS="REPLACEABLE"
+><I
+>a</I
+></TT
+>引用得到<TT
+CLASS="REPLACEABLE"
+><I
+>z</I
+></TT
+> ? 这确实可以办到,这种技术被称为<I
+CLASS="EMPHASIS"
+>间接引用</I
+>.它使用不平常的<TT
+CLASS="REPLACEABLE"
+><I
+>eval var1=\$$var2</I
+></TT
+> 序列.</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="INDREF"
+></A
+>
+    <P
+><B
+>例子 9-22. 间接引用</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ind-ref.sh: 间接变量引用.
+   3&nbsp;# 访问一个变量内容所指的变量的值.
+   4&nbsp;
+   5&nbsp;a=letter_of_alphabet   # 变量"a"保存着另外一个变量的名字.
+   6&nbsp;letter_of_alphabet=z
+   7&nbsp;
+   8&nbsp;echo
+   9&nbsp;
+  10&nbsp;# 直接引用.
+  11&nbsp;echo "a = $a"          # a = letter_of_alphabet
+  12&nbsp;
+  13&nbsp;# 间接引用.
+  14&nbsp;eval a=\$$a
+  15&nbsp;echo "Now a = $a"      # 现在 a = z
+  16&nbsp;
+  17&nbsp;echo
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;# 现在，让我们试试更改第二次引用的顺序Now, let's try changing the second-order reference.
+  21&nbsp;
+  22&nbsp;t=table_cell_3
+  23&nbsp;table_cell_3=24
+  24&nbsp;echo "\"table_cell_3\" = $table_cell_3"            # "table_cell_3" = 24
+  25&nbsp;echo -n "dereferenced \"t\" = "; eval echo \$$t    # 显示：dereferenced "t" = 24
+  26&nbsp;# 在这个简单的情况下，下面的也可以工作吗？(为什么？).
+  27&nbsp;#         eval t=\$$t; echo "\"t\" = $t"
+  28&nbsp;
+  29&nbsp;echo
+  30&nbsp;
+  31&nbsp;t=table_cell_3
+  32&nbsp;NEW_VAL=387
+  33&nbsp;table_cell_3=$NEW_VAL
+  34&nbsp;echo "Changing value of \"table_cell_3\" to $NEW_VAL."
+  35&nbsp;echo "\"table_cell_3\" now $table_cell_3"
+  36&nbsp;echo -n "dereferenced \"t\" now "; eval echo \$$t
+  37&nbsp;# "eval"带着两个参数："echo"和"\$$t"(相当于 $table_cell_3)
+  38&nbsp;
+  39&nbsp;echo
+  40&nbsp;
+  41&nbsp;# (多谢Stephane Chazelas解释了上面的语句的现象)
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;# 另外一个办法是使用${!t}符号，这个在"Bash, 版本 2"章节中讨论.
+  45&nbsp;# 参考脚本 ex78.sh.
+  46&nbsp;
+  47&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>变量间接引用的实际用处是什么? 它提供了Bash具有<i
+class="FIRSTTERM"
+>C</i
+>中一点<i
+class="FIRSTTERM"
+>指针</i
+>的功能，例如，在<a
+href="bash2.html#RESISTOR"
+>表格查找</a
+>中的用处，另外它也有其他一些有趣的应用. . . .</P
+>
+  <P
+> Nils Radtke展示了如何建立动态变量名和求它们的值。当<a
+href="internal.html#SOURCEREF"
+>source</a
+>配置文件时这个技巧很有用。
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;
+   4&nbsp;# ---------------------------------------------
+   5&nbsp;# 这个文件可被另外单独的文件用source命令执行.
+   6&nbsp;isdnMyProviderRemoteNet=172.16.0.100
+   7&nbsp;isdnYourProviderRemoteNet=10.0.0.10
+   8&nbsp;isdnOnlineService="MyProvider"
+   9&nbsp;# ---------------------------------------------
+  10&nbsp;      
+  11&nbsp;
+  12&nbsp;remoteNet=$(eval "echo \$$(echo isdn${isdnOnlineService}RemoteNet)")
+  13&nbsp;remoteNet=$(eval "echo \$$(echo isdnMyProviderRemoteNet)")
+  14&nbsp;remoteNet=$(eval "echo \$isdnMyProviderRemoteNet")
+  15&nbsp;remoteNet=$(eval "echo $isdnMyProviderRemoteNet")
+  16&nbsp;
+  17&nbsp;echo "$remoteNet"    # 172.16.0.100
+  18&nbsp;
+  19&nbsp;# ================================================================
+  20&nbsp;
+  21&nbsp;#  可以做的更好.
+  22&nbsp;
+  23&nbsp;#  注意下面的片断给出了变量getSparc,
+  24&nbsp;#+ 但没有变量getIa64:
+  25&nbsp;
+  26&nbsp;chkMirrorArchs () { 
+  27&nbsp;  arch="$1";
+  28&nbsp;  if [ "$(eval "echo \${$(echo get$(echo -ne $arch |
+  29&nbsp;       sed 's/^\(.\).*/\1/g' | tr 'a-z' 'A-Z'; echo $arch |
+  30&nbsp;       sed 's/^.\(.*\)/\1/g')):-false}")" = true ]
+  31&nbsp;  then
+  32&nbsp;     return 0;
+  33&nbsp;  else
+  34&nbsp;     return 1;
+  35&nbsp;  fi;
+  36&nbsp;}
+  37&nbsp;
+  38&nbsp;getSparc="true"
+  39&nbsp;unset getIa64
+  40&nbsp;chkMirrorArchs sparc
+  41&nbsp;echo $?        # 0
+  42&nbsp;               # 真
+  43&nbsp;
+  44&nbsp;chkMirrorArchs Ia64
+  45&nbsp;echo $?        # 1
+  46&nbsp;               # 假
+  47&nbsp;
+  48&nbsp;# 注意:
+  49&nbsp;# -----
+  50&nbsp;# Even the to-be-substituted variable name part is built explicitly.
+  51&nbsp;# The parameters to the chkMirrorArchs calls are all lower case.
+  52&nbsp;# The variable name is composed of two parts: "get" and "Sparc" . . .</PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COLTOTALER2"
+></A
+>
+    <P
+><B
+>例子 9-23. 传递一个间接引用给<TT
+CLASS="REPLACEABLE"
+><I
+>awk</I
+></TT
+></B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  Another version of the "column totaler" script
+   4&nbsp;#+ that adds up a specified column (of numbers) in the target file.
+   5&nbsp;#  This one uses indirect references.
+   6&nbsp;
+   7&nbsp;ARGS=2
+   8&nbsp;E_WRONGARGS=65
+   9&nbsp;
+  10&nbsp;if [ $# -ne "$ARGS" ] # Check for proper no. of command line args.
+  11&nbsp;then
+  12&nbsp;   echo "Usage: `basename $0` filename column-number"
+  13&nbsp;   exit $E_WRONGARGS
+  14&nbsp;fi
+  15&nbsp;
+  16&nbsp;filename=$1
+  17&nbsp;column_number=$2
+  18&nbsp;
+  19&nbsp;#===== Same as original script, up to this point =====#
+  20&nbsp;
+  21&nbsp;
+  22&nbsp;# A multi-line awk script is invoked by   awk ' ..... '
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;# Begin awk script.
+  26&nbsp;# ------------------------------------------------
+  27&nbsp;awk "
+  28&nbsp;
+  29&nbsp;{ total += \$${column_number} # indirect reference
+  30&nbsp;}
+  31&nbsp;END {
+  32&nbsp;     print total
+  33&nbsp;     }
+  34&nbsp;
+  35&nbsp;     " "$filename"
+  36&nbsp;# ------------------------------------------------
+  37&nbsp;# End awk script.
+  38&nbsp;
+  39&nbsp;#  Indirect variable reference avoids the hassles
+  40&nbsp;#+ of referencing a shell variable within the embedded awk script.
+  41&nbsp;#  Thanks, Stephane Chazelas.
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>间接引用的方法是个小窍门。如果第二个变量更改了它的值，第一个变量必须适当地解除引用(就像上面的例子一样)This method of indirect referencing 
+            is a bit tricky. If the second order variable changes its value, then 
+            the first order variable must be properly dereferenced (as in the 
+            above example). <A
+NAME="IVR2"
+></A
+>幸运地是在bash(参考例子。。。)版本2中介绍的<TT
+CLASS="REPLACEABLE"
+><I
+>${!variable}</I
+></TT
+>符号能使间接引用更智能一些。 notation introduced with <A
+HREF="bash2.html#BASH2REF"
+>version 2</A
+> of Bash (see <A
+HREF="bash2.html#EX78"
+>Example 34-2</A
+>) makes indirect referencing more intuitive.</P
+></TD
+></TR
+></TABLE
+></DIV
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN5148"
+></A
+>
+          <P
+>Bash不支持指针运算，这极大地限制了间接引用的用处。事实上，在脚本语言里间接引用是一个蹩脚地东西。</P
+>
+        </DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="declareref.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="randomvar.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Typing variables: <B
+CLASS="COMMAND"
+>declare</B
+> or
+	  <B
+CLASS="COMMAND"
+>typeset</B
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>$RANDOM: generate random integer</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

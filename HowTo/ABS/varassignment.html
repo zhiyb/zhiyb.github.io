@@ -1,0 +1,376 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Variable Assignment</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction to Variables and Parameters"
+HREF="variables.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction to Variables and Parameters"
+HREF="variables.html"><LINK
+REL="NEXT"
+TITLE="Bash Variables Are Untyped"
+HREF="untyped.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variables.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Introduction to Variables and Parameters</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="untyped.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="VARASSIGNMENT"
+>4.2. 变量赋值</A
+></H1
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <DL
+>
+      <DT
+><A
+NAME="EQREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>=</SPAN
+></DT
+>
+      <DD
+>
+        <P
+>赋值操作符（它的左右两边不能有空白符）</P
+>
+        <DIV
+CLASS="CAUTION"
+>
+          <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+            <TR
+>
+              <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+              <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>不要搞混了=和-eq，-eq是比赋值操作更高级的测试。</P
+>
+                <P
+>注意：等于号（=）根据环境的不同它可能是赋值操作符也可能是一个测试操作符。</P
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DIV
+>
+        <DIV
+CLASS="EXAMPLE"
+>
+          <HR>
+          <A
+NAME="EX15"
+></A
+> 
+          <P
+><B
+>例子 4-2. 简单的变量赋值</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+>
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 裸变量
+   3&nbsp;
+   4&nbsp;echo
+   5&nbsp;
+   6&nbsp;# 什么时候变量是“裸”的？比如说，变量名前面没有$？
+   7&nbsp;#当变量被赋值而不是引用时，我们称它为是裸变量。
+   8&nbsp;
+   9&nbsp;# 赋值
+  10&nbsp;a=879
+  11&nbsp;echo "The value of \"a\" is $a."
+  12&nbsp;
+  13&nbsp;# 用命令'let'赋值。
+  14&nbsp;let a=16+5
+  15&nbsp;echo "The value of \"a\" is now $a."
+  16&nbsp;
+  17&nbsp;echo
+  18&nbsp;
+  19&nbsp;# 在一个for循环里赋值（其实，这是一种伪赋值）:
+  20&nbsp;echo -n "Values of \"a\" in the loop are: "
+  21&nbsp;for a in 7 8 9 11
+  22&nbsp;do
+  23&nbsp;  echo -n "$a "
+  24&nbsp;done
+  25&nbsp;
+  26&nbsp;echo
+  27&nbsp;echo
+  28&nbsp;
+  29&nbsp;# 用'read'命令 (这也是一种赋值):
+  30&nbsp;echo -n "Enter \"a\" "
+  31&nbsp;read a
+  32&nbsp;echo "The value of \"a\" is now $a."
+  33&nbsp;
+  34&nbsp;echo
+  35&nbsp;
+  36&nbsp;exit 0</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+        <DIV
+CLASS="EXAMPLE"
+>
+          <HR>
+          <A
+NAME="EX16"
+></A
+> 
+          <P
+><B
+>例子 4-3. 简单且奇特的变量赋值</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+>
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;a=23              # 简单的情况
+   4&nbsp;echo $a
+   5&nbsp;b=$a
+   6&nbsp;echo $b
+   7&nbsp;
+   8&nbsp;# 现在，来一点奇怪的赋值（命令替换）
+   9&nbsp;
+  10&nbsp;a=`echo Hello!`   # 把'echo'命令的结果赋值给变量'a'
+  11&nbsp;echo $a
+  12&nbsp;#  注意在一个#+的命令替换结构中包含一个感叹号(!)，
+  13&nbsp;#+ 将不会工作。
+  14&nbsp;#+ 因为感叹号触发了Bash"历史命令机制"
+  15&nbsp;#  不过，在脚本里，历史命令机制是被禁用的.
+  16&nbsp;
+  17&nbsp;a=`ls -l`         # 把'ls -l'命令的结果赋给变量'a'
+  18&nbsp;echo $a           # 如果没有引号，则会删除多余tab键和空白符
+  19&nbsp;echo
+  20&nbsp;echo "$a"         # 加了双引号，则能够原样保留空白符
+  21&nbsp;                  # (参考&quot;引用&quot;章节)
+  22&nbsp;
+  23&nbsp;exit 0</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+          <DIV
+CLASS="EXAMPLE"
+>变量赋值也可以使用<I
+CLASS="FIRSTTERM"
+>$(...)</I
+> 机制(它是比<A
+HREF="commandsub.html#BACKQUOTESREF"
+>斜引号</A
+>更新的方法). 它实际是<A
+HREF="commandsub.html#COMMANDSUBREF"
+>命令替换</A
+>的一种形式.</DIV
+>
+          </DIV
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+>
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 摘自/etc/rc.d/rc.local
+   2&nbsp;R=$(cat /etc/redhat-release)
+   3&nbsp;arch=$(uname -m)</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+      </DD
+>
+    </DL
+>
+  </DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variables.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="untyped.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction to Variables and Parameters</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Bash Variables Are Untyped</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

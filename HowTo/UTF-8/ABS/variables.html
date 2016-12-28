@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Introduction to Variables and Parameters</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basics"
+HREF="part2.html"><LINK
+REL="PREVIOUS"
+TITLE="Special Characters"
+HREF="special-chars.html"><LINK
+REL="NEXT"
+TITLE="Variable Assignment"
+HREF="varassignment.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="special-chars.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="varassignment.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+>
+<DIV
+CLASS="CHAPTER"
+> 
+  <H1
+><A
+NAME="VARIABLES"
+>第四章. 变量和参数介绍</A
+></H1
+>
+  <P
+><I
+CLASS="FIRSTTERM"
+>变量</I
+> 是脚本编程中的如何进行数据表现的办法. 它们可以在算术计算中作为操作数，在一个字符串表达式中作为符号表达抽象的意义或是其他的其它意义。变量是表示计算机内存中保存一种数据需要占的一个位置或一组的位置的标识。</P
+>
+  <DIV
+CLASS="SECT1"
+>
+    <H1
+CLASS="SECT1"
+><A
+NAME="VARSUBN"
+>4.1. 变量替换</A
+></H1
+>
+    <P
+>变量的<i
+class="EMPHASIS"
+>名字<i
+class="EMPHASIS"
+></i
+></i
+>是它的值保存的地方。引用它的值称为<i
+class="EMPHASIS"
+>变量替换</i
+>(variable substitution)。.</P
+>
+    <DIV
+CLASS="VARIABLELIST"
+> 
+      <DL
+>
+        <DT
+><SPAN
+CLASS="TOKEN"
+>$</SPAN
+></DT
+>
+        <DD
+> 
+          <P
+>让我们仔细地区别变量和变量的值。如果<tt
+class="USERINPUT"
+><b
+>variable1</b
+></tt
+>是一个变量的名字，那么<tt
+class="USERINPUT"
+><b
+>$variable1</b
+></tt
+>就是引用这个变量的值

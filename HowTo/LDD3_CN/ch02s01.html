@@ -1,0 +1,77 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>2.2. Hello World 模块</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="ch02.html" title="第&#160;2&#160;章&#160;建立和运行模块">
+<link rel="prev" href="ch02.html" title="第&#160;2&#160;章&#160;建立和运行模块">
+<link rel="next" href="ch02s03.html" title="2.3.&#160;内核模块相比于应用程序">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H2>2.1.&nbsp;设置你的测试系统</H2>  </th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch02.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle"></th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="file://C:\Documents and Settings\zhurp\桌面\LDD3_CHN\ch02s02.html" >下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div>
+<DIV class=sect1 lang=zh-cn>
+<P>在本章开始, 我们提供例子模块来演示编程概念. ( 所有的例子都可从 O' Reilly' s 的 FTP 网站上得到, 如第 1 章解释的那样 )建立, 
+加载, 和修改这些例子, 是提高你对驱动如何工作以及如何与内核交互的理解的好方法. </P>
+<P>例子模块应该可以在大部分的 2.6.x 内核上运行, 包括那些由发布供应商提供的. 但是, 我们建议你获得一个主流内核, 直接从 kernel.org 
+的镜像网络, 并把它安装到你的系统中. 供应商的内核可能是主流内核被重重地打了补丁并且和主流内核有分歧; 偶尔, 供应商的补丁可能改变了设备驱动可见的内核 
+API. 如果你在编写一个必须在特别的发布上运行的驱动, 你当然要在相应的内核上建立和测试. 但是, 处于学习驱动编写的目的, 一个标准内核是最好的. </P>
+<P>不管你的内核来源, 建立 2.6.x 的模块需要你有一个配置好并建立好的内核树在你的系统中. 这个要求是从之前内核版本的改变, 
+之前只要有一套当前版本的头文件就足够了. 2.6 模块针对内核源码树里找到的目标文件连接; 结果是一个更加健壮的模块加载器, 还要求那些目标文件也是可用的. 
+因此你的第一个商业订单是具备一个内核源码树( 或者从 krenel.org 网络或者你的发布者的内核源码包), 建立一个新内核, 并且安装到你的系统. 
+因为我们稍后会见到的原因, 生活通常是最容易的如果当你建立模块时真正运行目标内核, 尽管这不是需要的.</P>
+<DIV class=note style="MARGIN-LEFT: 0.5in; MARGIN-RIGHT: 0.5in">
+<TABLE summary=Note border=0>
+  
+  <TR>
+    <TD vAlign=top align=middle width=25 rowSpan=2><IMG alt=[注意] 
+      src="images/note.png"></TD>
+    <TH align=left>注意</TH></TR>
+  <TR>
+    <TD vAlign=top align=left>
+      <P>你应当也考虑一下在哪里进行你的模块试验, 开发和测试. 我们已经尽力使我们的例子模块安全和正确, 但是 bug 的可能性是经常会有的. 
+      内核代码中的错误可能会引起一个用户进程的死亡, 或者偶尔, 瘫痪整个系统. 它们正常地不会导致更严重地后果, 例如磁盘损伤. 然而, 
+      还是建议你进行你的内核试验在一个没有包含你负担不起丢失的数据的系统, 并且没有进行重要的服务. 
+      内核开发者典型地会保留一台"牺牲"系统来测试新的代码. </P></TD></TR></TABLE></DIV>
+<P>因此, 如果你还没有一个合适的系统, 带有一个配置好并建立好的源码树在磁盘上, 现在是时候建立了. 我们将等待. 一旦这个任务完成, 
+你就准备好开始摆布内核模块了. </P></DIV>
+<a name="TheHelloWorldModule.sect1"></a></div>
+<DIV>
+<H2 class=title style="CLEAR: both">
+<hr>
+</H2>
+<H2 class=title style="CLEAR: both">
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch02.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=u href="ch02.html">上一级</A></td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="file://C:\Documents and Settings\zhurp\桌面\LDD3_CHN\ch02s02.html" >下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">第&nbsp;2&nbsp;章&nbsp;建立和运行模块&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;2.3.&nbsp;内核模块相比于应用程序</td>
+</tr>
+</table></H2></DIV></div></div>
+</div>
+</body>
+</html>

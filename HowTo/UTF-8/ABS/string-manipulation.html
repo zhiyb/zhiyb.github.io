@@ -1,0 +1,1154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Manipulating Strings</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Variables Revisited"
+HREF="variables2.html"><LINK
+REL="PREVIOUS"
+TITLE="Variables Revisited"
+HREF="variables2.html"><LINK
+REL="NEXT"
+TITLE="Parameter Substitution"
+HREF="parameter-substitution.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variables2.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Variables Revisited</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="parameter-substitution.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="STRING-MANIPULATION"
+>9.2. 操作字符串</A
+></H1
+>
+  <P
+><A
+NAME="STRINGMANIP"
+></A
+></P
+>
+  <P
+>Bash已经支持了令人惊讶的字符串操作的数量。不幸地，这些工具缺乏统一的标准。一些是<a
+href="parameter-substitution.html#PARAMSUBREF"
+>参数替换</a
+>的子集，其它受到UNIX的<a
+href="moreadv.html#EXPRREF"
+>expr</a
+>命令的功能的影响。这导致不一致的命令语法和冗余的功能，但这些并没有引起混乱。</P
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+>字符串长度</B
+></P
+>
+    <DL
+><DT
+>${#string}</DT
+><DD
+><P
+></P
+></DD
+><DT
+>expr length $string</DT
+><DD
+><P
+></P
+></DD
+><DT
+>expr "$string" : '.*'</DT
+><DD
+><P
+>	  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;
+   3&nbsp;echo ${#stringZ}                 # 15
+   4&nbsp;echo `expr length $stringZ`      # 15
+   5&nbsp;echo `expr "$stringZ" : '.*'`    # 15</PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="PARAGRAPHSPACE"
+></A
+> 
+    <P
+><B
+>例子 9-10. 在一个文本文件的段落之间插入一个空白行</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# paragraph-space.sh
+   3&nbsp;
+   4&nbsp;# 给单倍行距的文本文件段落之间插入一个空白行.
+   5&nbsp;# Usage: $0 &#60;FILENAME
+   6&nbsp;
+   7&nbsp;MINLEN=45        # 可能需要改变这个值.
+   8&nbsp;#  Assume lines shorter than $MINLEN characters
+   9&nbsp;#+ terminate a paragraph.
+  10&nbsp;
+  11&nbsp;while read line  # 提供和输入文件一样多的行...
+  12&nbsp;do
+  13&nbsp;  echo "$line"   # 输出行本身.
+  14&nbsp;
+  15&nbsp;  len=${#line}
+  16&nbsp;  if [ "$len" -lt "$MINLEN" ]
+  17&nbsp;    then echo    # 在一个短行结束后打印一个空白行.
+  18&nbsp;  fi  
+  19&nbsp;done
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <DIV
+CLASS="VARIABLELIST"
+> 
+    <P
+><B
+> 匹配字符串开头的子串的长度</B
+></P
+>
+    <DL
+>
+      <DT
+>expr match "$string" '$substring'</DT
+>
+      <DD
+> 
+        <P
+><TT
+CLASS="REPLACEABLE"
+><I
+>$substring</I
+></TT
+> 是一个<A
+HREF="regexp.html#REGEXREF"
+>正则表达式</A
+>.</P
+>
+      </DD
+>
+      <DT
+>expr "$string" : '$substring'</DT
+>
+      <DD
+> 
+        <P
+><TT
+CLASS="REPLACEABLE"
+><I
+>$substring</I
+></TT
+> 是一个正则表达式.</P
+>
+        <P
+>&#13; 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;#       |------|
+   3&nbsp;
+   4&nbsp;echo `expr match "$stringZ" 'abc[A-Z]*.2'`   # 8
+   5&nbsp;echo `expr "$stringZ" : 'abc[A-Z]*.2'`       # 8</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+>索引</B
+></P
+>
+    <DL
+>
+      <DT
+>expr index $string $substring</DT
+>
+      <DD
+> 
+        <P
+>在字符串$string中$substring第一次出现的数字位置</P
+>
+        <P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;echo `expr index "$stringZ" C12`             # 6
+   3&nbsp;                                             # C 字符的位置.
+   4&nbsp;
+   5&nbsp;echo `expr index "$stringZ" 1c`              # 3
+   6&nbsp;# 'c' (in #3 position) matches before '1'.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>这和C语言函数strchar()非常相似。</P
+>
+      </DD
+>
+    </DL
+>
+    <B
+>子串提取</B
+></DIV
+>
+  <DIV
+CLASS="VARIABLELIST"
+> 
+    <DL
+>
+      <DT
+>${string:position}</DT
+>
+      <DD
+> 
+        <P
+>把$string中从第$postion个字符开始字符串提取出来.</P
+>
+        <P
+>如果$string是&quot;*&quot;或&quot;@&quot;，则表示从<a
+href="variables2.html#POSPARAMREF"
+>位置参数</a
+>中提取第$postion后面的字符串。<a
+name="AEN4546"
+href="#FTN.AEN4546"
+>[1]</a
+> </P
+>
+      </DD
+>
+      <DT
+>${string:position:length}</DT
+>
+      <DD
+> 
+        <P
+>把$string中$postion个字符后面的长度为$length的字符串提取出来。</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;#       0123456789.....
+   3&nbsp;#       以0开始计算.
+   4&nbsp;
+   5&nbsp;echo ${stringZ:0}                            # abcABC123ABCabc
+   6&nbsp;echo ${stringZ:1}                            # bcABC123ABCabc
+   7&nbsp;echo ${stringZ:7}                            # 23ABCabc
+   8&nbsp;
+   9&nbsp;echo ${stringZ:7:3}                          # 23A
+  10&nbsp;                                             # 提取的子串长为3
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;
+  14&nbsp;# 有没有可能从字符串的右边结尾处提取?
+  15&nbsp;    
+  16&nbsp;echo ${stringZ:-4}                           # abcABC123ABCabc
+  17&nbsp;# 默认是整个字符串，就相当于${parameter:-default}.
+  18&nbsp;# 然而. . .
+  19&nbsp;
+  20&nbsp;echo ${stringZ:(-4)}                         # Cabc 
+  21&nbsp;echo ${stringZ: -4}                          # Cabc
+  22&nbsp;# 这样,它可以工作了.
+  23&nbsp;# 圆括号或附加的空白字符可以转义$position参数.
+  24&nbsp;
+  25&nbsp;# 多谢Dan Jacobson指出这点.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>如果$string参数是&quot;*&quot;或&quot;@&quot;，则会提取第$length个位置参数开始的共$length个参数。[译者注：实际取得的参数有可能少于$length，因为有可能余下的参数没有那么多了]</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo ${*:2}          # 打印第二个位置以后的参数.
+   2&nbsp;echo ${@:2}          # 和上面一样.
+   3&nbsp;
+   4&nbsp;echo ${*:2:3}        # 打印从第二个参数起的三个位置参数.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+>expr substr $string $position $length</DT
+>
+      <DD
+> 
+        <P
+>提取$string中从位置$postition开始的长度为$length的子字符串。</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;#       123456789......
+   3&nbsp;#       以1开始计算.
+   4&nbsp;
+   5&nbsp;echo `expr substr $stringZ 1 2`              # ab
+   6&nbsp;echo `expr substr $stringZ 4 3`              # ABC</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+><A
+NAME="EXPRPAREN"
+></A
+></P
+>
+      </DD
+>
+      <DT
+>expr match "$string" '\($substring\)'</DT
+>
+      <DD
+> 
+        <P
+>从$string字符串左边开始提取提取由$substring描述的<a
+href="regexp.html#REGEXREF"
+>正则表达式</a
+>的子串。</P
+>
+      </DD
+>
+      <DT
+>expr "$string" : '\($substring\)'</DT
+>
+      <DD
+> 
+        <P
+>从$string字符串左边开始提取由$substring描述的正则表达式的子串。</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;#       =======	    
+   3&nbsp;
+   4&nbsp;echo `expr match "$stringZ" '\(.[b-c]*[A-Z]..[0-9]\)'`   # abcABC1
+   5&nbsp;echo `expr "$stringZ" : '\(.[b-c]*[A-Z]..[0-9]\)'`       # abcABC1
+   6&nbsp;echo `expr "$stringZ" : '\(.......\)'`                   # abcABC1
+   7&nbsp;# 上面的每个echo都打印相同的结果.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+>expr match "$string" '.*\($substring\)'</DT
+>
+      <DD
+> 
+        <P
+>从$string字符串结尾开始提取由$substring描述的正则表达式的子串。</P
+>
+      </DD
+>
+      <DT
+>expr "$string" : '.*\($substring\)'</DT
+>
+      <DD
+> 
+        <P
+>从$string字符串结尾开始提取由$substring描述的正则表达式的子串。</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;#                ======
+   3&nbsp;
+   4&nbsp;echo `expr match "$stringZ" '.*\([A-C][A-C][A-C][a-c]*\)'`    # ABCabc
+   5&nbsp;echo `expr "$stringZ" : '.*\(......\)'`                       # ABCabc</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+>子串移动</B
+></P
+>
+    <DL
+>
+      <DT
+>${string#substring}</DT
+>
+      <DD
+> 
+        <P
+>从$string左边开始，剥去最短匹配$substring子串.</P
+>
+      </DD
+>
+      <DT
+>${string##substring}</DT
+>
+      <DD
+> 
+        <P
+>从$string左边开始，剥去最长匹配$substring子串.</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;#       |----|
+   3&nbsp;#       |----------|
+   4&nbsp;
+   5&nbsp;echo ${stringZ#a*C}      # 123ABCabc
+   6&nbsp;# 剥去匹配'a'到'C'之间最短的字符串.
+   7&nbsp;
+   8&nbsp;echo ${stringZ##a*C}     # abc
+   9&nbsp;# 剥去匹配'a'到'C'之间最长的字符串.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+>${string%substring}</DT
+>
+      <DD
+> 
+        <P
+>从$string结尾开始，剥去最短匹配$substring子串。</P
+>
+      </DD
+>
+      <DT
+>${string%%substring}</DT
+>
+      <DD
+> 
+        <P
+>从$string结尾开始，剥去最长匹配$substring子串。</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;#                    ||
+   3&nbsp;#        |------------|
+   4&nbsp;
+   5&nbsp;echo ${stringZ%b*c}      # abcABC123ABCa
+   6&nbsp;# 从$stringZ后面尾部开始，剥去匹配'a'到'C'之间最短的字符串.
+   7&nbsp;
+   8&nbsp;echo ${stringZ%%b*c}     # a
+   9&nbsp;# 从$stringZ后面尾部开始，剥去匹配'a'到'C'之间最长的字符串.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <DIV
+CLASS="EXAMPLE"
+> 
+          <HR>
+          <A
+NAME="CVT"
+></A
+> 
+          <P
+><B
+>例子 9-11. 随着文件名的更改来转换图形文件的格式</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;#  cvt.sh:
+   3&nbsp;#  把一个目录下的所有MacPaint图像文件转换成&quot;pbm&quot;格式.
+   4&nbsp;
+   5&nbsp;#  使用软件包&quot;netpbm&quot;中的&quot;macptopbm&quot;程序来转换,
+   6&nbsp;#+ 这个程序由Brian Henderson(bryanh@giraffe-data.com)维护.
+   7&nbsp;#  Netpbm是大多数Linux发行版的标准套件.
+   8&nbsp;
+   9&nbsp;OPERATION=macptopbm
+  10&nbsp;SUFFIX=pbm          # 新的文件后缀. 
+  11&nbsp;
+  12&nbsp;if [ -n "$1" ]
+  13&nbsp;then
+  14&nbsp;  directory=$1      # 如果一个目录名传递给脚本...
+  15&nbsp;else
+  16&nbsp;  directory=$PWD    # 否则使用当前目录.
+  17&nbsp;fi  
+  18&nbsp;  
+  19&nbsp;#  假定在目标目录中，
+  20&nbsp;#+ 都是带着&quot;.mac&quot;后缀的MacPaint图像文件.
+  21&nbsp;
+  22&nbsp;for file in $directory/*    # 文件名匹配符.
+  23&nbsp;do
+  24&nbsp;  filename=${file%.*c}      #  剥掉文件名中的&quot;.mac&quot;后缀，
+  25&nbsp;                            #+ '.*c'匹配所有'.'和'c'之间所有的匹配字符 
+  26&nbsp;			    
+  27&nbsp;  $OPERATION $file &#62; "$filename.$SUFFIX"
+  28&nbsp;                            # 把结果重定向到新的文件中
+  29&nbsp;  rm -f $file               # 转换后删除原来的文件.
+  30&nbsp;  echo "$filename.$SUFFIX"  # 打印一条完成某文件的消息到标准输出.
+  31&nbsp;done
+  32&nbsp;
+  33&nbsp;exit 0
+  34&nbsp;
+  35&nbsp;# 练习:
+  36&nbsp;# --------
+  37&nbsp;#  依照现在的情况,这个脚本转换了目录下所有的文件
+  38&nbsp;#
+  39&nbsp;#  修改它，使它只转换后缀为&quot;.mac&quot;的文件.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+        <P
+>一个简单的使用子串提取结构的<a
+href="extmisc.html#GETOPTY"
+>getopt</a
+>模仿。</P
+>
+        <DIV
+CLASS="EXAMPLE"
+> 
+          <HR>
+          <A
+NAME="GETOPTSIMPLE"
+></A
+> 
+          <P
+><B
+>例子 9-12. 模仿<I
+CLASS="EMPHASIS"
+>getopt</I
+></B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# getopt-simple.sh
+   3&nbsp;# 作者: Chris Morgan
+   4&nbsp;# 同意在ABS指南中使用.
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;getopt_simple()
+   8&nbsp;{
+   9&nbsp;    echo "getopt_simple()"
+  10&nbsp;    echo "Parameters are '$*'"
+  11&nbsp;    until [ -z "$1" ]
+  12&nbsp;    do
+  13&nbsp;      echo "Processing parameter of: '$1'"
+  14&nbsp;      if [ ${1:0:1} = '/' ]
+  15&nbsp;      then
+  16&nbsp;          tmp=${1:1}               # 剥去前导字符'/' . . .
+  17&nbsp;          parameter=${tmp%%=*}     # 提取参数名.
+  18&nbsp;          value=${tmp##*=}         # 提取参数值.
+  19&nbsp;          echo "Parameter: '$parameter', value: '$value'"
+  20&nbsp;          eval $parameter=$value
+  21&nbsp;      fi
+  22&nbsp;      shift
+  23&nbsp;    done
+  24&nbsp;}
+  25&nbsp;
+  26&nbsp;# 把所有选项传给函数getopt_simple().
+  27&nbsp;getopt_simple $*
+  28&nbsp;
+  29&nbsp;echo "test is '$test'"
+  30&nbsp;echo "test2 is '$test2'"
+  31&nbsp;
+  32&nbsp;exit 0
+  33&nbsp;
+  34&nbsp;---
+  35&nbsp;
+  36&nbsp;sh getopt_example.sh /test=value1 /test2=value2
+  37&nbsp;
+  38&nbsp;Parameters are '/test=value1 /test2=value2'
+  39&nbsp;Processing parameter of: '/test=value1'
+  40&nbsp;Parameter: 'test', value: 'value1'
+  41&nbsp;Processing parameter of: '/test2=value2'
+  42&nbsp;Parameter: 'test2', value: 'value2'
+  43&nbsp;test is 'value1'
+  44&nbsp;test2 is 'value2'</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+      </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+>子串替换</B
+></P
+>
+    <DL
+>
+      <DT
+>${string/substring/replacement}</DT
+>
+      <DD
+> 
+        <P
+>用$replacement替换由$substring匹配的字符串。</P
+>
+      </DD
+>
+      <DT
+>${string//substring/replacement}</DT
+>
+      <DD
+> 
+        <P
+>用$replacement替换所有匹配$substring的字符串。</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;
+   3&nbsp;echo ${stringZ/abc/xyz}           # xyzABC123ABCabc
+   4&nbsp;                                  #用'xyz'代替第一个匹配的'abc'.
+   5&nbsp;
+   6&nbsp;echo ${stringZ//abc/xyz}          # xyzABC123ABCxyz
+   7&nbsp;                                  # 用'xyz'代替所有的'abc'.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+      <DT
+>${string/#substring/replacement}</DT
+>
+      <DD
+> 
+        <P
+>如果$string字符串的最前端匹配$substring字符串，用$replacement替换$substring.</P
+>
+      </DD
+>
+      <DT
+>${string/%substring/replacement}</DT
+>
+      <DD
+> 
+        <P
+>如果$string字符串的最后端匹配$substring字符串，用$replacement替换$substring.</P
+>
+        <P
+> 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;stringZ=abcABC123ABCabc
+   2&nbsp;
+   3&nbsp;echo ${stringZ/#abc/XYZ}          # XYZABC123ABCabc
+   4&nbsp;                                  # 用'XYZ'替换前端的'abc'.
+   5&nbsp;
+   6&nbsp;echo ${stringZ/%abc/XYZ}          # abcABC123ABCXYZ
+   7&nbsp;                                  # 用'XYZ'替换后端的'abc'.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="SECT2"
+>
+    <H2
+CLASS="SECT2"
+><A
+NAME="AWKSTRINGMANIP"
+>9.2.1. 用awk处理字符串</A
+></H2
+>
+    <P
+>Bash脚本可以调用<a
+href="awk.html#AWKREF"
+>awk</a
+>的字符串操作功能来代替它自己内建的字符串操作符.</P
+>
+    <DIV
+CLASS="EXAMPLE"
+><HR>
+      <A
+NAME="SUBSTRINGEX"
+></A
+> 
+      <P
+><B
+>例子 9-13. 提取字符串的另一种办法</B
+></P
+>
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# substring-extraction.sh
+   3&nbsp;
+   4&nbsp;String=23skidoo1
+   5&nbsp;#      012345678    Bash
+   6&nbsp;#      123456789    awk
+   7&nbsp;# 注意上面两个程序对索引的不同处理:
+   8&nbsp;# Bash把字符串的第一个字符的标号称为'0'.
+   9&nbsp;# Awk把字符串的第一个字符的标号称为'1'.
+  10&nbsp;
+  11&nbsp;echo ${String:2:4} # position 3 (0-1-2), 4 characters long
+  12&nbsp;                                         # skid
+  13&nbsp;
+  14&nbsp;# 在awk中与Bash的${string:pos:length}等同的是substr(string,pos,length).
+  15&nbsp;echo | awk '
+  16&nbsp;{ print substr("'"${String}"'",3,4)      # skid
+  17&nbsp;}
+  18&nbsp;'
+  19&nbsp;#  用一个空的&quot;echo&quot;由管道传一个空的输入给awk,
+  20&nbsp;#+ 这样就不必提供一个文件名给awk.
+  21&nbsp;
+  22&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+>
+    <H2
+CLASS="SECT2"
+><A
+NAME="STRFDISC"
+>9.2.2. 更深入的讨论</A
+></H2
+>
+    <P
+>关于在脚本中字符串操作的更多细节，参考<a
+href="parameter-substitution.html"
+>9.3 节</a
+>和<a
+href="moreadv.html#EXPRREF"
+>exp</a
+>命令列表的<a
+href="moreadv.html#EXPEXTRSUB"
+>相关章节</a
+>。相关的脚本例子有：
+    <OL
+TYPE="1"
+>
+      <LI
+><A
+HREF="moreadv.html#EX45"
+>例子 12-9</A
+></LI
+>
+      <LI
+> <A
+HREF="parameter-substitution.html#LENGTH"
+>例子 9-16</A
+></LI
+>
+      <LI
+><A
+HREF="parameter-substitution.html#PATTMATCHING"
+>例子 9-17</A
+></LI
+>
+      <LI
+><A
+HREF="parameter-substitution.html#RFE"
+>例子 9-18</A
+></LI
+>
+      <LI
+><A
+HREF="parameter-substitution.html#VARMATCH"
+>例子 9-20</A
+></LI
+>
+    </OL
+>
+      </P
+></DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN4546"
+HREF="string-manipulation.html#AEN4546"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>这个要么用于命令行参数，要么用在<a
+href="functions.html#FUNCTIONREF"
+>函数</a
+>的参数。.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variables2.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="parameter-substitution.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Variables Revisited</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Parameter Substitution</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,3527 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Variables Revisited</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="PREVIOUS"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="NEXT"
+TITLE="Manipulating Strings"
+HREF="string-manipulation.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="part3.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="string-manipulation.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="VARIABLES2"
+>第九章：变量访问</A
+></H1
+>
+  <P
+><br>
+    变量使用得当，可以使脚本变得更加强大和有弹性。但这要求我们学习变量的精妙之处及其细微的差别。</P
+>
+  <DIV
+CLASS="SECT1"
+>
+    <H1
+CLASS="SECT1"
+><A
+NAME="INTERNALVARIABLES"
+>9.1. 内部变量</A
+></H1
+>
+    <DIV
+CLASS="VARIABLELIST"
+> 
+      <DL
+>
+        <DT
+><TT
+CLASS="REPLACEABLE"
+><I
+> <a
+href="internal.html#BUILTINREF"
+><TT
+CLASS="REPLACEABLE"
+><I
+>内建</I
+></TT
+></a
+>变量</I
+></TT
+></DT
+>
+        <DD
+> 
+          <P
+>影响Bash脚本行为的变量。</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$BASH</TT
+></DT
+>
+        <DD
+> 
+          <P
+>Bash二进制程序文件的路径 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/bash</TT
+></PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$BASH_ENV</TT
+></DT
+>
+        <DD
+> 
+          <P
+>该<a
+href="othertypesv.html#ENVREF"
+>环境变量</a
+>保存一个Bash启动文件路径，当启动一个脚本程序时会去读该环境变量指定的文件。</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="BASHSUBSHELLREF"
+></A
+><TT
+CLASS="VARNAME"
+>$BASH_SUBSHELL</TT
+></DT
+>
+        <DD
+> 
+          <P
+>一个指示<a
+href="subshells.html#SUBSHELLSREF"
+>子shell(subshell)</a
+>等级的变量。它是Bash<a
+href="bashver3.html#BASH3REF"
+>版本3</a
+>新加入的。</P
+>
+          <P
+>参考<A
+HREF="subshells.html#SUBSHELL"
+>例子 20-1</A
+>的用法.</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$BASH_VERSINFO[n]</TT
+></DT
+>
+        <DD
+> 
+          <P
+>这个<a
+href="arrays.html#ARRAYREF"
+>数组</a
+>含有6个元素，指示了安装的Bash版本的信息。它和$BASH_VERSION相似，但它们还是有一些小小的不同。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Bash版本信息:
+   2&nbsp;
+   3&nbsp;for n in 0 1 2 3 4 5
+   4&nbsp;do
+   5&nbsp;  echo "BASH_VERSINFO[$n] = ${BASH_VERSINFO[$n]}"
+   6&nbsp;done  
+   7&nbsp;
+   8&nbsp;# BASH_VERSINFO[0] = 3                      # 主版本号.
+   9&nbsp;# BASH_VERSINFO[1] = 00                     # 次版本号.
+  10&nbsp;# BASH_VERSINFO[2] = 14                     # 补丁级.
+  11&nbsp;# BASH_VERSINFO[3] = 1                      # 编译版本.
+  12&nbsp;# BASH_VERSINFO[4] = release                # 发行状态.
+  13&nbsp;# BASH_VERSINFO[5] = i386-redhat-linux-gnu  # 结构体系
+  14&nbsp;                                            # (和变量$MACHTYPE相同).</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$BASH_VERSION</TT
+></DT
+>
+        <DD
+> 
+          <P
+>安装在系统里的Bash版本。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH_VERSION</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>3.00.14(1)-release</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH_VERSION</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>BASH_VERSION: Undefined variable.</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+>检查$BASH_VERSION是检测哪个shell在运行的好办法。$SHELL变量不一定能给出正确的答案。</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="DIRSTACKREF"
+></A
+><TT
+CLASS="VARNAME"
+>$DIRSTACK</TT
+></DT
+>
+        <DD
+> 
+          <P
+>在目录堆栈里面最顶端的值(它受<A
+HREF="internal.html#PUSHDREF"
+>pushd</A
+>和<A
+HREF="internal.html#POPDREF"
+>popd</A
+>的控制)</P
+>
+          <P
+>这个内建的变量和<a
+href="internal.html#DIRSD"
+>dirs</a
+>命令相符，但<strong>dirs</strong>是给出整个目录堆栈的内容。</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$EDITOR</TT
+></DT
+>
+        <DD
+> 
+          <P
+>由脚本调用的默认的编辑器，一般是<strong>vi</strong>或是<strong>emacs</strong>.</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="EUIDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$EUID</TT
+></DT
+>
+        <DD
+> 
+          <P
+>有效用户ID</P
+>
+          <P
+>当前用户无论是什么标识都会被认为是这个有效用户ID，这可能依赖于<A
+HREF="system.html#SUREF"
+>su</A
+>.</P
+>
+          <DIV
+CLASS="CAUTION"
+> 
+            <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>变量<a
+href="variables2.html#UIDREF"
+>$UID</a
+>不一定和$EUID相同。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$FUNCNAME</TT
+></DT
+>
+        <DD
+> 
+          <P
+>当前函数的名字</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;xyz23 ()
+   2&nbsp;{
+   3&nbsp;  echo "$FUNCNAME now executing."  # 打印：xyz23 now executing.
+   4&nbsp;}
+   5&nbsp;
+   6&nbsp;xyz23
+   7&nbsp;
+   8&nbsp;echo "FUNCNAME = $FUNCNAME"        # FUNCNAME =
+   9&nbsp;                                   # 在一个函数体外则没有值输出.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$GLOBIGNORE</TT
+></DT
+>
+        <DD
+> 
+          <P
+>由<a
+href="globbingref.html"
+>通配符(globbing)</a
+>扩展的一列文件名模式。</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="GROUPSREF"
+></A
+><TT
+CLASS="VARNAME"
+>$GROUPS</TT
+></DT
+>
+        <DD
+> 
+          <P
+>目前用户所属的组</P
+>
+          <P
+>它是当前用户在/etc/passwd文件中记录的所属的组列表（数组）。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>root# </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $GROUPS</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>root# </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${GROUPS[1]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>root# </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${GROUPS[5]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>6</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><A
+NAME="HOMEDIRREF"
+></A
+><TT
+CLASS="VARNAME"
+>$HOME</TT
+></DT
+>
+        <DD
+> 
+          <P
+>用户的家目录，通常是<TT
+CLASS="FILENAME"
+>/home/username</TT
+> (参考<A
+HREF="parameter-substitution.html#EX6"
+>例子 9-14</A
+>)</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="HOSTNAMEREF"
+></A
+><TT
+CLASS="VARNAME"
+>$HOSTNAME</TT
+></DT
+>
+        <DD
+> 
+          <P
+>在系统启动时由一个初始化脚本中用<a
+href="system.html#HNAMEREF"
+>hostname</a
+>命令给系统指派一个名字。然而，<tt
+class="FUNCTION"
+>gethostname()</tt
+>函数能设置Bash内部变量E<tt
+class="VARNAME"
+>$HOSTNAME</tt
+>。参考<A
+HREF="parameter-substitution.html#EX6"
+>例子 9-14</A
+>.</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$HOSTTYPE</TT
+></DT
+>
+        <DD
+> 
+          <P
+>机器类型</P
+>
+          <P
+>像<a
+href="variables2.html#MACHTYPEREF"
+>$MACHTYPE</a
+>一样标识系统硬件。</P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $HOSTTYPE</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>i686</TT
+></PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DD
+>
+        <DT
+><A
+NAME="IFSREF"
+></A
+><TT
+CLASS="VARNAME"
+>$IFS</TT
+></DT
+>
+        <DD
+> 
+          <P
+>内部字段分隔符</P
+>
+          <P
+>此变量决定Bash如何分割字段，或是解释字符串时的字标识分割。</P
+>
+          <P
+>$IFS默认是<a
+href="special-chars.html#WHITESPACEREF"
+>空白字符</a
+>(空格，制表符和新行符)，它可以被重新设置。例如，在解释一个以逗号分割的数据文件里可设置成逗号分割。注意<a
+href="variables2.html#APPREF"
+>$*</a
+>使用了保存在$IFS中的第一个字符。 参考<A
+HREF="quoting.html#WEIRDVARS"
+>例子 5-1</A
+>.</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $IFS | cat -vte</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>$</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>bash -c 'set w x y z; IFS=":-;"; echo "$*"'</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>w:x:y:z</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <DIV
+CLASS="CAUTION"
+> 
+            <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><TT
+CLASS="VARNAME"
+>$IFS</TT
+>处理空白字符和其他的字符不相同。 
+                  <DIV
+CLASS="EXAMPLE"
+> 
+                    <HR>
+                    <A
+NAME="IFSH"
+></A
+> 
+                    <P
+><B
+>例子 9-1. $IFS和空白符</B
+></P
+>
+                    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                      <TR
+> 
+                        <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# $IFS处理空白字符和其他字符不相同。
+   3&nbsp;
+   4&nbsp;output_args_one_per_line()
+   5&nbsp;{
+   6&nbsp;  for arg
+   7&nbsp;  do echo "[$arg]"
+   8&nbsp;  done
+   9&nbsp;}
+  10&nbsp;
+  11&nbsp;echo; echo "IFS=\" \""
+  12&nbsp;echo "-------"
+  13&nbsp;
+  14&nbsp;IFS=" "
+  15&nbsp;var=" a  b c   "
+  16&nbsp;output_args_one_per_line $var  # output_args_one_per_line函数相当于`echo &quot; a  b c   &quot;`
+  17&nbsp;#
+  18&nbsp;# [a]
+  19&nbsp;# [b]
+  20&nbsp;# [c]
+  21&nbsp;
+  22&nbsp;
+  23&nbsp;echo; echo "IFS=:"
+  24&nbsp;echo "-----"
+  25&nbsp;
+  26&nbsp;IFS=:
+  27&nbsp;var=":a::b:c:::"               # 像上面一样, 但用&quot;:&quot;代替了&quot; &quot;.
+  28&nbsp;output_args_one_per_line $var
+  29&nbsp;#
+  30&nbsp;# []
+  31&nbsp;# [a]
+  32&nbsp;# []
+  33&nbsp;# [b]
+  34&nbsp;# [c]
+  35&nbsp;# []
+  36&nbsp;# []
+  37&nbsp;# []
+  38&nbsp;
+  39&nbsp;# 在awk中字段分隔符&quot;FS&quot;也有相同的特性.
+  40&nbsp;
+  41&nbsp;# 多谢Stephane Chazelas.
+  42&nbsp;
+  43&nbsp;echo
+  44&nbsp;
+  45&nbsp;exit 0</PRE
+></TD
+>
+                      </TR
+>
+                    </TABLE
+>
+                    <HR>
+                  </DIV
+></P
+>
+                  </TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+          <P
+>(多谢S.C.澄清了问题和举的例子)</P
+>
+          <P
+>参考<A
+HREF="communications.html#ISSPAMMER"
+>例子 12-37</A
+>来看一个关于理解$IFS的教学例子。</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$IGNOREEOF</TT
+></DT
+>
+        <DD
+> 
+          <P
+>忽略EOF：在退出控制台前有多少文件结尾标识（end-of-files,control-D）会被shell忽略。</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$LC_COLLATE</TT
+></DT
+>
+        <DD
+> 
+          <P
+>它常常在.bashrc或/etc/profile文件里被设置，它控制文件名扩展和模式匹配的展开顺序。如果设置不当，LC_COLLATE会在<a
+href="globbingref.html"
+>文件名通配符(filename globbing)</a
+>里引起不可预料的结果。</P
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>到Bash2.05版本止，文件名通配符不再区分在方括号里的字符串范围中的大小写了。例如，<b
+class="COMMAND"
+>ls [A-M]*</b
+>会匹配File1.txt和file1.txt。为了保持方括号区分大小写的惯例，在/etc/profile文件和/或在~/.bashrc文件里由命令<strong>export 
+                    LC_COLLATE=C</strong>把LC_COLLATE环境变量设置成C可以达到目的。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$LC_CTYPE</TT
+></DT
+>
+        <DD
+> 
+          <P
+>这个内部变量控制<a
+href="globbingref.html"
+>通配符(globbing)</a
+>和模式匹配中的字符解释。</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="LINENOREF"
+></A
+><TT
+CLASS="VARNAME"
+>$LINENO</TT
+></DT
+>
+        <DD
+> 
+          <P
+>这个变量表示在本shell脚本中该变量出现时所在的行数。它只在脚本中它出现时有意义，它一般可用于调试。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# *** 开始调试代码块 ***
+   2&nbsp;last_cmd_arg=$_  # 保存.
+   3&nbsp;
+   4&nbsp;echo "At line number $LINENO, variable \"v1\" = $v1"
+   5&nbsp;echo "Last command argument processed = $last_cmd_arg"
+   6&nbsp;# *** 调试代码结束 ***</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><A
+NAME="MACHTYPEREF"
+></A
+><TT
+CLASS="VARNAME"
+>$MACHTYPE</TT
+></DT
+>
+        <DD
+> 
+          <P
+>机器类型</P
+>
+          <P
+>识别系统的硬件类型。</P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $MACHTYPE</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>i686</TT
+></PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DD
+>
+        <DT
+><A
+NAME="OLDPWD"
+></A
+><TT
+CLASS="VARNAME"
+>$OLDPWD</TT
+></DT
+>
+        <DD
+> 
+          <P
+>上一次工作的目录(&quot;OLD-print-working-directory&quot;,你上一次进入工作的目录)</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$OSTYPE</TT
+></DT
+>
+        <DD
+> 
+          <P
+>操作系统类型</P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $OSTYPE</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>linux</TT
+></PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DD
+>
+        <DT
+><A
+NAME="PATHREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PATH</TT
+></DT
+>
+        <DD
+> 
+          <P
+>可执行程序文件的搜索路径。一般有/usr/bin/, /usr/X11R6/bin/, /usr/local/bin,等等。</P
+>
+          <P
+>当给出一个命令时，shell会自动在一个哈希表里搜索由PATH变量里所列的路径寻找该命令程序。$PATH变量被保存在<a
+href="othertypesv.html#ENVREF"
+>环境变量</a
+>里，是一串由冒号(:)分割的目录名的列表。通常，系统把此变量的值在/etc/profile文件和/或在~/.bashrc文件中被定义赋值。(参考<A
+HREF="files.html"
+>附录 G</A
+>).</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><B
+CLASS="COMMAND"
+>echo $PATH</B
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin:/sbin:/usr/sbin</TT
+></PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+><TT
+CLASS="USERINPUT"
+><B
+>PATH=${PATH}:/opt/bin</B
+></TT
+> 能把/opt/bin目录加到当前现有的目录列表中去。在一个脚本中，它可以用这种方法临时地加一个目录到目录列表中去。当一个脚本退出时，此变量会恢复回原先的$PATH值(一个子进程[比如一个脚本]，不能改变父进程的环境变量[比如启动脚本的shell])。</P
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>保存在$PATH目录列表中的当前&quot;工作目录&quot;(./)通常因为会引发安全漏洞而被忽略。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$PIPESTATUS</TT
+></DT
+>
+        <DD
+> 
+          <P
+> 此<a
+href="arrays.html#ARRAYREF"
+>数组</a
+>变量保存了最后执行的<em>前台</em><a
+href="special-chars.html#PIPEREF"
+>管道</a
+>的退出状态。相当有趣的是，它不一定和最后执行的命令的<a
+href="exit-status.html#EXITSTATUSREF"
+>退出状态</a
+>一样。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $PIPESTATUS</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -al | bogus_command</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $PIPESTATUS</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>141</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -al | bogus_command</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $?</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>127</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+><tt
+class="VARNAME"
+>$PIPESTATUS</tt
+>数组的成员保存了每一个在管道里执行的命令各自的退出状态。<tt
+class="VARNAME"
+>$PIPESTATUS[0]</tt
+>保存了管道里第一个命令的退出状态，<tt
+class="VARNAME"
+>$PIPESTATUS[1]</tt
+>保存了管道里第二个命令的退出状态，以此类推。</P
+>
+          <DIV
+CLASS="CAUTION"
+> 
+            <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> 在一个登录的shell里$PIPESTATUS变量可能包含了一个无用的0值。（在Bash 3.0以前）</P
+>
+                  <P
+> 
+                  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                    <TR
+> 
+                      <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>bash</B
+></TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>who | grep nobody | sort</B
+></TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[*]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 	      </PRE
+></TD
+>
+                    </TR
+>
+                  </TABLE
+></P
+>
+                  <P
+> 如果在一个脚本包含上面的命令，就会产生0 1 0的输出。</P
+>
+                  <p>多谢Wayne Pollock指出这一点并提供上面的例子。</p></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>在某些上下文中，$PIPESTATUS变量会给出一些不可预料的结果。</P
+>
+                  <P
+> 
+                  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                    <TR
+> 
+                      <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH_VERSION</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>3.00.14(1)-release</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>$ ls | bogus_command | wc</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found
+ 0       0       0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[@]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>141 127 0</TT
+>
+ 	      </PRE
+></TD
+>
+                    </TR
+>
+                  </TABLE
+></P
+>
+                  <P
+>Chet Ramey贡献了上面描述<a
+href="external.html#LSREF"
+>ls</a
+>输出的行为的例子。如果ls写到一个没有进程在读的管道，SIGPIPE信号会杀死它并使它的<a
+href="exit-status.html#EXITSTATUSREF"
+>退出状态</a
+>为141。否则ls的退出状态为预料之中的0。这个和<a
+href="textproc.html#TRREF"
+>tr</a
+>的情况一样。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>$PIPESTATUS是一个&quot;挥发性&quot;变量。它需要在管道结束之后并在任何命令干涉之前立即查询。</P
+>
+                  <P
+> 
+                  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                    <TR
+> 
+                      <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>$ ls | bogus_command | wc</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found
+ 0       0       0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[@]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0 127 0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[@]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 	      </PRE
+></TD
+>
+                    </TR
+>
+                  </TABLE
+></P
+>
+                  </TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+        <DT
+><A
+NAME="PPIDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PPID</TT
+></DT
+>
+        <DD
+> 
+          <P
+></P
+>
+          <P
+>一个进程的$PPID变量保存它的父进程的进程ID(pid)。<A
+NAME="AEN3989"
+HREF="#FTN.AEN3989"
+>[1]</A
+> </P
+>
+          <P
+>用这个变量和<a
+href="system.html#PIDOFREF"
+>pidof</a
+>命令比较。</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$PROMPT_COMMAND</TT
+></DT
+>
+        <DD
+> 
+          <P
+>这个变量在主提示符前($PS1显示之前)执行它的值里保存的命令。</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="PS1REF"
+></A
+><TT
+CLASS="VARNAME"
+>$PS1</TT
+></DT
+>
+        <DD
+> 
+          <P
+>这是主提示符（第一提示符），它能在命令行上看见。</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$PS2</TT
+></DT
+>
+        <DD
+> 
+          <P
+><A
+NAME="SECPROMPTREF"
+></A
+></P
+>
+          <P
+>副提示符（第二提示符），它在期望有附加的输入时能看见。它显示像&quot;&gt;&quot;的提示。</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$PS3</TT
+></DT
+>
+        <DD
+> 
+          <P
+>第三提示符。它在一个<a
+href="testbranch.html#SELECTREF"
+>select</a
+>循环里显示 (参考<A
+HREF="testbranch.html#EX31"
+>例子 10-29</A
+>).</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$PS4</TT
+></DT
+>
+        <DD
+> 
+          <P
+>第四提示符，它在用-x<a
+href="options.html#OPTIONSREF"
+>选项</a
+>调用一个脚本时的输出的每一行开头显示。它通常显示像&quot;+&quot;的提示。</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="PWDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PWD</TT
+></DT
+>
+        <DD
+> 
+          <P
+>工作目录(即你现在所处的目录)</P
+>
+          <P
+>它类似于内建命令<a
+href="internal.html#PWD2REF"
+>pwd</a
+>。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;E_WRONG_DIRECTORY=73
+   4&nbsp;
+   5&nbsp;clear # 清屏.
+   6&nbsp;
+   7&nbsp;TargetDirectory=/home/bozo/projects/GreatAmericanNovel
+   8&nbsp;
+   9&nbsp;cd $TargetDirectory
+  10&nbsp;echo "Deleting stale files in $TargetDirectory."
+  11&nbsp;
+  12&nbsp;if [ "$PWD" != "$TargetDirectory" ]
+  13&nbsp;then    # 防止意外工作在错误的目录中.
+  14&nbsp;  echo "Wrong directory!"
+  15&nbsp;  echo "In $PWD, rather than $TargetDirectory!"
+  16&nbsp;  echo "Bailing out!"
+  17&nbsp;  exit $E_WRONG_DIRECTORY
+  18&nbsp;fi  
+  19&nbsp;
+  20&nbsp;rm -rf *
+  21&nbsp;rm .[A-Za-z0-9]*    # 删除点文件.
+  22&nbsp;# rm -f .[^.]* ..?*   删除以多个点开始为文件名的文件.
+  23&nbsp;# (shopt -s dotglob; rm -f *)   也可以.
+  24&nbsp;# 多谢S.C.指出来.
+  25&nbsp;
+  26&nbsp;# 文件名除了&quot;/&quot;字符外可以包含ASCII值在0 - 255范围的所有字符
+  27&nbsp;# 删除以奇怪的字符开头的文件作为练习由读者实现.
+  28&nbsp;
+  29&nbsp;# 如果需要，这儿有多种其他的操作.
+  30&nbsp;
+  31&nbsp;echo
+  32&nbsp;echo "Done."
+  33&nbsp;echo "Old files deleted in $TargetDirectory."
+  34&nbsp;echo
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;exit 0</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><A
+NAME="REPLYREF"
+></A
+><TT
+CLASS="VARNAME"
+>$REPLY</TT
+></DT
+>
+        <DD
+> 
+          <P
+>没有变量提供给<a
+href="internal.html#READREF"
+>read</a
+>命令时的默认变量．这也适用于<a
+href="testbranch.html#SELECTREF"
+>select</a
+>命令的目录，但只是提供被选择的变量项目编号而不是变量本身的值．</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# reply.sh
+   3&nbsp;
+   4&nbsp;# REPLY 是一个read命令的默认变量.
+   5&nbsp;
+   6&nbsp;echo
+   7&nbsp;echo -n "What is your favorite vegetable? "
+   8&nbsp;read
+   9&nbsp;
+  10&nbsp;echo "Your favorite vegetable is $REPLY."
+  11&nbsp;#  如果没有变量提供且仅在这种情况，REPLY保存&quot;read&quot;命令上次读到的值
+  12&nbsp;#
+  13&nbsp;
+  14&nbsp;echo
+  15&nbsp;echo -n "What is your favorite fruit? "
+  16&nbsp;read fruit
+  17&nbsp;echo "Your favorite fruit is $fruit."
+  18&nbsp;echo "but..."
+  19&nbsp;echo "Value of \$REPLY is still $REPLY."
+  20&nbsp;#  $REPLY仍然被设置了它先前的值，
+  21&nbsp;#+ 因为变量$fruit保存了新的&quot;read&quot;读到的值.
+  22&nbsp;
+  23&nbsp;echo
+  24&nbsp;
+  25&nbsp;exit 0</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$SECONDS</TT
+></DT
+>
+        <DD
+> 
+          <P
+>脚本已运行的秒数．</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;TIME_LIMIT=10
+   4&nbsp;INTERVAL=1
+   5&nbsp;
+   6&nbsp;echo
+   7&nbsp;echo "Hit Control-C to exit before $TIME_LIMIT seconds."
+   8&nbsp;echo
+   9&nbsp;
+  10&nbsp;while [ "$SECONDS" -le "$TIME_LIMIT" ]
+  11&nbsp;do
+  12&nbsp;  if [ "$SECONDS" -eq 1 ]
+  13&nbsp;  then
+  14&nbsp;    units=second
+  15&nbsp;  else  
+  16&nbsp;    units=seconds
+  17&nbsp;  fi
+  18&nbsp;
+  19&nbsp;  echo "This script has been running $SECONDS $units."
+  20&nbsp;  #  在一个缓慢或负担过重的机器上,
+  21&nbsp;  #+ 脚本可能偶尔会跳过一个计数.
+  22&nbsp;  sleep $INTERVAL
+  23&nbsp;done
+  24&nbsp;
+  25&nbsp;echo -e "\a"  # Beep!(BB声)
+  26&nbsp;
+  27&nbsp;exit 0</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$SHELLOPTS</TT
+></DT
+>
+        <DD
+> 
+          <P
+>已经激活的shell<a
+href="options.html#OPTIONSREF"
+>选项</a
+>列表，它是一个只读变量．
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $SHELLOPTS</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>braceexpand:hashall:histexpand:monitor:history:interactive-comments:emacs</TT
+>
+ 	      </PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$SHLVL</TT
+></DT
+>
+        <DD
+> 
+          <P
+>SHELL的嵌套级别．指示了Bash被嵌套了多深．在命令行里，$SHLVL是1，因此在一个脚本里，它是2.</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$TMOUT</TT
+></DT
+>
+        <DD
+> 
+          <P
+>如果<tt
+class="REPLACEABLE"
+><i
+>$TMOUT</i
+></tt
+>环境变量被设为非零值时间值<I
+CLASS="EMPHASIS"
+>time</I
+>，那么经过<I
+CLASS="EMPHASIS"
+>time</I
+>这么长的时间后，shell提示符会超时．这将使此shell退出登录．</P
+>
+          <P
+>在Bash版本2.05b以上，可以在脚本中把<tt
+class="REPLACEABLE"
+><i
+>$TMOUT</i
+></tt
+>和<a
+href="internal.html#READREF"
+>read</a
+>命令结合使用．</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 在Bash版本2.05b以上运行.
+   2&nbsp;
+   3&nbsp;TMOUT=3    # 提示输入时间为三秒.
+   4&nbsp;
+   5&nbsp;echo "What is your favorite song?"
+   6&nbsp;echo "Quickly now, you only have $TMOUT seconds to answer!"
+   7&nbsp;read song
+   8&nbsp;
+   9&nbsp;if [ -z "$song" ]
+  10&nbsp;then
+  11&nbsp;  song="(no answer)"
+  12&nbsp;  # 默认输出.
+  13&nbsp;fi
+  14&nbsp;
+  15&nbsp;echo "Your favorite song is $song."</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+>有其他更复杂的在脚本中实现定时输入的方法．另一个方法是设置一个定时循环，超时时给脚本发送一个信号．这个办法要求有一个处理例程来捕捉(trap)(参考<a
+href="debugging.html#EX76"
+>例子 29-5</a
+>)由定时循环产生的信号．(哇哦!)</P
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="TMDIN"
+></A
+> 
+            <P
+><B
+>例子 9-2. 定时输入</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# timed-input.sh
+   3&nbsp;
+   4&nbsp;# TMOUT=3    在新一点的版本中，这个也可以.
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;TIMELIMIT=3  # 在这个实例中设置成三秒，但可以设置成其它的值。
+   8&nbsp;
+   9&nbsp;PrintAnswer()
+  10&nbsp;{
+  11&nbsp;  if [ "$answer" = TIMEOUT ]
+  12&nbsp;  then
+  13&nbsp;    echo $answer
+  14&nbsp;  else       # 不要和上面那个例子弄混了. 
+  15&nbsp;    echo "Your favorite veggie is $answer"
+  16&nbsp;    kill $!  # 不再需要后台运行的TimerOn函数了，杀掉它
+  17&nbsp;             # $!变量是上一个在后台运行的作业进程的PID
+  18&nbsp;  fi
+  19&nbsp;
+  20&nbsp;}  
+  21&nbsp;
+  22&nbsp;
+  23&nbsp;
+  24&nbsp;TimerOn()
+  25&nbsp;{
+  26&nbsp;  sleep $TIMELIMIT &#38;&#38; kill -s 14 $$ &#38;
+  27&nbsp;  # 等3秒,然后给脚本发送sigalarm信号.
+  28&nbsp;}  
+  29&nbsp;
+  30&nbsp;Int14Vector()
+  31&nbsp;{
+  32&nbsp;  answer="TIMEOUT"
+  33&nbsp;  PrintAnswer
+  34&nbsp;  exit 14
+  35&nbsp;}  
+  36&nbsp;
+  37&nbsp;trap Int14Vector 14   # 设置定时中断(14)能暗中给定时间限制
+  38&nbsp;
+  39&nbsp;echo "What is your favorite vegetable "
+  40&nbsp;TimerOn
+  41&nbsp;read answer
+  42&nbsp;PrintAnswer
+  43&nbsp;
+  44&nbsp;
+  45&nbsp;#  无可否认，这是一个定时输入的复杂的实现,
+  46&nbsp;#+ 然而&quot;read&quot;命令的&quot;-t&quot;选项可以简化这个任务。 
+  47&nbsp;#  参考后面的&quot;t-out.sh&quot;脚本
+  48&nbsp;
+  49&nbsp;#  如果你想要真正优雅的东西...
+  50&nbsp;#+ 可以考虑用C或C++写你的应用程序,
+  51&nbsp;#+ 使用合适的函数库,例如'alarm'或是'setitimer'.
+  52&nbsp;
+  53&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+          <P
+>另外一种选择是使用<A
+HREF="system.html#STTYREF"
+>stty</A
+>.</P
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="TIMEOUT"
+></A
+> 
+            <P
+><B
+>例子 9-3. 再来一个定时输入</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# timeout.sh
+   3&nbsp;
+   4&nbsp;#  由Stephane Chazelas所写,
+   5&nbsp;#+ 由本书作者作了些修改.
+   6&nbsp;
+   7&nbsp;INTERVAL=5                # 超时间隔
+   8&nbsp;
+   9&nbsp;timedout_read() {
+  10&nbsp;  timeout=$1
+  11&nbsp;  varname=$2
+  12&nbsp;  old_tty_settings=`stty -g`
+  13&nbsp;  stty -icanon min 0 time ${timeout}0
+  14&nbsp;  eval read $varname      # 或只是读$varname变量
+  15&nbsp;  stty "$old_tty_settings"
+  16&nbsp;  # 请参考&quot;stty&quot;的man手册.
+  17&nbsp;}
+  18&nbsp;
+  19&nbsp;echo; echo -n "What's your name? Quick! "
+  20&nbsp;timedout_read $INTERVAL your_name
+  21&nbsp;
+  22&nbsp;#  这个可能不一定在每种终端都能运行.
+  23&nbsp;#  最大的超时值依赖于终端.
+  24&nbsp;#+ (通常是25.5秒).
+  25&nbsp;
+  26&nbsp;echo
+  27&nbsp;
+  28&nbsp;if [ ! -z "$your_name" ]  # 如果在超时之前名字被键入...
+  29&nbsp;then
+  30&nbsp;  echo "Your name is $your_name."
+  31&nbsp;else
+  32&nbsp;  echo "Timed out."
+  33&nbsp;fi
+  34&nbsp;
+  35&nbsp;echo
+  36&nbsp;
+  37&nbsp;# 这个脚本和&quot;timed-input.sh&quot;脚本的行为稍微有点不同.
+  38&nbsp;# 每一次击键,计时器都会重新设置（即重新开始）.
+  39&nbsp;
+  40&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+          <P
+>可能最容易的方法就是使用<a
+href="internal.html#READREF"
+>read</a
+>命令的-t选项了。</P
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="TOUT"
+></A
+> 
+            <P
+><B
+>例子 9-4. 定时read</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# t-out.sh
+   3&nbsp;# 从&quot;syngin seven&quot;的建议中得到灵感(多谢).
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;TIMELIMIT=4         # 4秒
+   7&nbsp;
+   8&nbsp;read -t $TIMELIMIT variable &#60;&#38;1
+   9&nbsp;#                           ^^^
+  10&nbsp;#  在这儿, Bash 1.x and 2.x需要&quot;&lt;&amp;1&quot;,
+  11&nbsp;#  但Bash 3.x则不需要.
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;if [ -z "$variable" ]  # 值为null?
+  16&nbsp;then
+  17&nbsp;  echo "Timed out, variable still unset."
+  18&nbsp;else  
+  19&nbsp;  echo "variable = $variable"
+  20&nbsp;fi  
+  21&nbsp;
+  22&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+        </DD
+>
+        <DT
+><A
+NAME="UIDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$UID</TT
+></DT
+>
+        <DD
+> 
+          <P
+>用户ID号</P
+>
+          <P
+>这是当前用户的用户标识号，它在/etc/passwd文件中记录。</P
+>
+          <P
+>这是当前用户的真实ID，即使只是临时通过<a
+href="system.html#SUREF"
+>su</a
+>命令转换成另外一个用户也会显示成转换成的ID号。$UID是个只读变量，不能在命令行或是脚本中更改它，并且它和内建命令<a
+href="system.html#IDREF"
+>id</a
+>是有些相似的。</P
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="AMIROOT"
+></A
+> 
+            <P
+><B
+>例子 9-5. 我是root吗？</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# am-i-root.sh:   我是root吗？
+   3&nbsp;
+   4&nbsp;ROOT_UID=0   # Root的$UID为0.
+   5&nbsp;
+   6&nbsp;if [ "$UID" -eq "$ROOT_UID" ]  # 真正的&quot;root&quot;才能经得住考验
+   7&nbsp;then
+   8&nbsp;  echo "You are root."
+   9&nbsp;else
+  10&nbsp;  echo "You are just an ordinary user (but mom loves you just the same)."
+  11&nbsp;fi
+  12&nbsp;
+  13&nbsp;exit 0
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;# ============================================================= #
+  17&nbsp;# 下面的代码不会执行,因为脚本在上面已经退出了.
+  18&nbsp;
+  19&nbsp;# 另外一种判断是否是root用户的方法:
+  20&nbsp;
+  21&nbsp;ROOTUSER_NAME=root
+  22&nbsp;
+  23&nbsp;username=`id -nu`              # 或者...   username=`whoami`
+  24&nbsp;if [ "$username" = "$ROOTUSER_NAME" ]
+  25&nbsp;then
+  26&nbsp;  echo "Rooty, toot, toot. You are root."
+  27&nbsp;else
+  28&nbsp;  echo "You are just a regular fella."
+  29&nbsp;fi</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+          <P
+>也参考一下<A
+HREF="sha-bang.html#EX2"
+>例子 2-3</A
+>.</P
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>变量<TT
+CLASS="VARNAME"
+>$ENV</TT
+>, <TT
+CLASS="VARNAME"
+>$LOGNAME</TT
+>, <TT
+CLASS="VARNAME"
+>$MAIL</TT
+>, <TT
+CLASS="VARNAME"
+>$TERM</TT
+>, <TT
+CLASS="VARNAME"
+>$USER</TT
+>, <TT
+CLASS="VARNAME"
+>和$USERNAME</TT
+>$ENV,都不是Bash<a
+href="internal.html#BUILTINREF"
+>内建</a
+>的。然而常常在Bash的<a
+href="files.html#FILESREF1"
+>启动文件</a
+>之一里作为<a
+href="othertypesv.html#ENVREF"
+>环境变量</a
+>设置。<a
+name="SHELLVARREF"
+></a
+>$SHELL变量是用户的登录shell的名字，它可以在/etc/passwd文件里设置或是在一个“初始化”的脚本里设置，并且它同样不是Bash内建的。</P
+>
+                  <P
+> 
+                  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                    <TR
+> 
+                      <TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $LOGNAME</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bozo</TT
+>
+ <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $SHELL</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/tcsh</TT
+>
+ <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $TERM</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>rxvt</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $LOGNAME</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bozo</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $SHELL</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/tcsh</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $TERM</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>rxvt</TT
+>
+ 	      </PRE
+></TD
+>
+                    </TR
+>
+                  </TABLE
+></P
+>
+                  </TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+      <P
+><B
+>位置参数</B
+></P
+>
+      <DL
+>
+        <DT
+><A
+NAME="POSPARAMREF"
+></A
+><TT
+CLASS="VARNAME"
+>$0</TT
+>, <TT
+CLASS="VARNAME"
+>$1</TT
+>, <TT
+CLASS="VARNAME"
+>$2</TT
+>,等等<br>
+        </DT
+>
+        <DD
+> 
+          <P
+>位置参数由命令行传给脚本或传给一个函数，或设置(<a
+href="internal.html#SETREF"
+>set</a
+>)给一个变量(参考<A
+HREF="othertypesv.html#EX17"
+>例子 4-5</A
+>和<A
+HREF="internal.html#EX34"
+>例子 11-15</A
+>)</P
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$#</TT
+></DT
+>
+        <DD
+> 
+          <P
+>命令行参数<a
+name="AEN4288"
+href="#FTN.AEN4288"
+>[2]</a
+>或者是位置参数的数量(参考<A
+HREF="wrapper.html#EX4"
+>例子 33-2</A
+>)</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="APPREF"
+></A
+><TT
+CLASS="VARNAME"
+>$*</TT
+></DT
+>
+        <DD
+> 
+          <P
+>所有的位置参数都被当成单个单元。</P
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><SPAN
+CLASS="QUOTE"
+>"<TT
+CLASS="VARNAME"
+>$*</TT
+>"</SPAN
+>必须被引号引起来。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$@</TT
+></DT
+>
+        <DD
+> 
+          <P
+>和$*相同，但每个参数都是一个引起的字符串。那是说，参数都是没有被解析或扩展，是完整无缺地被传递的。这是说在参数列表中的每一个参数都被看作是一个单独的单元。</P
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>当然，<span
+class="QUOTE"
+>"<tt
+class="VARNAME"
+>$@</tt
+>"</span
+>应该被引号引起来。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="ARGLIST"
+></A
+> 
+            <P
+><B
+>例子 9-6. <B
+CLASS="COMMAND"
+>arglist</B
+>: 用$*和$@列出参数来</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# arglist.sh
+   3&nbsp;# 用几个参数来运行这个脚本,比如说&quot;one two three&quot;.
+   4&nbsp;
+   5&nbsp;E_BADARGS=65
+   6&nbsp;
+   7&nbsp;if [ ! -n "$1" ]
+   8&nbsp;then
+   9&nbsp;  echo "Usage: `basename $0` argument1 argument2 etc."
+  10&nbsp;  exit $E_BADARGS
+  11&nbsp;fi  
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;index=1          # 初始计数.
+  16&nbsp;
+  17&nbsp;echo "Listing args with \"\$*\":"
+  18&nbsp;for arg in "$*"  # 如果&quot;$*&quot;没有被引号引起来，会完全不能工作.
+  19&nbsp;do
+  20&nbsp;  echo "Arg #$index = $arg"
+  21&nbsp;  let "index+=1"
+  22&nbsp;done             # $* sees all arguments as single word. 
+  23&nbsp;echo "Entire arg list seen as single word."
+  24&nbsp;
+  25&nbsp;echo
+  26&nbsp;
+  27&nbsp;index=1          # Reset count.
+  28&nbsp;                 # What happens if you forget to do this?
+  29&nbsp;
+  30&nbsp;echo "Listing args with \"\$@\":"
+  31&nbsp;for arg in "$@"
+  32&nbsp;do
+  33&nbsp;  echo "Arg #$index = $arg"
+  34&nbsp;  let "index+=1"
+  35&nbsp;done             # $@ sees arguments as separate words. 
+  36&nbsp;echo "Arg list seen as separate words."
+  37&nbsp;
+  38&nbsp;echo
+  39&nbsp;
+  40&nbsp;index=1          # Reset count.
+  41&nbsp;
+  42&nbsp;echo "Listing args with \$* (unquoted):"
+  43&nbsp;for arg in $*
+  44&nbsp;do
+  45&nbsp;  echo "Arg #$index = $arg"
+  46&nbsp;  let "index+=1"
+  47&nbsp;done             # Unquoted $* sees arguments as separate words. 
+  48&nbsp;echo "Arg list seen as separate words."
+  49&nbsp;
+  50&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+          <P
+>在一个<strong>shift</strong>命令的后面，变量$@会保存除掉先前参数列表的位置参数$1后剩下的命令行参数。
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 以./scriptname 1 2 3 4 5执行
+   3&nbsp;
+   4&nbsp;echo "$@"    # 1 2 3 4 5
+   5&nbsp;shift
+   6&nbsp;echo "$@"    # 2 3 4 5
+   7&nbsp;shift
+   8&nbsp;echo "$@"    # 3 4 5
+   9&nbsp;
+  10&nbsp;# 每次&quot;shift&quot;后会丢掉$1.
+  11&nbsp;# 然后&quot;$@&quot;保存剩下的参数。</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+>The <TT
+CLASS="VARNAME"
+>$@</TT
+> special parameter finds use as a tool for filtering input into shell scripts. 
+            The <B
+CLASS="COMMAND"
+>cat "$@"</B
+> construction accepts input to a script either from <TT
+CLASS="FILENAME"
+>stdin</TT
+> or from files given as parameters to the script. See <A
+HREF="textproc.html#ROT13"
+>Example 12-21</A
+> and <A
+HREF="textproc.html#CRYPTOQUOTE"
+>Example 12-22</A
+>.</P
+>
+          <DIV
+CLASS="CAUTION"
+> 
+            <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>依赖于<a
+href="variables2.html#IFSREF"
+>$IFS</a
+>变量的设置，$*和$@变量有时会表现不一致的令人迷惑的行为。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="INCOMPAT"
+></A
+> 
+            <P
+><B
+>例子 9-7. $*和$@的不一致</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  Erratic behavior of the "$*" and "$@" internal Bash variables,
+   4&nbsp;#+ depending on whether they are quoted or not.
+   5&nbsp;#  Inconsistent handling of word splitting and linefeeds.
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;set -- "First one" "second" "third:one" "" "Fifth: :one"
+   9&nbsp;# Setting the script arguments, $1, $2, etc.
+  10&nbsp;
+  11&nbsp;echo
+  12&nbsp;
+  13&nbsp;echo 'IFS unchanged, using "$*"'
+  14&nbsp;c=0
+  15&nbsp;for i in "$*"               # quoted
+  16&nbsp;do echo "$((c+=1)): [$i]"   # This line remains the same in every instance.
+  17&nbsp;                            # Echo args.
+  18&nbsp;done
+  19&nbsp;echo ---
+  20&nbsp;
+  21&nbsp;echo 'IFS unchanged, using $*'
+  22&nbsp;c=0
+  23&nbsp;for i in $*                 # unquoted
+  24&nbsp;do echo "$((c+=1)): [$i]"
+  25&nbsp;done
+  26&nbsp;echo ---
+  27&nbsp;
+  28&nbsp;echo 'IFS unchanged, using "$@"'
+  29&nbsp;c=0
+  30&nbsp;for i in "$@"
+  31&nbsp;do echo "$((c+=1)): [$i]"
+  32&nbsp;done
+  33&nbsp;echo ---
+  34&nbsp;
+  35&nbsp;echo 'IFS unchanged, using $@'
+  36&nbsp;c=0
+  37&nbsp;for i in $@
+  38&nbsp;do echo "$((c+=1)): [$i]"
+  39&nbsp;done
+  40&nbsp;echo ---
+  41&nbsp;
+  42&nbsp;IFS=:
+  43&nbsp;echo 'IFS=":", using "$*"'
+  44&nbsp;c=0
+  45&nbsp;for i in "$*"
+  46&nbsp;do echo "$((c+=1)): [$i]"
+  47&nbsp;done
+  48&nbsp;echo ---
+  49&nbsp;
+  50&nbsp;echo 'IFS=":", using $*'
+  51&nbsp;c=0
+  52&nbsp;for i in $*
+  53&nbsp;do echo "$((c+=1)): [$i]"
+  54&nbsp;done
+  55&nbsp;echo ---
+  56&nbsp;
+  57&nbsp;var=$*
+  58&nbsp;echo 'IFS=":", using "$var" (var=$*)'
+  59&nbsp;c=0
+  60&nbsp;for i in "$var"
+  61&nbsp;do echo "$((c+=1)): [$i]"
+  62&nbsp;done
+  63&nbsp;echo ---
+  64&nbsp;
+  65&nbsp;echo 'IFS=":", using $var (var=$*)'
+  66&nbsp;c=0
+  67&nbsp;for i in $var
+  68&nbsp;do echo "$((c+=1)): [$i]"
+  69&nbsp;done
+  70&nbsp;echo ---
+  71&nbsp;
+  72&nbsp;var="$*"
+  73&nbsp;echo 'IFS=":", using $var (var="$*")'
+  74&nbsp;c=0
+  75&nbsp;for i in $var
+  76&nbsp;do echo "$((c+=1)): [$i]"
+  77&nbsp;done
+  78&nbsp;echo ---
+  79&nbsp;
+  80&nbsp;echo 'IFS=":", using "$var" (var="$*")'
+  81&nbsp;c=0
+  82&nbsp;for i in "$var"
+  83&nbsp;do echo "$((c+=1)): [$i]"
+  84&nbsp;done
+  85&nbsp;echo ---
+  86&nbsp;
+  87&nbsp;echo 'IFS=":", using "$@"'
+  88&nbsp;c=0
+  89&nbsp;for i in "$@"
+  90&nbsp;do echo "$((c+=1)): [$i]"
+  91&nbsp;done
+  92&nbsp;echo ---
+  93&nbsp;
+  94&nbsp;echo 'IFS=":", using $@'
+  95&nbsp;c=0
+  96&nbsp;for i in $@
+  97&nbsp;do echo "$((c+=1)): [$i]"
+  98&nbsp;done
+  99&nbsp;echo ---
+ 100&nbsp;
+ 101&nbsp;var=$@
+ 102&nbsp;echo 'IFS=":", using $var (var=$@)'
+ 103&nbsp;c=0
+ 104&nbsp;for i in $var
+ 105&nbsp;do echo "$((c+=1)): [$i]"
+ 106&nbsp;done
+ 107&nbsp;echo ---
+ 108&nbsp;
+ 109&nbsp;echo 'IFS=":", using "$var" (var=$@)'
+ 110&nbsp;c=0
+ 111&nbsp;for i in "$var"
+ 112&nbsp;do echo "$((c+=1)): [$i]"
+ 113&nbsp;done
+ 114&nbsp;echo ---
+ 115&nbsp;
+ 116&nbsp;var="$@"
+ 117&nbsp;echo 'IFS=":", using "$var" (var="$@")'
+ 118&nbsp;c=0
+ 119&nbsp;for i in "$var"
+ 120&nbsp;do echo "$((c+=1)): [$i]"
+ 121&nbsp;done
+ 122&nbsp;echo ---
+ 123&nbsp;
+ 124&nbsp;echo 'IFS=":", using $var (var="$@")'
+ 125&nbsp;c=0
+ 126&nbsp;for i in $var
+ 127&nbsp;do echo "$((c+=1)): [$i]"
+ 128&nbsp;done
+ 129&nbsp;
+ 130&nbsp;echo
+ 131&nbsp;
+ 132&nbsp;# Try this script with ksh or zsh -y.
+ 133&nbsp;
+ 134&nbsp;exit 0
+ 135&nbsp;
+ 136&nbsp;# 这个脚本由Stephane Chazelas所写,
+ 137&nbsp;# 并由本书作者做了少些修改.</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+          <DIV
+CLASS="NOTE"
+> 
+            <TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><strong>$@</strong>和<strong>$*</strong>仅仅在被双引号引住时不同。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="IFSEMPTY"
+></A
+> 
+            <P
+><B
+>例子 9-8. <TT
+CLASS="VARNAME"
+>当$IFS为空时的$*和$@</TT
+></B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  如果$IFS被设置，但值是空的,
+   4&nbsp;#+ 则&quot;$*&quot;和&quot;$@&quot;不会像希望的那样显示位置参数。
+   5&nbsp;
+   6&nbsp;mecho ()       # 显示位置参数.
+   7&nbsp;{
+   8&nbsp;echo "$1,$2,$3";
+   9&nbsp;}
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;IFS=""         # 设置了,但值是空的.
+  13&nbsp;set a b c      # 位置参数.
+  14&nbsp;
+  15&nbsp;mecho "$*"     # abc,,
+  16&nbsp;mecho $*       # a,b,c
+  17&nbsp;
+  18&nbsp;mecho $@       # a,b,c
+  19&nbsp;mecho "$@"     # a,b,c
+  20&nbsp;
+  21&nbsp;#  当$IFS为空时，
+  22&nbsp;#+ $*和$@的行为依赖于Bash或是sh正在运行.
+  23&nbsp;#  因此在一个脚本里使用这种“特性”是失策的。
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;# 多谢Stephane Chazelas.
+  27&nbsp;
+  28&nbsp;exit 0</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+><DIV
+CLASS="VARIABLELIST"
+>
+      <P
+><B
+>其它的特殊参数</B
+></P
+>
+      <DL
+>
+        <DT
+><A
+NAME="FLPREF"
+></A
+><TT
+CLASS="VARNAME"
+>$-</TT
+></DT
+>
+        <DD
+> 
+          <P
+>(使用<a
+href="internal.html#SETREF"
+>set</a
+>命令)传给脚本的标记. 参考<A
+HREF="internal.html#EX34"
+>例子 11-15</A
+>.</P
+>
+          <DIV
+CLASS="CAUTION"
+> 
+            <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+              <TR
+> 
+                <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+                <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>这原本是一个ksh的结构，但被Bash采纳了，并且不幸的是，它看上去好像不能真正的在Bash脚本中工作。一个可能有用的地方是脚本用来<a
+href="miscellany.html#IITEST"
+>测试自己本身是否是一个交互式</a
+>的。</P
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+          </DIV
+>
+        </DD
+>
+        <DT
+><TT
+CLASS="VARNAME"
+>$!</TT
+></DT
+>
+        <DD
+> 
+          <P
+>在后台运行的最后一个作业的PID(进程ID)。</P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;LOG=$0.log
+   2&nbsp;
+   3&nbsp;COMMAND1="sleep 100"
+   4&nbsp;
+   5&nbsp;echo "Logging PIDs background commands for script: $0" &#62;&#62; "$LOG"
+   6&nbsp;# So they can be monitored, and killed as necessary.
+   7&nbsp;echo &#62;&#62; "$LOG"
+   8&nbsp;
+   9&nbsp;# Logging commands.
+  10&nbsp;
+  11&nbsp;echo -n "PID of \"$COMMAND1\":  " &#62;&#62; "$LOG"
+  12&nbsp;${COMMAND1} &#38;
+  13&nbsp;echo $! &#62;&#62; "$LOG"
+  14&nbsp;# PID of "sleep 100":  1506
+  15&nbsp;
+  16&nbsp;# 多谢Jacques Lederer的建议.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          <P
+> 
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;possibly_hanging_job &#38; { sleep ${TIMEOUT}; eval 'kill -9 $!' &#38;&#62; /dev/null; }
+   2&nbsp;# 强迫一个出错的程序结束退出.
+   3&nbsp;# 这很有用，尤其在初始化脚本中.
+   4&nbsp;
+   5&nbsp;# 多谢Sylvain Fourmanoit发现&quot;!&quot;变量创造性的用处.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+></P
+>
+          </DD
+>
+        <DT
+><A
+NAME="UNDERSCOREREF"
+></A
+><TT
+CLASS="VARNAME"
+>$_</TT
+></DT
+>
+        <DD
+> 
+          <P
+>保存前一个命令最后一个参数的变量值。</P
+>
+          <DIV
+CLASS="EXAMPLE"
+> 
+            <HR>
+            <A
+NAME="USCREF"
+></A
+> 
+            <P
+><B
+>例子 9-9. 下划线变量</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+              <TR
+> 
+                <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo $_              # /bin/bash
+   4&nbsp;                     # 只需调用/bin/bash来运行这个脚本.
+   5&nbsp;
+   6&nbsp;du &#62;/dev/null        # 从命令行里没有输出.
+   7&nbsp;echo $_              # du
+   8&nbsp;
+   9&nbsp;ls -al &#62;/dev/null    # 从命令行里没有输出.
+  10&nbsp;echo $_              # -al  (它是最后的参数)
+  11&nbsp;
+  12&nbsp;:
+  13&nbsp;echo $_              # :</PRE
+></TD
+>
+              </TR
+>
+            </TABLE
+>
+            <HR>
+          </DIV
+>
+        </DD
+>
+        <DT
+><A
+NAME="XSTATVARREF"
+></A
+><TT
+CLASS="VARNAME"
+>$?</TT
+></DT
+>
+        <DD
+> 
+          <P
+> 一个命令，<a
+href="functions.html#FUNCTIONREF"
+>函数</a
+>或脚本自身的<a
+href="exit-status.html#EXITSTATUSREF"
+>退出状态码</a
+>(参考<A
+HREF="functions.html#MAX"
+>例子 23-7</A
+>)</P
+>
+        </DD
+>
+        <DT
+><A
+NAME="PROCCID"
+></A
+><TT
+CLASS="VARNAME"
+>$$</TT
+></DT
+>
+        <DD
+> 
+          <P
+>脚本本身的进程PID。$$变量常被用于脚本中生成一个&quot;唯一的&quot;临时文件名(参考<A
+HREF="contributed-scripts.html#FTPGET"
+>例子 A-13</A
+>, <A
+HREF="debugging.html#ONLINE"
+>例子 29-6</A
+>, <A
+HREF="filearchiv.html#DERPM"
+>例子 12-28</A
+>, 和<A
+HREF="internal.html#SELFDESTRUCT"
+>例子 11-25</A
+>). 这通常比调用<a
+href="filearchiv.html#MKTEMPREF"
+>mktemp</a
+>还要简单。</P
+>
+        </DD
+>
+      </DL
+>
+    </DIV
+></DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3989"
+HREF="variables2.html#AEN3989"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>当然，当前运行的脚本的PID就是$$。</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN4288"
+HREF="variables2.html#AEN4288"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>术语&quot;argument&quot;和&quot;parameter&quot;常常可互相替换。在这个文档的上下文中，它们有相同的意思，即它们是传递给脚本或函数的变量。[译者注：翻译时，译者已经把这两个术语依据上下文意思都做了适当的翻译].</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="part3.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="string-manipulation.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Beyond the Basics</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part3.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Manipulating Strings</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

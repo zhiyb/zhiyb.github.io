@@ -1,0 +1,1467 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Assorted Tips</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Optimizations"
+HREF="optimizations.html"><LINK
+REL="NEXT"
+TITLE="Security Issues"
+HREF="securityissues.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="optimizations.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 33. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="securityissues.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="ASSORTEDTIPS"
+>33.7. 各种小技巧</A
+></H1
+>
+  <UL
+>
+    <LI
+> 
+      <P
+>为了记录在一个实际的会话期或多个会话期内运行的用户脚本，可以加下面的代码到每个你想追踪记录的脚本里. 这会记录下连续的脚本名记录和调用的次数. </P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 添加(&#62;&#62;)下面几行到你想追踪记录的脚本末尾处.
+   2&nbsp;
+   3&nbsp;whoami&#62;&#62; $SAVE_FILE    # 记录调用脚本的用户.
+   4&nbsp;echo $0&#62;&#62; $SAVE_FILE   # 记录脚本名.
+   5&nbsp;date&#62;&#62; $SAVE_FILE      # 记录日期和时间.
+   6&nbsp;echo&#62;&#62; $SAVE_FILE      # 空行作为分隔行.
+   7&nbsp;
+   8&nbsp;#  当然， SAVE_FILE 变量应在~/.bashrc中定义并导出（export） 
+   9&nbsp;#+ (变量值类似如 ~/.scripts-run)</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+    <LI
+> 
+      <P
+><A
+NAME="PREPENDREF"
+></A
+></P
+>
+      <P
+>The <SPAN
+CLASS="TOKEN"
+>&#62;&#62;</SPAN
+> 操作符可以在文件尾添加内容. 如果你想在文件头添加内容，那应该怎么办?</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;file=data.txt
+   2&nbsp;title="***This is the title line of data text file***"
+   3&nbsp;
+   4&nbsp;echo $title | cat - $file &#62;$file.new
+   5&nbsp;# "cat -" 连接标准输出的内容和$file的内容.
+   6&nbsp;#  最后的结果就是生成了一个新文件，
+   7&nbsp;#+ 文件的头添加了 $title 的值，后跟$file的内容.</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      <P
+>这是早先<A
+HREF="here-docs.html#PREPENDEX"
+>例子 17-13</A
+>中的简化变体. 当然, , <A
+HREF="sedawk.html#SEDREF"
+>sed</A
+> 也可以办到.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>脚本也可以像内嵌到另一个shell脚本的普通命令一样调用, 如 <I
+CLASS="EMPHASIS"
+>Tcl</I
+> 或<I
+CLASS="EMPHASIS"
+> wish</I
+> 脚本, 甚至可以是<A
+HREF="filearchiv.html#MAKEFILEREF"
+>Makefile</A
+>. 它们可以作为外部shell命令用C语言的<TT
+CLASS="REPLACEABLE"
+><I
+> system()</I
+></TT
+> 函数调用, 例如., <TT
+CLASS="REPLACEABLE"
+><I
+>system("script_name");</I
+></TT
+>.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>把内嵌的 <I
+CLASS="FIRSTTERM"
+>sed</I
+> 或 <I
+CLASS="FIRSTTERM"
+>awk</I
+> 脚本的内容赋值给一个变量可以增加<A
+HREF="wrapper.html#SHWRAPPER"
+>包装脚本（shell wrapper）</A
+>的可读性. 参考 <A
+HREF="contributed-scripts.html#MAILFORMAT"
+>例子 A-1</A
+> 和 <A
+HREF="internal.html#COLTOTALER3"
+>例子 11-18</A
+>.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>把你最喜欢和最有用的定义和函数放在一些文件中. 当需要的使用的时候, <SPAN
+CLASS="QUOTE"
+>在脚本中使用<A
+HREF="special-chars.html#DOTREF"
+>dot</A
+> (<B
+CLASS="COMMAND"
+>.</B
+>) 或 <A
+HREF="internal.html#SOURCEREF"
+>source</A
+> 命令来"包含（include）"这些</SPAN
+>&quot;库文件&quot;的一个或多个.</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 脚本库
+   2&nbsp;# ------ -------
+   3&nbsp;
+   4&nbsp;# 注:
+   5&nbsp;# 本文件没有"#!"开头.
+   6&nbsp;# 也没有真正做执行动作的代码.
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;# 有用的变量定义
+  10&nbsp;
+  11&nbsp;ROOT_UID=0             # Root用户的 $UID 值是0.
+  12&nbsp;E_NOTROOT=101          # 非root用户出错代码. 
+  13&nbsp;MAXRETVAL=255          # 函数最大的的返回值（正值）.
+  14&nbsp;SUCCESS=0
+  15&nbsp;FAILURE=-1
+  16&nbsp;
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;# 函数
+  20&nbsp;
+  21&nbsp;Usage ()               # "Usage:" 信息（即帮助信息）.
+  22&nbsp;{
+  23&nbsp;  if [ -z "$1" ]       # 没有传递参数.
+  24&nbsp;  then
+  25&nbsp;    msg=filename
+  26&nbsp;  else
+  27&nbsp;    msg=$@
+  28&nbsp;  fi
+  29&nbsp;
+  30&nbsp;  echo "Usage: `basename $0` "$msg""
+  31&nbsp;}  
+  32&nbsp;
+  33&nbsp;
+  34&nbsp;Check_if_root ()       # 检查是不是root在运行脚本.
+  35&nbsp;{                      # 取自例子"ex39.sh".
+  36&nbsp;  if [ "$UID" -ne "$ROOT_UID" ]
+  37&nbsp;  then
+  38&nbsp;    echo "Must be root to run this script."
+  39&nbsp;    exit $E_NOTROOT
+  40&nbsp;  fi
+  41&nbsp;}  
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;CreateTempfileName ()  # 创建一个&quot;唯一&quot;的临时文件.
+  45&nbsp;{                      # 取自例子"ex51.sh".
+  46&nbsp;  prefix=temp
+  47&nbsp;  suffix=`eval date +%s`
+  48&nbsp;  Tempfilename=$prefix.$suffix
+  49&nbsp;}
+  50&nbsp;
+  51&nbsp;
+  52&nbsp;isalpha2 ()            # 测试字符串是不是都是字母组成的.
+  53&nbsp;{                      # 取自例子"isalpha.sh".
+  54&nbsp;  [ $# -eq 1 ] || return $FAILURE
+  55&nbsp;
+  56&nbsp;  case $1 in
+  57&nbsp;  *[!a-zA-Z]*|"") return $FAILURE;;
+  58&nbsp;  *) return $SUCCESS;;
+  59&nbsp;  esac                 # Thanks, S.C.
+  60&nbsp;}
+  61&nbsp;
+  62&nbsp;
+  63&nbsp;abs ()                           # 绝对值.
+  64&nbsp;{                                # 注意: 最大的返回值 = 255.
+  65&nbsp;  E_ARGERR=-999999
+  66&nbsp;
+  67&nbsp;  if [ -z "$1" ]                 # 要传递参数.
+  68&nbsp;  then
+  69&nbsp;    return $E_ARGERR             # 返回错误.
+  70&nbsp;  fi
+  71&nbsp;
+  72&nbsp;  if [ "$1" -ge 0 ]              # 如果非负的值,
+  73&nbsp;  then                           #
+  74&nbsp;    absval=$1                    # 绝对值是本身.
+  75&nbsp;  else                           # 否则,
+  76&nbsp;    let "absval = (( 0 - $1 ))"  # 改变它的符号.
+  77&nbsp;  fi  
+  78&nbsp;
+  79&nbsp;  return $absval
+  80&nbsp;}
+  81&nbsp;
+  82&nbsp;
+  83&nbsp;tolower ()             #  把传递的字符串转为小写
+  84&nbsp;{                      #
+  85&nbsp;
+  86&nbsp;  if [ -z "$1" ]       #  如果没有传递参数,
+  87&nbsp;  then                 #+ 打印错误信息
+  88&nbsp;    echo "(null)"      #+ (C风格的void指针的错误信息)
+  89&nbsp;    return             #+ 然后从函数中返回.
+  90&nbsp;  fi  
+  91&nbsp;
+  92&nbsp;  echo "$@" | tr A-Z a-z
+  93&nbsp;  # 转换传递过来的所有参数($@).
+  94&nbsp;
+  95&nbsp;  return
+  96&nbsp;
+  97&nbsp;# 用命令替换功能把函数的输出赋给变量.
+  98&nbsp;# 例如:
+  99&nbsp;#    oldvar="A seT of miXed-caSe LEtTerS"
+ 100&nbsp;#    newvar=`tolower "$oldvar"`
+ 101&nbsp;#    echo "$newvar"    # 一串混合大小写的字符转换成了全部小写字符
+ 102&nbsp;#
+ 103&nbsp;# 练习: 重写这个函数把传递的参数变为大写
+ 104&nbsp;#       ... toupper()  [容易].
+ 105&nbsp;}</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+    <LI
+> 
+      <P
+>在脚本中添加特殊种类的注释开头标识有助于条理清晰和可读性.</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;## 表示注意.
+   2&nbsp;rm -rf *.zzy   ##  "rm"命令的"-rf"组合选项非常的危险,
+   3&nbsp;               ##+ 尤其是对通配符而言.
+   4&nbsp;
+   5&nbsp;#+ 表示继续上一行.
+   6&nbsp;#  这是第一行
+   7&nbsp;#+ 这是多行的注释,
+   8&nbsp;#+ 这里是最后一行.
+   9&nbsp;
+  10&nbsp;#* 表示标注.
+  11&nbsp;
+  12&nbsp;#o 表示列表项.
+  13&nbsp;
+  14&nbsp;#&#62; 表示另一个观点.
+  15&nbsp;while [ "$var1" != "end" ]    #&#62; while test "$var1" != "end"</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+    <LI
+> 
+      <P
+><A
+HREF="tests.html#TESTCONSTRUCTS1"
+>if-test</A
+> 结构的一种聪明用法是用来注释一块代码块.</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;COMMENT_BLOCK=
+   4&nbsp;#  给上面的变量设置某个值就会产生讨厌的结果
+   5&nbsp;#
+   6&nbsp;
+   7&nbsp;if [ $COMMENT_BLOCK ]; then
+   8&nbsp;
+   9&nbsp;Comment block --
+  10&nbsp;=================================
+  11&nbsp;This is a comment line.
+  12&nbsp;This is another comment line.
+  13&nbsp;This is yet another comment line.
+  14&nbsp;=================================
+  15&nbsp;
+  16&nbsp;echo "This will not echo."
+  17&nbsp;
+  18&nbsp;Comment blocks are error-free! Whee!
+  19&nbsp;
+  20&nbsp;fi
+  21&nbsp;
+  22&nbsp;echo "No more comments, please."
+  23&nbsp;
+  24&nbsp;exit 0</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      <P
+>把这种方法和<A
+HREF="here-docs.html#CBLOCK1"
+>使用here documents来注释代码块</A
+>作一个比较.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>测试<A
+HREF="variables2.html#XSTATVARREF"
+>$? 退出状态变量</A
+>, 因为一个脚本可能想要测试一个参数是否只包含数字，以便后面可以把它当作一个整数.</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;SUCCESS=0
+   4&nbsp;E_BADINPUT=65
+   5&nbsp;
+   6&nbsp;test "$1" -ne 0 -o "$1" -eq 0 2&#62;/dev/null
+   7&nbsp;# 整数要么等于零要么不等于零.
+   8&nbsp;# 2&#62;/dev/null 可以抑制错误信息.
+   9&nbsp;
+  10&nbsp;if [ $? -ne "$SUCCESS" ]
+  11&nbsp;then
+  12&nbsp;  echo "Usage: `basename $0` integer-input"
+  13&nbsp;  exit $E_BADINPUT
+  14&nbsp;fi
+  15&nbsp;
+  16&nbsp;let "sum = $1 + 25"             # 如果$1不是整数就会产生错误.
+  17&nbsp;echo "Sum = $sum"
+  18&nbsp;
+  19&nbsp;# 任何变量，而不仅仅命令行参数可用这种方法来测试.
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+    <LI
+> 
+      <P
+><A
+NAME="RVT"
+></A
+>0 - 255 范围的函数返回值是个严格的限制. 用全局变量和其他方法常常出问题. 函数内返回值给脚本主体的另一个办法是让函数写值到标准输出(通常是用<A
+HREF="internal.html#ECHOREF"
+>echo</A
+>) 作为<SPAN
+CLASS="QUOTE"
+>"返回值"，</SPAN
+> 并且将其赋给一个变量. 这实际是<A
+HREF="commandsub.html#COMMANDSUBREF"
+>命令替换（command substitution）</A
+>的变体.</P
+>
+      <DIV
+CLASS="EXAMPLE"
+> 
+        <HR>
+        <A
+NAME="MULTIPLICATION"
+></A
+> 
+        <P
+><B
+>例子 33-15. 返回值技巧</B
+></P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# multiplication.sh
+   3&nbsp;
+   4&nbsp;multiply ()                     # 传递乘数.
+   5&nbsp;{                               # 能接受多个参数.
+   6&nbsp;
+   7&nbsp;  local product=1
+   8&nbsp;
+   9&nbsp;  until [ -z "$1" ]             # 直到所有参数都处理完毕...
+  10&nbsp;  do
+  11&nbsp;    let "product *= $1"
+  12&nbsp;    shift
+  13&nbsp;  done
+  14&nbsp;
+  15&nbsp;  echo $product                 #  不会打印到标准输出,
+  16&nbsp;}                               #+ 因为要把它赋给一个变量.
+  17&nbsp;
+  18&nbsp;mult1=15383; mult2=25211
+  19&nbsp;val1=`multiply $mult1 $mult2`
+  20&nbsp;echo "$mult1 X $mult2 = $val1"
+  21&nbsp;                                # 387820813
+  22&nbsp;
+  23&nbsp;mult1=25; mult2=5; mult3=20
+  24&nbsp;val2=`multiply $mult1 $mult2 $mult3`
+  25&nbsp;echo "$mult1 X $mult2 X $mult3 = $val2"
+  26&nbsp;                                # 2500
+  27&nbsp;
+  28&nbsp;mult1=188; mult2=37; mult3=25; mult4=47
+  29&nbsp;val3=`multiply $mult1 $mult2 $mult3 $mult4`
+  30&nbsp;echo "$mult1 X $mult2 X $mult3 X $mult4 = $val3"
+  31&nbsp;                                # 8173300
+  32&nbsp;
+  33&nbsp;exit 0</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+        <HR>
+      </DIV
+>
+      <P
+>相同的技术也可用在字符串中. 这意味着函数可以<SPAN
+CLASS="QUOTE"
+>"返回"一个非数字的值</SPAN
+>.</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;capitalize_ichar ()          #  把传递来的参数字符串的第一个字母大写
+   2&nbsp;{                            #
+   3&nbsp;
+   4&nbsp;  string0="$@"               # 能接受多个参数.
+   5&nbsp;
+   6&nbsp;  firstchar=${string0:0:1}   # 第一个字符.
+   7&nbsp;  string1=${string0:1}       # 余下的字符.
+   8&nbsp;
+   9&nbsp;  FirstChar=`echo "$firstchar" | tr a-z A-Z`
+  10&nbsp;                             # 第一个字符转换成大写字符.
+  11&nbsp;
+  12&nbsp;  echo "$FirstChar$string1"  # 打印到标准输出.
+  13&nbsp;
+  14&nbsp;}  
+  15&nbsp;
+  16&nbsp;newstring=`capitalize_ichar "every sentence should start with a capital letter."`
+  17&nbsp;echo "$newstring"          # Every sentence should start with a capital letter.</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      <P
+>用这种办法甚至可能<SPAN
+CLASS="QUOTE"
+>"返回"</SPAN
+> 多个值.</P
+>
+      <DIV
+CLASS="EXAMPLE"
+> 
+        <HR>
+        <A
+NAME="SUMPRODUCT"
+></A
+> 
+        <P
+><B
+>例子 33-16. 返回多个值的技巧</B
+></P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# sum-product.sh
+   3&nbsp;# 函数可以"返回"多个值.
+   4&nbsp;
+   5&nbsp;sum_and_product ()   # 计算所传参数的总和与乘积.
+   6&nbsp;{
+   7&nbsp;  echo $(( $1 + $2 )) $(( $1 * $2 ))
+   8&nbsp;# 打印每个计算的值到标准输出，各值用空格分隔开.
+   9&nbsp;}
+  10&nbsp;
+  11&nbsp;echo
+  12&nbsp;echo "Enter first number "
+  13&nbsp;read first
+  14&nbsp;
+  15&nbsp;echo
+  16&nbsp;echo "Enter second number "
+  17&nbsp;read second
+  18&nbsp;echo
+  19&nbsp;
+  20&nbsp;retval=`sum_and_product $first $second`      # 把函数的输出赋值给变量.
+  21&nbsp;sum=`echo "$retval" | awk '{print $1}'`      # 把第一个域的值赋给sum变量.
+  22&nbsp;product=`echo "$retval" | awk '{print $2}'`  # 把第二个域的值赋给product变量.
+  23&nbsp;
+  24&nbsp;echo "$first + $second = $sum"
+  25&nbsp;echo "$first * $second = $product"
+  26&nbsp;echo
+  27&nbsp;
+  28&nbsp;exit 0</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+        <HR>
+      </DIV
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>下一个技巧是传递<A
+HREF="arrays.html#ARRAYREF"
+>数组</A
+>给<A
+HREF="functions.html#FUNCTIONREF"
+>函数</A
+>的技术, 然后<SPAN
+CLASS="QUOTE"
+> "返回" </SPAN
+>一个数组给脚本.</P
+>
+      <P
+>用 <A
+HREF="commandsub.html#COMMANDSUBREF"
+>变量替换（command substitution）</A
+>把数组的所有元素用空格分隔开来并赋给一个变量就可以实现给函数传递数组. 用先前介绍的方法函数内echo一个数组并&quot;返回此值&quot;，然后调用命令替换用 
+        <B
+CLASS="COMMAND"
+>( ... )</B
+> 操作符赋值给一个数组.</P
+>
+      <DIV
+CLASS="EXAMPLE"
+> 
+        <HR>
+        <A
+NAME="ARRFUNC"
+></A
+> 
+        <P
+><B
+>例子 33-17. 传递和返回数组</B
+></P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# array-function.sh: 传递一个数组给函数并且...
+   3&nbsp;#                   从函数"返回"一个数组
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;Pass_Array ()
+   7&nbsp;{
+   8&nbsp;  local passed_array   # 局部变量.
+   9&nbsp;  passed_array=( `echo "$1"` )
+  10&nbsp;  echo "${passed_array[@]}"
+  11&nbsp;  #  列出新数组中的所有元素
+  12&nbsp;  #+ 新数组是在函数内声明和赋值的.
+  13&nbsp;}
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;original_array=( element1 element2 element3 element4 element5 )
+  17&nbsp;
+  18&nbsp;echo
+  19&nbsp;echo "original_array = ${original_array[@]}"
+  20&nbsp;#                      列出最初的数组元素.
+  21&nbsp;
+  22&nbsp;
+  23&nbsp;# 下面是传递数组给函数的技巧.
+  24&nbsp;# **********************************
+  25&nbsp;argument=`echo ${original_array[@]}`
+  26&nbsp;# **********************************
+  27&nbsp;#  把原数组的所有元素用空格分隔开合成一个字符串并赋给一个变量
+  28&nbsp;#
+  29&nbsp;#
+  30&nbsp;# 注意：只是把数组本身传给函数是不会工作的.
+  31&nbsp;
+  32&nbsp;
+  33&nbsp;# 下面是允许数组作为&quot;返回值&quot;的技巧.
+  34&nbsp;# *****************************************
+  35&nbsp;returned_array=( `Pass_Array "$argument"` )
+  36&nbsp;# *****************************************
+  37&nbsp;# 把函数的输出赋给数组变量.
+  38&nbsp;
+  39&nbsp;echo "returned_array = ${returned_array[@]}"
+  40&nbsp;
+  41&nbsp;echo "============================================================="
+  42&nbsp;
+  43&nbsp;#  现在，再试一次Now, try it again,
+  44&nbsp;#+ 尝试在函数外存取（列出）数组.
+  45&nbsp;Pass_Array "$argument"
+  46&nbsp;
+  47&nbsp;# 函数本身可以列出数组，但...
+  48&nbsp;#+ 函数外存取数组被禁止.
+  49&nbsp;echo "Passed array (within function) = ${passed_array[@]}"
+  50&nbsp;# 因为变量是函数内的局部变量，所以只有NULL值.
+  51&nbsp;
+  52&nbsp;echo
+  53&nbsp;
+  54&nbsp;exit 0</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+        <HR>
+      </DIV
+>
+      <P
+>在<A
+HREF="contributed-scripts.html#LIFESLOW"
+>例子 A-10</A
+>中有一个更精心制作的给函数传递数组的例子.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>利用双括号结构，使在<A
+HREF="loops.html#FORLOOPREF1"
+>for</A
+> 和 <A
+HREF="loops.html#WHILELOOPREF"
+>while</A
+> 循环中可以使用C风格的语法来设置和增加变量. 参考<A
+HREF="loops.html#FORLOOPC"
+>例子 10-12</A
+> 和 <A
+HREF="loops.html#WHLOOPC"
+>例子 10-17</A
+>.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>在脚本开头设置 <A
+HREF="variables2.html#PATHREF"
+>path</A
+> 和 <A
+HREF="system.html#UMASKREF"
+>umask</A
+> 增加脚本的&quot;可移植性&quot; -- 在某些把 <TT
+CLASS="VARNAME"
+>$PATH</TT
+> 和 <B
+CLASS="COMMAND"
+>umask</B
+> 弄乱的系统里也可以运行. 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;PATH=/bin:/usr/bin:/usr/local/bin ; export PATH
+   3&nbsp;umask 022   # 脚本的创建的文件有 755 的权限设置.
+   4&nbsp;
+   5&nbsp;# 多谢Ian D. Allen提出这个技巧.</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+    <LI
+> 
+      <P
+>一个有用的脚本技术是：重复地把一个过滤器的输出回馈（用管道）给另一个相同过滤器，但过滤器有不同的参数和/或选项. 尤其对 <A
+HREF="textproc.html#TRREF"
+>tr</A
+> 和 <A
+HREF="textproc.html#GREPREF"
+>grep</A
+> 更合适.</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 取自例子"wstrings.sh".
+   2&nbsp;
+   3&nbsp;wlist=`strings "$1" | tr A-Z a-z | tr '[:space:]' Z | \
+   4&nbsp;tr -cs '[:alpha:]' Z | tr -s '\173-\377' Z | tr Z ' '`</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      <DIV
+CLASS="EXAMPLE"
+> 
+        <HR>
+        <A
+NAME="AGRAM"
+></A
+> 
+        <P
+><B
+>例子 33-18. anagrams游戏</B
+></P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# agram.sh: 用anagrams玩游戏.
+   3&nbsp;
+   4&nbsp;# 寻找 anagrams ...
+   5&nbsp;LETTERSET=etaoinshrdlu
+   6&nbsp;FILTER='.......'       # 最小有多少个字母?
+   7&nbsp;#       1234567
+   8&nbsp;
+   9&nbsp;anagram "$LETTERSET" | # 找出这串字符中所有的 anagrams ...
+  10&nbsp;grep "$FILTER" |       # 至少7个字符,
+  11&nbsp;grep '^is' |           # 以'is'开头
+  12&nbsp;grep -v 's$' |         # 不是复数的（指英文单词复数）
+  13&nbsp;grep -v 'ed$'          # 不是过去式的（当然也是英文单词）
+  14&nbsp;# 可以加许多组合条件和过滤器.
+  15&nbsp;
+  16&nbsp;#  使用 "anagram" 软件
+  17&nbsp;#+ 它是作者 "yawl" 单词列表软件包的一部分.
+  18&nbsp;#  http://ibiblio.org/pub/Linux/libs/yawl-0.3.2.tar.gz
+  19&nbsp;#  http://personal.riverusers.com/~thegrendel/yawl-0.3.2.tar.gz
+  20&nbsp;
+  21&nbsp;exit 0                 # 代码结束.
+  22&nbsp;
+  23&nbsp;
+  24&nbsp;bash$ sh agram.sh
+  25&nbsp;islander
+  26&nbsp;isolate
+  27&nbsp;isolead
+  28&nbsp;isotheral
+  29&nbsp;
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;#  练习:
+  33&nbsp;#  ---------
+  34&nbsp;#  修改这个脚本使 LETTERSET 能作为命令行参数来接受.
+  35&nbsp;#  能够传递参数给第 11 - 13 行的过滤器(就像 $FILTER),
+  36&nbsp;#+ 以便能靠传递参数来指定一种功能.
+  37&nbsp;
+  38&nbsp;#  参考agram2.sh了解些微不同的anagram的一种方法
+  39&nbsp;#</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+        <HR>
+      </DIV
+>
+      <P
+>See also <A
+HREF="procref1.html#CONSTAT"
+>Example 27-3</A
+>, <A
+HREF="textproc.html#CRYPTOQUOTE"
+>Example 12-22</A
+>, and <A
+HREF="contributed-scripts.html#SOUNDEX"
+>Example A-9</A
+>.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>使用<SPAN
+CLASS="QUOTE"
+>"<A
+HREF="here-docs.html#ANONHEREDOC0"
+>匿名的 here documents</A
+>"</SPAN
+> 来注释代码块，这样避免了对代码块的每一块单独用<SPAN
+CLASS="TOKEN"
+>#</SPAN
+>来注释了. 参考<A
+HREF="here-docs.html#COMMENTBLOCK"
+>例子 17-11</A
+>.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>当依赖某个命令脚本在一台没有安装该命令的机器上运行时会出错. 使用 <A
+HREF="filearchiv.html#WHATISREF"
+>whatis</A
+> 命令可以避免此问题.</P
+>
+      <P
+> 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;CMD=command1                 # 第一选择First choice.
+   2&nbsp;PlanB=command2               # 第二选择Fallback option.
+   3&nbsp;
+   4&nbsp;command_test=$(whatis "$CMD" | grep 'nothing appropriate')
+   5&nbsp;#  如果'command1'没有在系统里发现 , 'whatis'会返回:
+   6&nbsp;#+ "command1: nothing appropriate."
+   7&nbsp;#
+   8&nbsp;#  另一种更安全的办法是:
+   9&nbsp;#     command_test=$(whereis "$CMD" | grep \/)
+  10&nbsp;#  但后面的测试判断应该翻转过来,
+  11&nbsp;#+ 因为$command_test只有当系统存在$CMD命令时才有内容.
+  12&nbsp;#
+  13&nbsp;#     (Thanks, bojster.)
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;if [[ -z "$command_test" ]]  # 检查命令是否存在.
+  17&nbsp;then
+  18&nbsp;  $CMD option1 option2       #  调用command1.
+  19&nbsp;else                         #  否则,
+  20&nbsp;  $PlanB                     #+ 调用command2. 
+  21&nbsp;fi</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+    <LI
+> 
+      <P
+>在发生错误的情况下 <A
+HREF="tests.html#IFGREPREF"
+>if-grep test</A
+> 可能不会返回期望的结果，因为文本是打印在标准出错而不是标准输出上. 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if ls -l nonexistent_filename | grep -q 'No such file or directory'
+   2&nbsp;  then echo "File \"nonexistent_filename\" does not exist."
+   3&nbsp;fi</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      <P
+>把标准出错<a
+href="io-redirection.html#IOREDIRREF"
+>重定向</a
+>到标准输出上可以修改这个. 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if ls -l nonexistent_filename 2&#62;&#38;1 | grep -q 'No such file or directory'
+   2&nbsp;#                             ^^^^
+   3&nbsp;  then echo "File \"nonexistent_filename\" does not exist."
+   4&nbsp;fi
+   5&nbsp;
+   6&nbsp;# 多谢Chris Martin指出.</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+    <LI
+> 
+      <P
+>The <A
+HREF="extmisc.html#RUNPARTSREF"
+>run-parts</A
+> 命令很容易依次运行一组命令脚本,特别是和 <A
+HREF="system.html#CRONREF"
+>cron</A
+> 或 <A
+HREF="timedate.html#ATREF"
+>at</A
+> 组合起来.</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>在shell脚本里能调用 X-Windows 的窗口小部件将多么美好. 已经存在有几种工具包实现这个了, 它们称为<I
+CLASS="EMPHASIS"
+>Xscript</I
+>, <I
+CLASS="EMPHASIS"
+>Xmenu</I
+>, 和<I
+CLASS="EMPHASIS"
+> widtools</I
+>. 头两个已经不再维护. 幸运地是仍然可以从<A
+HREF="http://www.batse.msfc.nasa.gov/~mallozzi/home/software/xforms/src/widtools-2.0.tgz"
+TARGET="_top"
+>这儿</A
+>下载<i
+class="EMPHASIS"
+>widtools</i
+>. </P
+>
+      <DIV
+CLASS="CAUTION"
+> 
+        <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+          <TR
+> 
+            <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+            <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><I
+CLASS="EMPHASIS"
+>widtools</I
+> (widget tools) 工具包要求安装了 <I
+CLASS="EMPHASIS"
+>XForms</I
+> 库. 另外, 它的 <A
+HREF="filearchiv.html#MAKEFILEREF"
+>Makefile</A
+> 在典型的Linux系统上安装前需要做一些合适的编辑. 最后, 提供的6个部件有3个不能工作 (事实上会发生段错误).</P
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+      </DIV
+>
+      <P
+><A
+NAME="DIALOGREF"
+></A
+></P
+>
+      <P
+><I
+CLASS="EMPHASIS"
+>dialog</I
+> 工具集提供了shell脚本使用一种称为<SPAN
+CLASS="QUOTE"
+>"对话框"的窗口部件</SPAN
+>. 原始的 <B
+CLASS="COMMAND"
+>dialog</B
+> 软件包工作在文本模式的控制台下, 但它的后续软件 <B
+CLASS="COMMAND"
+>gdialog</B
+>, <B
+CLASS="COMMAND"
+>Xdialog</B
+>, 和 <B
+CLASS="COMMAND"
+>kdialog</B
+> 使用基于X-Windows的窗口小部件集.</P
+>
+      <DIV
+CLASS="EXAMPLE"
+> 
+        <HR>
+        <A
+NAME="DIALOG"
+></A
+> 
+        <P
+><B
+>例子 33-19. <B
+CLASS="COMMAND"
+>在shell脚本中调用的窗口部件</B
+></B
+></P
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+> 
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# dialog.sh: 使用 'gdialog' 窗口部件.
+   3&nbsp;# 必须在你的系统里安装'gdialog'才能运行此脚本.
+   4&nbsp;# 版本 1.1 (04/05/05 修正)
+   5&nbsp;
+   6&nbsp;# 这个脚本的灵感源自下面的文章.
+   7&nbsp;#     "Scripting for X Productivity," by Marco Fioretti,
+   8&nbsp;#      LINUX JOURNAL, Issue 113, September 2003, pp. 86-9.
+   9&nbsp;# Thank you, all you good people at LJ.
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;# 在窗口中的输入错误.
+  13&nbsp;E_INPUT=65
+  14&nbsp;# 输入窗口显示的尺寸.
+  15&nbsp;HEIGHT=50
+  16&nbsp;WIDTH=60
+  17&nbsp;
+  18&nbsp;# 输出文件名 (由脚本名构建而来).
+  19&nbsp;OUTFILE=$0.output
+  20&nbsp;
+  21&nbsp;# 把这个脚本的内容显示在窗口中.
+  22&nbsp;gdialog --title "Displaying: $0" --textbox $0 $HEIGHT $WIDTH
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;# 现在，保存输入到输出文件中.
+  27&nbsp;echo -n "VARIABLE=" &#62; $OUTFILE
+  28&nbsp;gdialog --title "User Input" --inputbox "Enter variable, please:" \
+  29&nbsp;$HEIGHT $WIDTH 2&#62;&#62; $OUTFILE
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;if [ "$?" -eq 0 ]
+  33&nbsp;# 检查退出状态是一个好习惯.
+  34&nbsp;then
+  35&nbsp;  echo "Executed \"dialog box\" without errors."
+  36&nbsp;else
+  37&nbsp;  echo "Error(s) in \"dialog box\" execution."
+  38&nbsp;        # 或者, 点击"Cancel", 而不是"OK" 按钮.
+  39&nbsp;  rm $OUTFILE
+  40&nbsp;  exit $E_INPUT
+  41&nbsp;fi
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;
+  45&nbsp;# 现在，我们重新取得并显示保存的变量.
+  46&nbsp;. $OUTFILE   # 'Source' 保存的文件（即执行）.
+  47&nbsp;echo "The variable input in the \"input box\" was: "$VARIABLE""
+  48&nbsp;
+  49&nbsp;
+  50&nbsp;rm $OUTFILE  # 清除临时文件.
+  51&nbsp;             # 有些应用可能需要保留这些文件.
+  52&nbsp;
+  53&nbsp;exit $?</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+>
+        <HR>
+      </DIV
+>
+      <P
+>其他的在脚本中使用窗口的工具还有 <I
+CLASS="EMPHASIS"
+>Tk</I
+> 或 <I
+CLASS="EMPHASIS"
+>wish</I
+> (<I
+CLASS="EMPHASIS"
+>Tcl</I
+> 派生物), <I
+CLASS="EMPHASIS"
+>PerlTk</I
+> (Perl 的 Tk 扩展), <I
+CLASS="EMPHASIS"
+>tksh</I
+> (ksh 的 Tk 扩展), <I
+CLASS="EMPHASIS"
+>XForms4Perl</I
+> (Perl 的 XForms 扩展), <I
+CLASS="EMPHASIS"
+>Gtk-Perl</I
+> (Perl 的 Gtk 扩展), 或 <I
+CLASS="EMPHASIS"
+>PyQt</I
+> (Python 的 Qt 扩展).</P
+>
+    </LI
+>
+    <LI
+> 
+      <P
+>为了对复杂的脚本做多次的版本修订管理, 可以使用<I
+CLASS="EMPHASIS"
+> rcs</I
+> 软件包.</P
+>
+      <P
+> 使用这个软件包的好处之一是会自动地升级ID头标识.在 <I
+CLASS="EMPHASIS"
+>rcs</I
+> 的<b
+class="COMMAND"
+>co</b
+>命令处理一些预定义的关键字参数替换，例如，代替脚本里头<tt
+class="PARAMETER"
+><i
+>#$Id$</i
+></tt
+>的，如类似下面的行: 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+        <TR
+> 
+          <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#$Id: hello-world.sh,v 1.1 2004/10/16 02:43:05 bozo Exp $</PRE
+></TD
+>
+        </TR
+>
+      </TABLE
+></P
+>
+      </LI
+>
+  </UL
+>
+</DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="optimizations.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="securityissues.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Optimizations</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Security Issues</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

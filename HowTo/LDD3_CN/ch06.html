@@ -1,0 +1,53 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第6章 高级字符驱动操作</title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch05s08.html" title="5.8.&#160;快速参考">
+<link rel="next" href="ch06s02.html" title="6.2.&#160;阻塞 I/O">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第&nbsp;6&nbsp;章&nbsp;高级字符驱动操作</H1></th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch05s08.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch06s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="chapter" lang="zh-cn">
+<p>在第 3 章, 我们建立了一个完整的设备驱动, 用户可用来写入和读取. 但是一个真正的设备常常提供比同步读和写更多的功能. 现在我们已装备有调试工具如果发生错误, 并且一个牢固的并发的理解来帮助避免事情进入错误-- 我们可安全地前进并且创建一个更高级的驱动.</p>
+<p>本章检查几个你需要理解的概念来编写全特性的字符设备驱动. 我们从实现 ioctl 系统调用开始, 它是用作设备控制的普通接口. 接着我们进入各种和用户空间同步的方法; 在本章结尾, 你有一个充分的认识对于如何使进程睡眠(并且唤醒它们), 实现非阻塞的 I/O, 并且通知用户空间当你的设备可用来读或写. 我们以查看如何在驱动中实现几个不同的设备存取策略来结束.</p>
+<p>这里讨论的概念通过 scull 驱动的几个修改版本来演示. 再一次, 所有的都使用内存中的虚拟设备来实现, 因此你可自己试验这些代码而不必使用任何特别的硬件. 到此为止, 你可能在想亲手使用真正的硬件, 但是那将必须等到第 9 章.</p>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><h2 class="title" style="CLEAR: both">
+<a name="ioctl.sect1"></a>
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch05s08.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch06s01.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.8.&nbsp;快速参考&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;6.2.&nbsp;阻塞 I/O</td>
+</tr>
+</table> </h2></div></div></div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Local Variables</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="functions.html"><LINK
+REL="PREVIOUS"
+TITLE="Functions"
+HREF="functions.html"><LINK
+REL="NEXT"
+TITLE="Recursion Without Local Variables"
+HREF="recurnolocvar.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="functions.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 23. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="recurnolocvar.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="LOCALVAR"
+>23.2. 局部变量</A
+></H1
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="LOCALREF1"
+></A
+>怎么样使一个变量变成局部的?</B
+></P
+>
+    <DL
+>
+      <DT
+>局部变量</DT
+>
+      <DD
+> 
+        <P
+>如果变量用<I
+CLASS="FIRSTTERM"
+>local</I
+>来声明，那么它只能在该变量声明的<a
+href="special-chars.html#CODEBLOCKREF"
+>代码块(block of code)</a
+>中可见. 这个代码块就是局部<span
+class="QUOTE"
+>"范围</span
+><span
+class="QUOTE"
+>"</span
+>. 在一个函数内，局部变量意味着只能在函数代码块内它才有意义.</P
+>
+        <DIV
+CLASS="EXAMPLE"
+> 
+          <HR>
+          <A
+NAME="EX62"
+></A
+> 
+          <P
+><B
+>例子 23-12. 局部变量的可见范围</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+> 
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 在函数内部的全局和局部变量.
+   3&nbsp;
+   4&nbsp;func ()
+   5&nbsp;{
+   6&nbsp;  local loc_var=23       # 声明为局部变量.
+   7&nbsp;  echo                   # 使用内建的'local'关键字.
+   8&nbsp;  echo "\"loc_var\" in function = $loc_var"
+   9&nbsp;  global_var=999         # 没有声明为局部变量.
+  10&nbsp;                         # 默认为全局变量. 
+  11&nbsp;  echo "\"global_var\" in function = $global_var"
+  12&nbsp;}  
+  13&nbsp;
+  14&nbsp;func
+  15&nbsp;
+  16&nbsp;# 现在，来看看是否局部变量"loc_var"能否在函数外面可见.
+  17&nbsp;
+  18&nbsp;echo
+  19&nbsp;echo "\"loc_var\" outside function = $loc_var"
+  20&nbsp;                                      # $loc_var outside function = 
+  21&nbsp;                                      # 不, $loc_var不是全局可访问的.
+  22&nbsp;echo "\"global_var\" outside function = $global_var"
+  23&nbsp;                                      # $global_var outside function = 999
+  24&nbsp;                                      # $global_var 是全局可访问的.
+  25&nbsp;echo				      
+  26&nbsp;
+  27&nbsp;exit 0
+  28&nbsp;#  与In contrast to C相比, 在函数内声明的Bash变量只有在
+  29&nbsp;#+ 它被明确声明成局部的变量时才是局部的.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+        <DIV
+CLASS="CAUTION"
+> 
+          <TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+>
+            <TR
+> 
+              <TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+>
+              <TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>在函数调用之前，所有在函数内声明且没有明确声明为local的变量都可在函数体外可见. 
+                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+                  <TR
+> 
+                    <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;func ()
+   4&nbsp;{
+   5&nbsp;global_var=37    #  在函数还没有被调用前
+   6&nbsp;                 #+ 变量只在函数内可见. 
+   7&nbsp;}                #  函数结束
+   8&nbsp;
+   9&nbsp;echo "global_var = $global_var"  # global_var =
+  10&nbsp;                                 #  函数"func"还没有被调用,
+  11&nbsp;                                 #+ 所以变量$global_var还不能被访问.
+  12&nbsp;
+  13&nbsp;func
+  14&nbsp;echo "global_var = $global_var"  # global_var = 37
+  15&nbsp;                                 # 已经在函数调用时设置了值.</PRE
+></TD
+>
+                  </TR
+>
+                </TABLE
+></P
+>
+                </TD
+>
+            </TR
+>
+          </TABLE
+>
+        </DIV
+>
+      </DD
+>
+    </DL
+>
+  </DIV
+><DIV
+CLASS="SECT2"
+>
+    <H2
+CLASS="SECT2"
+><A
+NAME="LOCVARRECUR"
+>23.2.1. 局部变量使递归变得可能.</A
+></H2
+>
+    <P
+>局部变量可以递归, <A
+NAME="AEN14289"
+HREF="#FTN.AEN14289"
+>[1]</A
+> 但这个办法会产生大量的计算，因此它在shell脚本中是被明确表明不推荐的. <A
+NAME="AEN14296"
+HREF="#FTN.AEN14296"
+>[2]</A
+> </P
+>
+    <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX63"
+></A
+>
+      <P
+><B
+>例子 23-13. 用局部变量来递归</B
+></P
+>
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#               阶乘
+   4&nbsp;#               ---------
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;# bash允许递归吗?
+   8&nbsp;# 嗯, 允许, 但是...
+   9&nbsp;# 它太慢以致你难以忍受.
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;MAX_ARG=5
+  13&nbsp;E_WRONG_ARGS=65
+  14&nbsp;E_RANGE_ERR=66
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;if [ -z "$1" ]
+  18&nbsp;then
+  19&nbsp;  echo "Usage: `basename $0` number"
+  20&nbsp;  exit $E_WRONG_ARGS
+  21&nbsp;fi
+  22&nbsp;
+  23&nbsp;if [ "$1" -gt $MAX_ARG ]
+  24&nbsp;then
+  25&nbsp;  echo "Out of range (5 is maximum)."
+  26&nbsp;  #  现在让我们来了解实际情况.
+  27&nbsp;  #  如果你想求比这个更大的范围的阶乘,
+  28&nbsp;  #+ 应该重新用一个真正的编程语言来写.
+  29&nbsp;  exit $E_RANGE_ERR
+  30&nbsp;fi  
+  31&nbsp;
+  32&nbsp;fact ()
+  33&nbsp;{
+  34&nbsp;  local number=$1
+  35&nbsp;  #  变量"number"必须声明为局部,
+  36&nbsp;  #+ 否则它不会工作.
+  37&nbsp;  if [ "$number" -eq 0 ]
+  38&nbsp;  then
+  39&nbsp;    factorial=1    # 0的阶乘为1.
+  40&nbsp;  else
+  41&nbsp;    let "decrnum = number - 1"
+  42&nbsp;    fact $decrnum  # 递归调用(函数内部调用自己本身).
+  43&nbsp;    let "factorial = $number * $?"
+  44&nbsp;  fi
+  45&nbsp;
+  46&nbsp;  return $factorial
+  47&nbsp;}
+  48&nbsp;
+  49&nbsp;fact $1
+  50&nbsp;echo "Factorial of $1 is $?."
+  51&nbsp;
+  52&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+    <P
+>也请参考<A
+HREF="contributed-scripts.html#PRIMES"
+>例子 A-16</A
+>的脚本递归的例子. 必须意识到递归也意味着巨大的资源消耗和缓慢的运行，因此它不适合在脚本中使用.</P
+>
+  </DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14289"
+HREF="localvar.html#AEN14289"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+NAME="RECURSIONREF"
+></A
+> <A
+HREF="biblio.html#MAYERREF"
+>Herbert Mayer</A
+> 给递归下的定义是<SPAN
+CLASS="QUOTE"
+>". . . expressing an algorithm by using a simpler version of that same algorithm(用一个相同算法的版本来表示一个算法) 
+        . . ."</SPAN
+> 递归函数是调用它自己本身的函数.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN14296"
+HREF="localvar.html#AEN14296"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>太多层的递归可能会引起脚本段错误而崩溃. 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  警告: 运行这个脚本可能使你的系统失去响应!
+   4&nbsp;#  如果你运气不错，在它使用完所有可用内存之前会段错误而退出.
+   5&nbsp;
+   6&nbsp;recursive_function ()		   
+   7&nbsp;{
+   8&nbsp;echo "$1"     # 使函数做些事情以加速产生段错误.
+   9&nbsp;(( $1 &#60; $2 )) &#38;&#38; recursive_function $(( $1 + 1 )) $2;
+  10&nbsp;#  当第一个参数比第二个参数少时,
+  11&nbsp;#+ 把第1个参数增1再次递归.
+  12&nbsp;}
+  13&nbsp;
+  14&nbsp;recursive_function 1 50000  # 递归 50,000 次!
+  15&nbsp;#  非常可能段错误 (依赖于栈的大小，它由ulimit -m设置).
+  16&nbsp;
+  17&nbsp;#  这种深度的递归甚至可能由于耗尽栈的内存大小而引起C程序的段错误.
+  18&nbsp;#
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;echo "This will probably not print."
+  22&nbsp;exit 0  # 这个脚本将不会从这儿正常退出.
+  23&nbsp;
+  24&nbsp;#  多谢, St

@@ -1,0 +1,987 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>$RANDOM: generate random integer</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Variables Revisited"
+HREF="variables2.html"><LINK
+REL="PREVIOUS"
+TITLE="Indirect References to Variables"
+HREF="ivr.html"><LINK
+REL="NEXT"
+TITLE="The Double Parentheses Construct"
+HREF="dblparens.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ivr.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Variables Revisited</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="dblparens.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+>
+<DIV
+CLASS="SECT1"
+> 
+  <H1
+CLASS="SECT1"
+><A
+NAME="RANDOMVAR"
+>9.6. $RANDOM: 产生随机整数</A
+></H1
+>
+  <P
+><TT
+CLASS="VARNAME"
+>$RANDOM</TT
+>是Bash的一个返回伪随机 <a
+name="AEN5161"
+href="#FTN.AEN5161"
+>[1]</a
+>整数(范围为0 - 32767)的内部<A
+HREF="functions.html#FUNCTIONREF"
+>函数</A
+>(而不是一个常量或变量)，它不应该用于产生加密的密钥.</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX21"
+></A
+>
+    <P
+><B
+>例子 9-24. 产生随机整数</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# 每次调用$RANDOM都会返回不同的随机整数.
+   4&nbsp;# 范围为: 0 - 32767 (带符号的16位整数).
+   5&nbsp;
+   6&nbsp;MAXCOUNT=10
+   7&nbsp;count=1
+   8&nbsp;
+   9&nbsp;echo
+  10&nbsp;echo "$MAXCOUNT random numbers:"
+  11&nbsp;echo "-----------------"
+  12&nbsp;while [ "$count" -le $MAXCOUNT ]      # 产生10($MAXCOUNT)个随机整数.
+  13&nbsp;do
+  14&nbsp;  number=$RANDOM
+  15&nbsp;  echo $number
+  16&nbsp;  let "count += 1"  # 增加计数.
+  17&nbsp;done
+  18&nbsp;echo "-----------------"
+  19&nbsp;
+  20&nbsp;# 如果你需要某个范围的随机整数，可以使用取模操作符.(译者注：事实上，这不是一个非常好的办法。理由请见man 3 rand)
+  21&nbsp;# 取模操作会返回除法的余数.
+  22&nbsp;
+  23&nbsp;RANGE=500
+  24&nbsp;
+  25&nbsp;echo
+  26&nbsp;
+  27&nbsp;number=$RANDOM
+  28&nbsp;let "number %= $RANGE"
+  29&nbsp;#           ^^
+  30&nbsp;echo "Random number less than $RANGE  ---  $number"
+  31&nbsp;
+  32&nbsp;echo
+  33&nbsp;
+  34&nbsp;
+  35&nbsp;
+  36&nbsp;#  如果你需要一个大于某个下限的随机整数,
+  37&nbsp;#+ 应该增加测试以便抛弃所有小于此下限值的数值.
+  38&nbsp;
+  39&nbsp;FLOOR=200
+  40&nbsp;
+  41&nbsp;number=0   #初始化
+  42&nbsp;while [ "$number" -le $FLOOR ]
+  43&nbsp;do
+  44&nbsp;  number=$RANDOM
+  45&nbsp;done
+  46&nbsp;echo "Random number greater than $FLOOR ---  $number"
+  47&nbsp;echo
+  48&nbsp;
+  49&nbsp;   # 让我们检测另外一个完成上面循环作用的简单办法，即
+  50&nbsp;   #       let "number = $RANDOM + $FLOOR"
+  51&nbsp;   # 这能避免了while循环，并且运行得更快。
+  52&nbsp;   # 但，使用这个技术可能会产生问题，思考一下是什么问题？
+  53&nbsp;
+  54&nbsp;
+  55&nbsp;
+  56&nbsp;# 联合上面两个技巧重新产生在两个限制值之间的随机整数.
+  57&nbsp;number=0   #初始化
+  58&nbsp;while [ "$number" -le $FLOOR ]
+  59&nbsp;do
+  60&nbsp;  number=$RANDOM
+  61&nbsp;  let "number %= $RANGE"  # Scales $number down within $RANGE.
+  62&nbsp;done
+  63&nbsp;echo "Random number between $FLOOR and $RANGE ---  $number"
+  64&nbsp;echo
+  65&nbsp;
+  66&nbsp;
+  67&nbsp;
+  68&nbsp;# 产生二元值，即"真"或"假".
+  69&nbsp;BINARY=2
+  70&nbsp;T=1
+  71&nbsp;number=$RANDOM
+  72&nbsp;
+  73&nbsp;let "number %= $BINARY"
+  74&nbsp;#  注意    let "number &#62;&#62;= 14"    会产生更平均的随机分布   #(译者注：正如在man手册里提到的，更高位的随机分布更平均，
+  75&nbsp;#+ (除了最后的二元值右移出所有的值).                       #取模操作使用低位来产生随机会相对不平均)
+  76&nbsp;if [ "$number" -eq $T ]
+  77&nbsp;then
+  78&nbsp;  echo "TRUE"
+  79&nbsp;else
+  80&nbsp;  echo "FALSE"
+  81&nbsp;fi  
+  82&nbsp;
+  83&nbsp;echo
+  84&nbsp;
+  85&nbsp;
+  86&nbsp;# 模拟掷骰子.
+  87&nbsp;SPOTS=6   # 模除 6 会产生 0 - 5 之间的值.
+  88&nbsp;          # 结果增1会产生 1 - 6 之间的值.
+  89&nbsp;          # 多谢Paulo Marcel Coelho Aragao的简化.
+  90&nbsp;die1=0
+  91&nbsp;die2=0
+  92&nbsp;# 这会比仅设置SPOTS=7且不增1好?为什么会好？为什么会不好?
+  93&nbsp;
+  94&nbsp;# 单独地掷每个骰子，然后计算出正确的机率.
+  95&nbsp;
+  96&nbsp;    let "die1 = $RANDOM % $SPOTS +1" # 掷第一个.
+  97&nbsp;    let "die2 = $RANDOM % $SPOTS +1" # 掷第二个.
+  98&nbsp;    #  上面的算术式中，哪个操作符优先计算 --
+  99&nbsp;    #+ 取模 (%) 还是 加法 (+)?
+ 100&nbsp;
+ 101&nbsp;
+ 102&nbsp;let "throw = $die1 + $die2"
+ 103&nbsp;echo "Throw of the dice = $throw"
+ 104&nbsp;echo
+ 105&nbsp;
+ 106&nbsp;
+ 107&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PICKCARD"
+></A
+>
+    <P
+><B
+>例子 9-25. 模拟从一副纸牌里随机抽一张纸牌</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# pick-card.sh
+   3&nbsp;
+   4&nbsp;# 这是从一个数组中随机选择元素的例子.
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;# 抽出一张任意牌.
+   8&nbsp;
+   9&nbsp;Suites="Clubs
+  10&nbsp;Diamonds
+  11&nbsp;Hearts
+  12&nbsp;Spades"
+  13&nbsp;
+  14&nbsp;Denominations="2
+  15&nbsp;3
+  16&nbsp;4
+  17&nbsp;5
+  18&nbsp;6
+  19&nbsp;7
+  20&nbsp;8
+  21&nbsp;9
+  22&nbsp;10
+  23&nbsp;Jack
+  24&nbsp;Queen
+  25&nbsp;King
+  26&nbsp;Ace"
+  27&nbsp;
+  28&nbsp;# 注意变量值由多行组成.
+  29&nbsp;
+  30&nbsp;
+  31&nbsp;suite=($Suites)                # 读入一个数组.
+  32&nbsp;denomination=($Denominations)
+  33&nbsp;
+  34&nbsp;num_suites=${#suite[*]}        # 计算有几个数组元素.
+  35&nbsp;num_denominations=${#denomination[*]}
+  36&nbsp;
+  37&nbsp;echo -n "${denomination[$((RANDOM%num_denominations))]} of "
+  38&nbsp;echo ${suite[$((RANDOM%num_suites))]}
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;# $bozo sh pick-cards.sh
+  42&nbsp;# Jack of Clubs
+  43&nbsp;
+  44&nbsp;
+  45&nbsp;# 多谢"jipe,"指出$RANDOM的这个用法.
+  46&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+> <I
+CLASS="EMPHASIS"
+>Jipe</I
+> 指出了一套技巧来产生一个范围里的随机数。
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#  产生 6 和 30之间的随机数.
+   2&nbsp;   rnumber=$((RANDOM%25+6))	
+   3&nbsp;
+   4&nbsp;#  产生在 6 - 30 之间的随机数,
+   5&nbsp;#+ 但随机数还同时要满足被3整除.
+   6&nbsp;   rnumber=$(((RANDOM%30/3+1)*3))
+   7&nbsp;
+   8&nbsp;#  注意这将始终不能工作.
+   9&nbsp;#  如果$RANDOM返回0，它就会失败.
+  10&nbsp;
+  11&nbsp;#  Frank Wang建议用下面的办法:
+  12&nbsp;   rnumber=$(( RANDOM%27/3*3+6 ))</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+>
+  <P
+> <I
+CLASS="EMPHASIS"
+>Bill Gradwohl</I
+> 提出一个改良的公式，这个公式只用于正数. 
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;rnumber=$(((RANDOM%(max-min+divisibleBy))/divisibleBy*divisibleBy+min))</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+>
+  <P
+>上面Bill展示了一个通用的函数，它可以返回两个指定值之间的随机数。</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RANDOMBETWEEN"
+></A
+>
+    <P
+><B
+>例子 9-26. 指定值之间的随机数</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# random-between.sh
+   3&nbsp;# 产生两个指定值之间的随机数. 
+   4&nbsp;# 由Bill Gradwohl编写,并由本书作者作了些许修改.
+   5&nbsp;# 已得到程序作者的许可.
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;randomBetween() {
+   9&nbsp;   #  产生在$min和$max之前的正或负的随机数
+  10&nbsp;   #+ 并且能被$divisibleBy整数除.
+  11&nbsp;   #
+  12&nbsp;   #  给出一个合理的随机分配的返回值.
+  13&nbsp;   #
+  14&nbsp;   #  Bill Gradwohl - Oct 1, 2003
+  15&nbsp;
+  16&nbsp;   syntax() {
+  17&nbsp;   # 在函数中内嵌函数
+  18&nbsp;      echo
+  19&nbsp;      echo    "Syntax: randomBetween [min] [max] [multiple]"
+  20&nbsp;      echo
+  21&nbsp;      echo    "Expects up to 3 passed parameters, but all are completely optional."
+  22&nbsp;      echo    "min is the minimum value"
+  23&nbsp;      echo    "max is the maximum value"
+  24&nbsp;      echo    "multiple specifies that the answer must be a multiple of this value."
+  25&nbsp;      echo    "    i.e. answer must be evenly divisible by this number."
+  26&nbsp;      echo    
+  27&nbsp;      echo    "If any value is missing, defaults area supplied as: 0 32767 1"
+  28&nbsp;      echo    "Successful completion returns 0, unsuccessful completion returns"
+  29&nbsp;      echo    "function syntax and 1."
+  30&nbsp;      echo    "The answer is returned in the global variable randomBetweenAnswer"
+  31&nbsp;      echo    "Negative values for any passed parameter are handled correctly."
+  32&nbsp;   }
+  33&nbsp;
+  34&nbsp;   local min=${1:-0}
+  35&nbsp;   local max=${2:-32767}
+  36&nbsp;   local divisibleBy=${3:-1}
+  37&nbsp;   # 默认值分配,用来处理没有参数传递进来的时候.
+  38&nbsp;
+  39&nbsp;   local x
+  40&nbsp;   local spread
+  41&nbsp;
+  42&nbsp;   # 确认divisibleBy是正值.
+  43&nbsp;   [ ${divisibleBy} -lt 0 ] &#38;&#38; divisibleBy=$((0-divisibleBy))
+  44&nbsp;
+  45&nbsp;   # 完整性检查.
+  46&nbsp;   if [ $# -gt 3 -o ${divisibleBy} -eq 0 -o  ${min} -eq ${max} ]; then 
+  47&nbsp;      syntax
+  48&nbsp;      return 1
+  49&nbsp;   fi
+  50&nbsp;
+  51&nbsp;   # 察看是否min和max颠倒了.
+  52&nbsp;   if [ ${min} -gt ${max} ]; then
+  53&nbsp;      # Swap them.
+  54&nbsp;      x=${min}
+  55&nbsp;      min=${max}
+  56&nbsp;      max=${x}
+  57&nbsp;   fi
+  58&nbsp;
+  59&nbsp;   #  如果min自己并不能够被$divisibleBy整除,
+  60&nbsp;   #+ 那么就调整min的值,使其能够被$divisibleBy整除,前提是不能放大范围.
+  61&nbsp;   if [ $((min/divisibleBy*divisibleBy)) -ne ${min} ]; then 
+  62&nbsp;      if [ ${min} -lt 0 ]; then
+  63&nbsp;         min=$((min/divisibleBy*divisibleBy))
+  64&nbsp;      else
+  65&nbsp;         min=$((((min/divisibleBy)+1)*divisibleBy))
+  66&nbsp;      fi
+  67&nbsp;   fi
+  68&nbsp;
+  69&nbsp;   #  如果min自己并不能够被$divisibleBy整除,
+  70&nbsp;   #+ 那么就调整max的值,使其能够被$divisibleBy整除,前提是不能放大范围.
+  71&nbsp;   if [ $((max/divisibleBy*divisibleBy)) -ne ${max} ]; then 
+  72&nbsp;      if [ ${max} -lt 0 ]; then
+  73&nbsp;         max=$((((max/divisibleBy)-1)*divisibleBy))
+  74&nbsp;      else
+  75&nbsp;         max=$((max/divisibleBy*divisibleBy))
+  76&nbsp;      fi
+  77&nbsp;   fi
+  78&nbsp;
+  79&nbsp;   #  ---------------------------------------------------------------------
+  80&nbsp;   #  现在,来做真正的工作.
+  81&nbsp;
+  82&nbsp;   #  注意,为了得到对于端点来说合适的分配,
+  83&nbsp;   #+ 随机值的范围不得不落在
+  84&nbsp;   #+ 0 和 abs(max-min)+divisibleBy之间, 而不是 abs(max-min)+1.
+  85&nbsp;
+  86&nbsp;   #  对于端点来说,
+  87&nbsp;   #+ 这个少量的增加将会产生合适的分配.
+  88&nbsp;
+  89&nbsp;   #  修改这个公式,使用abs(max-min)+1来代替abs(max-min)+divisibleBy的话,
+  90&nbsp;   #+ 也能够产生正确的答案, 但是在这种情况下生成的随机值对于正好为端点倍数
+  91&nbsp;   #+ 的这种情况来说将是不完美的,因为在正好为端点倍数的情况的随机率比较低,
+  92&nbsp;   #+ 因为你才加1而已,这比正常的公式所产生的机率要小得多(正常为加divisibleBy)
+  93&nbsp;   #  ---------------------------------------------------------------------
+  94&nbsp;
+  95&nbsp;   spread=$((max-min))
+  96&nbsp;   [ ${spread} -lt 0 ] &#38;&#38; spread=$((0-spread))
+  97&nbsp;   let spread+=divisibleBy
+  98&nbsp;   randomBetweenAnswer=$(((RANDOM%spread)/divisibleBy*divisibleBy+min))   
+  99&nbsp;
+ 100&nbsp;   return 0
+ 101&nbsp;
+ 102&nbsp;   #  然而,Paulo Marcel Coelho Aragao指出
+ 103&nbsp;   #+ 当$max和$min不能被$divisibleBy整除时,
+ 104&nbsp;   #+ 这个公式将会失败.
+ 105&nbsp;   #
+ 106&nbsp;   #  他建议使用如下的公式:
+ 107&nbsp;   #    rnumber = $(((RANDOM%(max-min+1)+min)/divisibleBy*divisibleBy))
+ 108&nbsp;
+ 109&nbsp;}
+ 110&nbsp;
+ 111&nbsp;# 让我们测试一下这个函数.
+ 112&nbsp;min=-14
+ 113&nbsp;max=20
+ 114&nbsp;divisibleBy=3
+ 115&nbsp;
+ 116&nbsp;
+ 117&nbsp;#  产生一个数组answers,answers的下标用来表示在范围内可能出现的值,
+ 118&nbsp;#+ 而内容记录的是对于这个值出现的次数,如果我们循环足够多次,一定会得到一次出现机会.
+ 119&nbsp;
+ 120&nbsp;declare -a answer
+ 121&nbsp;minimum=${min}
+ 122&nbsp;maximum=${max}
+ 123&nbsp;   if [ $((minimum/divisibleBy*divisibleBy)) -ne ${minimum} ]; then 
+ 124&nbsp;      if [ ${minimum} -lt 0 ]; then
+ 125&nbsp;         minimum=$((minimum/divisibleBy*divisibleBy))
+ 126&nbsp;      else
+ 127&nbsp;         minimum=$((((minimum/divisibleBy)+1)*divisibleBy))
+ 128&nbsp;      fi
+ 129&nbsp;   fi
+ 130&nbsp;
+ 131&nbsp;
+ 132&nbsp;   #  如果maximum自己并不能够被$divisibleBy整除,
+ 133&nbsp;   #+ 那么就调整maximum的值,使其能够被$divisibleBy整除,前提是不能放大范围.
+ 134&nbsp;
+ 135&nbsp;   if [ $((maximum/divisibleBy*divisibleBy)) -ne ${maximum} ]; then 
+ 136&nbsp;      if [ ${maximum} -lt 0 ]; then
+ 137&nbsp;         maximum=$((((maximum/divisibleBy)-1)*divisibleBy))
+ 138&nbsp;      else
+ 139&nbsp;         maximum=$((maximum/divisibleBy*divisibleBy))
+ 140&nbsp;      fi
+ 141&nbsp;   fi
+ 142&nbsp;
+ 143&nbsp;
+ 144&nbsp;#  我们需要产生一个下标全为正的数组,
+ 145&nbsp;#+ 所以我们需要一个displacement来保正都为正的结果.
+ 146&nbsp;
+ 147&nbsp;
+ 148&nbsp;displacement=$((0-minimum))
+ 149&nbsp;for ((i=${minimum}; i&#60;=${maximum}; i+=divisibleBy)); do
+ 150&nbsp;   answer[i+displacement]=0
+ 151&nbsp;done
+ 152&nbsp;
+ 153&nbsp;
+ 154&nbsp;# 现在我们循环足够多的次数来得到我们想要的答案.
+ 155&nbsp;loopIt=1000   #  脚本作者建议 100000,
+ 156&nbsp;              #+ 但是这实在是需要太长的时间了.
+ 157&nbsp;
+ 158&nbsp;for ((i=0; i&#60;${loopIt}; ++i)); do
+ 159&nbsp;
+ 160&nbsp;   #  注意,我们在这里调用randomBetween函数时,故意将min和max颠倒顺序
+ 161&nbsp;   #+ 我们是为了测试在这种情况下,此函数是否还能得到正确的结果.
+ 162&nbsp;
+ 163&nbsp;   randomBetween ${max} ${min} ${divisibleBy}
+ 164&nbsp;
+ 165&nbsp;   # 如果答案不是我们所预期的,那么就报告一个错误.
+ 166&nbsp;   [ ${randomBetweenAnswer} -lt ${min} -o ${randomBetweenAnswer} -gt ${max} ] &#38;&#38; echo MIN or MAX error - ${randomBetweenAnswer}!
+ 167&nbsp;   [ $((randomBetweenAnswer%${divisibleBy})) -ne 0 ] &#38;&#38; echo DIVISIBLE BY error - ${randomBetweenAnswer}!
+ 168&nbsp;
+ 169&nbsp;   # 将统计值存到answer之中.
+ 170&nbsp;   answer[randomBetweenAnswer+displacement]=$((answer[randomBetweenAnswer+displacement]+1))
+ 171&nbsp;done
+ 172&nbsp;
+ 173&nbsp;
+ 174&nbsp;
+ 175&nbsp;# 让我们察看一下结果
+ 176&nbsp;
+ 177&nbsp;for ((i=${minimum}; i&#60;=${maximum}; i+=divisibleBy)); do
+ 178&nbsp;   [ ${answer[i+displacement]} -eq 0 ] &#38;&#38; echo "We never got an answer of $i." || echo "${i} occurred ${answer[i+displacement]} times."
+ 179&nbsp;done
+ 180&nbsp;
+ 181&nbsp;
+ 182&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>$RANDOM到底有多随机?最好的办法就是写个脚本来测试一下.跟踪随机数的分配情况.<br>
+   让我们用随机数摇一个骰子 . . .</P
+>
+ <DIV
+CLASS="EXAMPLE"
+><HR>
+    <A
+NAME="RANDOMTEST"
+></A
+> 
+    <P
+><B
+>例子 9-27. 用RANDOM模拟掷单个骰子</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# RANDOM到底有多random?
+   3&nbsp;
+   4&nbsp;RANDOM=$$       # 使用脚本的进程ID来作为随机数的产生种子.
+   5&nbsp;
+   6&nbsp;PIPS=6          # 一个骰子有6面.
+   7&nbsp;MAXTHROWS=600   # 如果你没别的事干,那么可以增加这个数值.
+   8&nbsp;throw=0         # 抛骰子的次数.
+   9&nbsp;
+  10&nbsp;ones=0          # 必须把所有count都初始化为0,
+  11&nbsp;twos=0          #+因为未初始化的变量为null,不是0.
+  12&nbsp;threes=0
+  13&nbsp;fours=0
+  14&nbsp;fives=0
+  15&nbsp;sixes=0
+  16&nbsp;
+  17&nbsp;print_result ()
+  18&nbsp;{
+  19&nbsp;echo
+  20&nbsp;echo "ones =   $ones"
+  21&nbsp;echo "twos =   $twos"
+  22&nbsp;echo "threes = $threes"
+  23&nbsp;echo "fours =  $fours"
+  24&nbsp;echo "fives =  $fives"
+  25&nbsp;echo "sixes =  $sixes"
+  26&nbsp;echo
+  27&nbsp;}
+  28&nbsp;
+  29&nbsp;update_count()
+  30&nbsp;{
+  31&nbsp;case "$1" in
+  32&nbsp;  0) let "ones += 1";;   # 因为骰子没有0,所以给1.
+  33&nbsp;  1) let "twos += 1";;   # 对tows做同样的事.
+  34&nbsp;  2) let "threes += 1";;
+  35&nbsp;  3) let "fours += 1";;
+  36&nbsp;  4) let "fives += 1";;
+  37&nbsp;  5) let "sixes += 1";;
+  38&nbsp;esac
+  39&nbsp;}
+  40&nbsp;
+  41&nbsp;echo
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;while [ "$throw" -lt "$MAXTHROWS" ]
+  45&nbsp;do
+  46&nbsp;  let "die1 = RANDOM % $PIPS"
+  47&nbsp;  update_count $die1
+  48&nbsp;  let "throw += 1"
+  49&nbsp;done  
+  50&nbsp;
+  51&nbsp;print_result
+  52&nbsp;
+  53&nbsp;exit 0
+  54&nbsp;
+  55&nbsp;#  如果RANDOM是真正的随机,那么摇出来结果应该平均的.
+  56&nbsp;#  $MAXTHROWS设为600,那么每面都应该为100,上下的出入不应该超过20.
+  57&nbsp;#
+  58&nbsp;#  记住RANDOM毕竟只是一个伪随机数,
+  59&nbsp;#+ 并且不是十分完美的.
+  60&nbsp;
+  61&nbsp;#  随机数的产生是一个深奥并复杂的问题.
+  62&nbsp;#  足够长的随机序列,不但会展现杂乱无章的一面,
+  63&nbsp;#+ 而且会展现机会均等的一面.
+  64&nbsp;
+  65&nbsp;# 练习 (容易):
+  66&nbsp;# ---------------
+  67&nbsp;# 重写这个例子,做成抛1000次硬币的形式.
+  68&nbsp;# 分为正反两面.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+ <P
+>像我们在上边的例子中看到的,最好在每次随机数产生时都使用新的种子.应为如果使用同样的种子的话,那么随机数将产生相同的序列.
+	    <A
+NAME="AEN5195"
+HREF="#FTN.AEN5195"
+>[2]</A
+>
+	  (C中random()函数也会有这样的行为.)</P
+>
+  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SEEDINGRANDOM"
+></A
+>
+    <P
+><B
+>例子 9-28. 重新分配随机数种子</B
+></P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# seeding-random.sh: 设置RANDOM变量作为种子.
+   3&nbsp;
+   4&nbsp;MAXCOUNT=25       # 决定产生多少个随机数.
+   5&nbsp;
+   6&nbsp;random_numbers ()
+   7&nbsp;{
+   8&nbsp;count=0
+   9&nbsp;while [ "$count" -lt "$MAXCOUNT" ]
+  10&nbsp;do
+  11&nbsp;  number=$RANDOM
+  12&nbsp;  echo -n "$number "
+  13&nbsp;  let "count += 1"
+  14&nbsp;done  
+  15&nbsp;}
+  16&nbsp;
+  17&nbsp;echo; echo
+  18&nbsp;
+  19&nbsp;RANDOM=1          # 为随机数的产生设置RANDOM种子.
+  20&nbsp;random_numbers
+  21&nbsp;
+  22&nbsp;echo; echo
+  23&nbsp;
+  24&nbsp;RANDOM=1          # 设置同样的种子...
+  25&nbsp;random_numbers    # ...将会和上边产生的随机数列相同.
+  26&nbsp;                  #
+  27&nbsp;                  # 复制一个相同的随机数序列在什么时候有用呢?
+  28&nbsp;
+  29&nbsp;echo; echo
+  30&nbsp;
+  31&nbsp;RANDOM=2          # 再试一下,但这次使用不同的种子...
+  32&nbsp;random_numbers    # 将给出一个不同的随机数序列.
+  33&nbsp;
+  34&nbsp;echo; echo
+  35&nbsp;
+  36&nbsp;# RANDOM=$$  使用脚本的进程id 作为随机数的种子.
+  37&nbsp;# 从'time'或'date'命令中取得RANDOM作为种子也是很常用的办法.
+  38&nbsp;
+  39&nbsp;# 一个有想象力的方法...
+  40&nbsp;SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }')
+  41&nbsp;#  首先从/dev/urandom(系统伪随机设备文件)中取出1行,
+  42&nbsp;#+ from /dev/urandom (system pseudo-random device-file),
+  43&nbsp;#+ 然后着这个可打印行转换为(8进制)数,通过使用&quot;od&quot;命令,
+  44&nbsp;#+ 最后使用&quot;awk&quot;来获得一个数.
+  45&nbsp;RANDOM=$SEED
+  46&nbsp;random_numbers
+  47&nbsp;
+  48&nbsp;echo; echo
+  49&nbsp;
+  50&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="URANDOMREF"
+></A
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>/dev/urandom设备文件提供了一种比单独使用$RANDOM更好的,能产生更&quot;随机&quot;的随机数的方法.<tt
+class="USERINPUT"
+><b
+>dd if=/dev/urandom of=targetfile bs=1 count=XX</b
+></tt
+>能够产生一个很分散的为随机数.然而,将这个数赋值到一个脚本文件的变量中,还需要可操作性,比如使用&quot;<a
+href="extmisc.html#ODREF"
+>od</a
+>&quot;命令(就像上边的例子,见<a
+href="textproc.html#RND"
+>Example 12-13</a
+>),或者使用<a
+href="extmisc.html#DDREF"
+>dd</a
+>命令(见<a
+href="extmisc.html#BLOTOUT"
+>Example 12-55</a
+>),或者管道到&quot;<a
+href="filearchiv.html#MD5SUMREF"
+>md5sum</a
+>&quot;命令中(见<A
+HREF="colorizing.html#HORSERACE"
+>Example 33-14</A
+>).</P
+>
+          <P
+><A
+NAME="AWKRANDOMREF"
+></A
+></P
+>          <P
+>当然还有其它的产生伪随机数的方法.<b
+class="COMMAND"
+>Awk</b
+>就可以提供一个方便的方法.</P
+>
+          <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RANDOM2"
+></A
+>
+            <P
+><B
+>例子 9-29. 使用<a
+href="awk.html#AWKREF"
+>awk</a
+>产生伪随机数</B
+></P
+>
+            <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# random2.sh: 产生一个范围0 - 1的为随机数.
+   3&nbsp;# 使用awk的rand()函数.
+   4&nbsp;
+   5&nbsp;AWKSCRIPT=' { srand(); print rand() } '
+   6&nbsp;#            Command(s) / 传到awk中的参数
+   7&nbsp;# 注意,srand()函数用来产生awk的随机数种子.
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;echo -n "Random number between 0 and 1 = "
+  11&nbsp;
+  12&nbsp;echo | awk "$AWKSCRIPT"
+  13&nbsp;# 如果你省去'echo'那么将发生什么?
+  14&nbsp;
+  15&nbsp;exit 0
+  16&nbsp;
+  17&nbsp;
+  18&nbsp;# 练习:
+  19&nbsp;# ---------
+  20&nbsp;
+  21&nbsp;# 1) 使用循环结构,打印出10个不同的随机数.
+  22&nbsp;#      (提示: 在循环的每次执行过程中,你必须使用&quot;srand()&quot;函数来生成不同的
+  23&nbsp;#+     种子.如果你没做这件事那么将发生什么?
+  24&nbsp;
+  25&nbsp;# 2) 使用一个整数乘法作为一个放缩因子,在10到100的范围之间,
+  26&nbsp;#+   来产生随机数.
+  27&nbsp;
+  28&nbsp;# 3) 同上边的练习 #2,但这次产生随机整数.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+          <P
+>&quot;<a
+href="timedate.html#DATEREF"
+>date</a
+>&quot;命令也可以用来<a
+href="timedate.html#DATERANDREF"
+>产生伪随机整数序列</a
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5161"
+HREF="randomvar.html#AEN5161"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>真正的随机事件(在它存在的范围内),只发生在特定的几个未知的自然界现象中,比如放射性衰变.计算机只能产生模拟的随机事件,并且计算机产生的&quot;随机&quot;数因此只能称为伪随机数.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5195"
+HREF="randomvar.html#AEN5195"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>计算机产生的伪随机数序列用的种子可以被看成是一种标识标签.比如,使用种子23所产生的伪随机数序列就被称作序列#23.<br>
+<br>
+一个伪随机序列的特点就是在这个序列开始重复之前的所有元素的个数的和,也就是这个序列的长度.一个好的伪随机产生算法将可以产生一个非常长的不重复的序列.<br>
+</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ivr.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="dblparens.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Indirect References to Variables</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables2.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The Double Parentheses Construct</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

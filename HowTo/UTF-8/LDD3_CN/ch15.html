@@ -1,0 +1,59 @@
+<html xmlns:cf="http://docbook.sourceforge.net/xmlns/chunkfast/1.0">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>第15章 内存映射和 DMA </title>
+<link rel="stylesheet" href="docbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.69.0">
+<link rel="start" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="up" href="index.html" title="Linux 设备驱动 Edition 3">
+<link rel="prev" href="ch14s09.html" title="14.9.&#160;快速参考">
+<link rel="next" href="ch15s02.html" title="15.2.&#160;mmap 设备操作">
+</head>
+<body bgcolor="white" text="black" link="#0000ff" vlink="#840084" alink="#0000ff">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="middle">
+      <H1>第15章&nbsp;内存映射和DMA </H1>  </th></tr>
+<tr>
+<td width="20%" align="left">
+<A accessKey=p href="ch14s09.html">上一页</A>&nbsp;</td>
+<th width="60%" align="middle">&nbsp;</th>
+<td width="20%" align="right">&nbsp;<A accessKey=n href="ch15s01.html">下一页</A>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="chapter" lang="zh-cn">
+<p>本章研究 Linux 内存管理的部分, 重点在对于设备驱动作者有用的技术. 许多类型的驱动编程需要一些对于虚拟内存子系统如何工作的理解; 我们在本章涉及到的材料来自手头, 而不是象我们曾进入更加复杂和性能关键的子系统一样. 虚拟内存子系统也是 Linux 内核核心的非常有趣的部分, 并且因而, 值得一见.</p>
+<p>本章的材料分为 3 个部分:</p>
+<div class="itemizedlist"><ul type="disc">
+<li><p>第一部分涉及 mmap 系统调用的实现, 它允许设备内存直接映射到一个用户进程地址空间. 不是所有的设备需要 mmap 支持, 但是, 对一些, 映射设备内存可产生可观的性能提高.</p>
+<li><p>我们接着看从其他的方向跨过边界, 用对直接存取用户空间的讨论. 相对少驱动需要这个能力; 在大部分情况下, 内核做这种映射而驱动甚至不知道它. 但是了解如何映射用户空间内存到内核(使用 get_user_pages)会有用.</p>
+<li><p>最后一节涵盖直接内存存取( DMA ) I/O 操作, 它提供给外设对系统内存的直接存取.</p></li>
+</ul></div>
+<p>当然, 所有这些技术需要一个对 Linux 内存管理如何工作的理解, 因此我们从对这个子系统的总览开始.</p>
+<div class="sect1" lang="zh-cn">
+<div class="titlepage"><div><div><h2 class="title" style="CLEAR: both">
+<a name="MemoryManagementinLinux.sect1"></a>
+<hr>
+
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<A accessKey=p href="ch14s09.html">上一页</A>&nbsp;</td>
+<td width="20%" align="middle">&nbsp;</td>
+<td width="40%" align="right">&nbsp;<A accessKey=n href="ch15s01.html">下一页</A>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">14.9.&nbsp;快速参考&nbsp;</td>
+<td width="20%" align="middle"><A accessKey=h href="index.html">起始页</A></td>
+<td width="40%" align="right" valign="top">&nbsp;15.1. 
+      Linux 中的内存管理</td>
+</tr>
+</table> </h2></div></div></div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,3337 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Advanced Bash-Scripting Guide</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="NEXT"
+TITLE="Introduction"
+HREF="part1.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default">
+</HEAD
+><BODY
+CLASS="BOOK"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:宋体, Arial;
+font-weight:bolder;
+line-height:130%;"
+><DIV
+CLASS="BOOK"
+><A
+NAME="AEN1"
+></A
+><DIV
+CLASS="TITLEPAGE"
+>
+    <H1
+CLASS="TITLE"
+><A
+NAME="AEN2"
+>高级Bash脚本编程指南</A
+></H1
+>
+    <H2
+CLASS="SUBTITLE"
+>一个对脚本编程技术的深入探讨</H2
+>
+    版本 <SPAN
+CLASS="RELEASEINFO"
+><span class="PUBDATE">3.7.3</span><BR>
+    </SPAN
+>
+    <P
+CLASS="PUBDATE"
+>2005年11月28日</P
+>
+    <H3
+CLASS="AUTHOR"
+><A
+NAME="AEN5"
+>Mendel Cooper</A
+></H3
+><DIV
+CLASS="AFFILIATION"
+><SPAN
+CLASS="ORGNAME"
+><BR></SPAN
+><DIV
+CLASS="ADDRESS"
+><P
+CLASS="ADDRESS"
+>thegrendel@theriver.com</P
+></DIV
+></DIV
+><DIV
+><DIV
+CLASS="ABSTRACT"
+><A
+NAME="AEN30"
+></A
+><P
+>本指南不期望读者有任何的脚本和编程的背景知识，但能引导你迅速提高到中高级水平的教程 <I
+CLASS="EMPHASIS"
+>. . . 所有这些只是 <SPAN
+CLASS="TRADEMARK"
+>UNIX</SPAN
+>&reg;浩瀚知识的一小部分</I
+>. 本指南可做为shell脚本技术的教科书，自学指导书或是技术参考书。教程中的练习和很好的注释能激起读者积极参与，但前提是要认识到：<TT
+CLASS="USERINPUT"
+><B
+>只有真正动手去写脚本才是唯一真正学会脚本编程技术的方法</B
+></TT
+>.</P
+>
+    <P
+>本书非常适用于教学编程概念的常规指导。</P
+>
+    <P
+><A
+HREF="http://personal.riverusers.com/%7Ethegrendel/abs-guide-3.7.tar.bz2"
+TARGET="_top"
+>        本书的最新版本</A
+>,以归档格式提供, <A
+HREF="filearchiv.html#BZIPREF"
+>bzip2-ed</A
+> <SPAN
+CLASS="QUOTE"
+></SPAN
+>
+	格式包提供了SGML源码和额外的HTML格式，可以从作者的主页上取得。也提供了 <A
+HREF="http://www.tldp.org/LDP/abs/abs-guide.pdf"
+TARGET="_top"
+>PDF版本
+	</A
+> ，可查看<A
+HREF="http://personal.riverusers.com/%7Ethegrendel/Change.log"
+TARGET="_top"
+>更新日志</A
+> 来了解版本历史。</P
+>
+    <P
+><hr></P
+>
+译者序
+<p>毫无疑问，UNIX/Linux最重要的软件之一就是shell，目前最流行的shell被称为Bash(Bourne Again Shell)，几乎所有的Linux和绝大部分的UNIX都可以使用Bash。作为系统与用户之间的交互接口，shell几乎是你在UNIX工作平台上最亲密的朋友，因此，学好shell，是学习Linux/UNIX的的开始，并且它会始终伴随你的工作学习。</p>
+<p>shell是如此地重要，但令人惊奇的是，介绍shell的书没有真正令人满意的。所幸的是，我看到了这本被人称为abs的书，这本书介绍了bash大量的细节和广阔的范围，我遇到的绝大部分的技术问题--无论是我忘记的或是以前没有发现的--都可以在这本书里找到答案。这本使用大量的例子详细地介绍了Bash的语法，各种技巧，调试等等的技术，以循序渐进的学习方式，让你了解Bash的所有特性，在书中还有许多练习可以引导你思考，以得到更深入的知识。无论你是新手还是老手，或是使用其他语言的程序员，我能肯定你能在此书用受益。而本书除了介绍BASH的知识之外，也有许多有用的关于Linux/UNIX的知识和其他shell的介绍。</p>
+<p>在看到本书的英文版后，我决定把它翻译出来，在Linuxsir论坛上结识了译者之一杨春敏共同翻译这本书，600多页的书是本大部头的书，我们花了6个月的业余时间才翻译完了。</p>
+<p>关于版权的问题，英文版的作者Mendel Cooper对英文版的版权做了详细的约定，请参考：Q. <A
+HREF="copyright.html"
+>版权</A
+>。中文版版权由译者杨春敏和黄毅共同所有，在遵守英文版版权相应条款的条件下，欢迎在保留本书译者名字和版权说明以非盈利的方式自由发布此中文版，以盈利目的的所有行为必须联系英文作者和两位中文译者以获得许可。</p>
+<p>本书得以成稿，我（黄毅）要多谢我的女朋友，本该给予她的时间我用来了翻译，多谢你的理解，你是一个很棒的女朋友！</p>
+<p align="right"> 译者 杨春敏 黄毅<br>
+  2006.5.28</p>
+</DIV
+>
+    </DIV
+><HR></DIV
+><H1
+><A
+NAME="AEN42"
+>贡献</A
+></H1
+><P
+>献给Anita，我所有动力的源泉。</P
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>目录</B
+></DT
+><DT
+>第一部分： <A
+HREF="part1.html"
+>绪论</A
+></DT
+><DD
+><DL
+><DT
+>1. <A
+HREF="why-shell.html"
+>为什么要有Shell编程?</A
+></DT
+><DT
+>2. <A
+HREF="sha-bang.html"
+>２．从一个Sha-Bang开始</A
+></DT
+><DD
+><DL
+><DT
+>2.1. <A
+HREF="sha-bang.html#INVOKING"
+>运行脚本</A
+></DT
+><DT
+>2.2. <A
+HREF="prelimexer.html"
+>预备练习</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>第二部分： <A
+HREF="part2.html"
+>基础</A
+></DT
+><DD
+><DL
+><DT
+>3. <A
+HREF="special-chars.html"
+>特殊字符</A
+></DT
+><DT
+>4. <A
+HREF="variables.html"
+>变量和参数介绍</A
+></DT
+><DD
+><DL
+>
+      <DT
+>4.1. <A
+HREF="variables.html#VARSUBN"
+>变量替换</A
+></DT
+>
+      <DT
+>4.2. <A
+HREF="varassignment.html"
+>变量赋值</A
+></DT
+>
+      <DT
+>4.3. <A
+HREF="untyped.html"
+>Bash变量是无类型的</A
+></DT
+><DT
+>4.4. <A
+HREF="othertypesv.html"
+>特殊变量类型</A
+></DT
+></DL
+></DD
+><DT
+>5. <A
+HREF="quoting.html"
+>引用</A
+></DT
+><DD
+><DL
+><DT
+>5.1. <A
+HREF="quoting.html#QUOTINGVAR"
+>引用变量</A
+></DT
+><DT
+>5.2. <A
+HREF="escapingsection.html"
+>转义</A
+></DT
+></DL
+></DD
+><DT
+>6. <A
+HREF="exit-status.html"
+>退出和退出状态</A
+></DT
+><DT
+>7. <A
+HREF="tests.html"
+>测试</A
+></DT
+><DD
+><DL
+><DT
+>7.1. <A
+HREF="tests.html#TESTCONSTRUCTS"
+>测试结构</A
+></DT
+><DT
+>7.2. <A
+HREF="fto.html"
+>文件测试操作符</A
+></DT
+><DT
+>7.3. <A
+HREF="comparison-ops.html"
+>其他比较操作符</A
+></DT
+><DT
+>7.4. <A
+HREF="nestedifthen.html"
+>嵌套的if/then条件测试</A
+></DT
+><DT
+>7.5. <A
+HREF="testtest.html"
+>检验你对测试（test）的认识</A
+></DT
+></DL
+></DD
+><DT
+>8. <A
+HREF="operations.html"
+>操作符及相关主题</A
+></DT
+><DD
+><DL
+><DT
+>8.1. <A
+HREF="operations.html#OPS"
+>操作符</A
+></DT
+><DT
+>8.2. <A
+HREF="numerical-constants.html"
+>数值常量</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>第三部分： <A
+HREF="part3.html"
+>进阶</A
+></DT
+><DD
+><DL
+><DT
+>9. <A
+HREF="variables2.html"
+>访问变量</A
+></DT
+><DD
+><DL
+><DT
+>9.1. <A
+HREF="variables2.html#INTERNALVARIABLES"
+>内部变量</A
+></DT
+><DT
+>9.2. <A
+HREF="string-manipulation.html"
+>字符串处理</A
+></DT
+>
+      <DT
+>9.3. <A
+HREF="parameter-substitution.html"
+>参数替换</A
+></DT
+>
+      <DT
+>9.4. <A
+HREF="declareref.html"
+>指定变量的类型: <B
+CLASS="COMMAND"
+>用 declare</B
+> 或 <B
+CLASS="COMMAND"
+>typeset</B
+></A
+></DT
+>
+    <DT
+>9.5. <A
+HREF="ivr.html"
+>间接变量引用</A
+></DT
+><DT
+>9.6. <A
+HREF="randomvar.html"
+>$RANDOM: 产生随机整数</A
+></DT
+>
+    <DT
+>9.7. <A
+HREF="dblparens.html"
+>双圆括号结构</A
+></DT
+>
+    </DL
+></DD
+>
+    <DT
+>10. <A
+HREF="loops.html"
+>循环和分支</A
+></DT
+>
+    <DD
+><DL
+>
+      <DT
+>10.1. <A
+HREF="loops.html#LOOPS1"
+>循环</A
+></DT
+>
+      <DT
+>10.2. <A
+HREF="nestedloops.html"
+>嵌套循环</A
+></DT
+><DT
+>10.3. <A
+HREF="loopcontrol.html"
+>循环控制</A
+></DT
+><DT
+>10.4. <A
+HREF="testbranch.html"
+>判断及分支</A
+></DT
+></DL
+></DD
+>
+    <DT
+>11. <A
+HREF="internal.html"
+>内部命令与内建命令</A
+></DT
+>
+    <DD
+><DL
+><DT
+>11.1. <A
+HREF="internal.html#AEN6631"
+>作业控制命令</A
+></DT
+></DL
+></DD
+><DT
+>12. <A
+HREF="external.html"
+>外部过滤器,程序与命令</A
+></DT
+><DD
+><DL
+><DT
+>12.1. <A
+HREF="external.html#BASIC"
+>基本命令</A
+></DT
+><DT
+>12.2. <A
+HREF="moreadv.html"
+>复杂命令</A
+></DT
+><DT
+>12.3. <A
+HREF="timedate.html"
+>时间/日期命令</A
+></DT
+><DT
+>12.4. <A
+HREF="textproc.html"
+>文本处理命令</A
+></DT
+><DT
+>12.5. <A
+HREF="filearchiv.html"
+>文件与归档命令</A
+></DT
+><DT
+>12.6. <A
+HREF="communications.html"
+>通信命令</A
+></DT
+><DT
+>12.7. <A
+HREF="terminalccmds.html"
+>终端控制命令</A
+></DT
+><DT
+>12.8. <A
+HREF="mathc.html"
+>数学命令</A
+></DT
+><DT
+>12.9. <A
+HREF="extmisc.html"
+>其他的杂项命令</A
+></DT
+></DL
+></DD
+><DT
+>13. <A
+HREF="system.html"
+>系统和管理员命令</A
+></DT
+><DD
+><DL
+><DT
+>13.1. <A
+HREF="system.html#SYSSCRIPTS"
+>分析一个系统脚本</A
+></DT
+></DL
+></DD
+>
+    <DT
+>14. <A
+HREF="commandsub.html"
+>命令替换</A
+></DT
+>
+    <DT
+>15. <A
+HREF="arithexp.html"
+>算术扩展</A
+></DT
+><DT
+>16. <A
+HREF="io-redirection.html"
+>I/O重定向</A
+></DT
+><DD
+><DL
+><DT
+>16.1. <A
+HREF="io-redirection.html#AEN13078"
+>使用<B
+CLASS="COMMAND"
+>exec</B
+></A
+></DT
+><DT
+>16.2. <A
+HREF="redircb.html"
+>重定向代码阻塞</A
+></DT
+><DT
+>16.3. <A
+HREF="redirapps.html"
+>应用</A
+></DT
+></DL
+></DD
+><DT
+>17. <A
+HREF="here-docs.html"
+>Here Documents</A
+></DT
+><DD
+><DL
+><DT
+>17.1. <A
+HREF="here-docs.html#AEN13316"
+>Here Strings</A
+></DT
+></DL
+></DD
+>
+    <DT
+>18. <A
+HREF="recess-time.html"
+>中场休息</A
+></DT
+>
+    </DL
+></DD
+><DT
+>第四部分： <A
+HREF="part4.html"
+>高级主题</A
+></DT
+><DD
+><DL
+><DT
+>19. <A
+HREF="regexp.html"
+>正则表达式</A
+></DT
+><DD
+><DL
+><DT
+>19.1. <A
+HREF="regexp.html#AEN13353"
+>正则表达式简介</A
+></DT
+>
+    <DT
+>19.2. <A
+HREF="globbingref.html"
+>通配</A
+></DT
+>
+    </DL
+></DD
+><DT
+>20. <A
+HREF="subshells.html"
+>子shell</A
+></DT
+><DT
+>21. <A
+HREF="restricted-sh.html"
+>受限shell</A
+></DT
+><DT
+>22. <A
+HREF="process-sub.html"
+>进程替换</A
+></DT
+><DT
+>23. <A
+HREF="functions.html"
+>函数</A
+></DT
+><DD
+><DL
+><DT
+>23.1. <A
+HREF="functions.html#COMPLEXFUNCT"
+>复杂函数与函数复杂性</A
+></DT
+><DT
+>23.2. <A
+HREF="localvar.html"
+>局部变量</A
+></DT
+><DT
+>23.3. <A
+HREF="recurnolocvar.html"
+>没有局部变量的递归</A
+></DT
+></DL
+></DD
+><DT
+>24. <A
+HREF="aliases.html"
+>别名</A
+></DT
+><DT
+>25. <A
+HREF="list-cons.html"
+>列表结构</A
+></DT
+><DT
+>26. <A
+HREF="arrays.html"
+>数组</A
+></DT
+><DT
+>27. <A
+HREF="devproc.html"
+>/dev和/proc</A
+></DT
+><DD
+><DL
+><DT
+>27.1. <A
+HREF="devproc.html#DEVREF1"
+><TT
+CLASS="FILENAME"
+>/dev</TT
+></A
+></DT
+><DT
+>27.2. <A
+HREF="procref1.html"
+><TT
+CLASS="FILENAME"
+>/proc</TT
+></A
+></DT
+></DL
+></DD
+><DT
+>28. <A
+HREF="zeros.html"
+>关于Zeros和Nulls</A
+></DT
+><DT
+>29. <A
+HREF="debugging.html"
+>调试</A
+></DT
+><DT
+>30. <A
+HREF="options.html"
+>选项</A
+></DT
+><DT
+>31. <A
+HREF="gotchas.html"
+>Gotchas</A
+></DT
+><DT
+>32. <A
+HREF="scrstyle.html"
+>脚本风格</A
+></DT
+><DD
+><DL
+><DT
+>32.1. <A
+HREF="scrstyle.html#UNOFFICIALST"
+>非官方的脚本风格</A
+></DT
+></DL
+></DD
+><DT
+>33. <A
+HREF="miscellany.html"
+>杂项</A
+></DT
+><DD
+><DL
+><DT
+>33.1. <A
+HREF="miscellany.html#INTANDNONINT"
+>交互与非交互的shell和脚本</A
+></DT
+>
+    <DT
+>33.2. <A
+HREF="wrapper.html"
+>Shell包装</A
+></DT
+>
+    <DT
+>33.3. <A
+HREF="testsandcomparisons.html"
+> 测试和比较: 另一种方法</A
+></DT
+><DT
+>33.4. <A
+HREF="recursionsct.html"
+>递归</A
+></DT
+><DT
+>33.5. <A
+HREF="colorizing.html"
+><SPAN
+CLASS="QUOTE"
+>"彩色"</SPAN
+> 脚本</A
+></DT
+><DT
+>33.6. <A
+HREF="optimizations.html"
+>优化</A
+></DT
+><DT
+>33.7. <A
+HREF="assortedtips.html"
+>多种小技术</A
+></DT
+><DT
+>33.8. <A
+HREF="securityissues.html"
+>安全主题</A
+></DT
+><DT
+>33.9. <A
+HREF="portabilityissues.html"
+>可移植性话题</A
+></DT
+><DT
+>33.10. <A
+HREF="winscript.html"
+>Windows下的脚本编程</A
+></DT
+></DL
+></DD
+><DT
+>34. <A
+HREF="bash2.html"
+>Bash,版本2和3</A
+></DT
+><DD
+><DL
+><DT
+>34.1. <A
+HREF="bash2.html#BASHVER2"
+>Bash, 版本2</A
+></DT
+><DT
+>34.2. <A
+HREF="bashver3.html"
+>Bash, 版本3</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>35. <A
+HREF="endnotes.html"
+>后记</A
+></DT
+><DD
+><DL
+>
+          <DT
+>35.1. <A
+HREF="endnotes.html#AUTHORSNOTE"
+>作者后记</A
+></DT
+>
+          <DT
+>35.2. <A
+HREF="aboutauthor.html"
+>关于作者</A
+></DT
+><DT
+>35.3. <A
+HREF="wherehelp.html"
+>哪里可以取得帮助？</A
+></DT
+><DT
+>35.4. <A
+HREF="toolsused.html"
+>制作这本书的工具</A
+></DT
+><DD
+><DL
+><DT
+>35.4.1. <A
+HREF="toolsused.html#SOFTWARE-HARDWARE"
+>硬件</A
+></DT
+><DT
+>35.4.2. <A
+HREF="toolsused.html#SOFTWARE-PRINTWARE"
+>软件和排版软件</A
+></DT
+></DL
+></DD
+>
+          <DT
+>35.5. <A
+HREF="credits.html"
+>致谢</A
+></DT
+>
+    </DL
+></DD
+><DT
+><A
+HREF="biblio.html"
+>参考书</A
+></DT
+><DT
+>A. <A
+HREF="contributed-scripts.html"
+>贡献的脚本</A
+></DT
+><DT
+>B. <A
+HREF="refcards.html"
+>参考卡片</A
+></DT
+><DT
+>C. <A
+HREF="sedawk.html"
+>一个Sed和Awk的初级精短读本</A
+></DT
+><DD
+><DL
+><DT
+>C.1. <A
+HREF="sedawk.html#AEN17363"
+>Sed</A
+></DT
+><DT
+>C.2. <A
+HREF="awk.html"
+>Awk</A
+></DT
+></DL
+></DD
+><DT
+>D. <A
+HREF="exitcodes.html"
+>Exit Codes With Special Meanings</A
+></DT
+><DT
+>E. <A
+HREF="ioredirintro.html"
+>一个关于I/O和I/O重定向的简介</A
+></DT
+><DT
+>F. <A
+HREF="standard-options.html"
+>标准命令行选项</A
+></DT
+><DT
+>G. <A
+HREF="files.html"
+>重要文件</A
+></DT
+><DT
+>H. <A
+HREF="systemdirs.html"
+>重要系统目录</A
+></DT
+><DT
+>I. <A
+HREF="localization.html"
+>本地化</A
+></DT
+><DT
+>J. <A
+HREF="histcommands.html"
+>历史命令</A
+></DT
+><DT
+>K. <A
+HREF="sample-bashrc.html"
+>一个<TT
+CLASS="FILENAME"
+>.bashrc</TT
+>例子文件</A
+></DT
+><DT
+>L. <A
+HREF="dosbatch.html"
+>把DOS批处理文件转换成Shell脚本</A
+></DT
+><DT
+>M. <A
+HREF="exercises.html"
+>练习</A
+></DT
+><DD
+><DL
+><DT
+>M.1. <A
+HREF="exercises.html#SCRIPTANALYSIS"
+>脚本分析</A
+></DT
+><DT
+>M.2. <A
+HREF="writingscripts.html"
+>写脚本</A
+></DT
+></DL
+></DD
+><DT
+>N. <A
+HREF="revisionhistory.html"
+>修改历史命令</A
+></DT
+><DT
+>O. <A
+HREF="mirrorsites.html"
+>镜像站点</A
+></DT
+>
+          <DT
+>P. <A
+HREF="todolist.html"
+>将完成的内容列表</A
+></DT
+><DT
+>Q. <A
+HREF="copyright.html"
+>版权</A
+></DT
+></DL
+>
+    </DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+>
+      <DT
+><B
+>书中的表格清单</B
+></DT
+>
+    <DT
+>11-1. <A
+HREF="internal.html#JOBIDTABLE"
+>作业控制标识</A
+></DT
+>
+    <DT
+>30-1. <A
+HREF="options.html#AEN14896"
+>Bash选项</A
+></DT
+>
+    <DT
+>33-1. <A
+HREF="colorizing.html#AEN15412"
+> 转义序列中数值和彩色的对应表</A
+></DT
+>
+    <DT
+>B-1. <A
+HREF="refcards.html#AEN16658"
+>特殊Shell变量表</A
+></DT
+>
+    <DT
+>B-2. <A
+HREF="refcards.html#AEN16728"
+>测试操作符: 二元比较操作</A
+></DT
+>
+    <DT
+>B-3. <A
+HREF="refcards.html#AEN16840"
+>测试操作符: 文件操作</A
+></DT
+>
+    <DT
+>B-4. <A
+HREF="refcards.html#AEN16974"
+>参数替换和扩展</A
+></DT
+>
+    <DT
+>B-5. <A
+HREF="refcards.html#AEN17066"
+>字符串操作</A
+></DT
+>
+    <DT
+>B-6. <A
+HREF="refcards.html#AEN17215"
+>杂项结构</A
+></DT
+>
+    <DT
+>C-1. <A
+HREF="sedawk.html#AEN17381"
+>基本的sed操作符</A
+></DT
+>
+    <DT
+>C-2. <A
+HREF="sedawk.html#AEN17441"
+>sed操作符的例子</A
+></DT
+>
+    <DT
+>D-1. <A
+HREF="exitcodes.html#AEN17657"
+><SPAN
+CLASS="QUOTE"
+>"保留的通用"</SPAN
+> 退出代码值</A
+></DT
+>
+    <DT
+>L-1. <A
+HREF="dosbatch.html#AEN18228"
+>DOS的批处理文件关键字 / 变量名 / 操作符, 及shell等价对应表</A
+></DT
+>
+    <DT
+>L-2. <A
+HREF="dosbatch.html#AEN18435"
+>DOS 命令和 UNIX 等价命令对应表</A
+></DT
+>
+    <DT
+>N-1. <A
+HREF="revisionhistory.html#AEN19090"
+>修订历史</A
+></DT
+>
+    </DL
+>
+    </DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>例子脚本列表</B
+></DT
+><DT
+>2-1. <A
+HREF="sha-bang.html#EX1"
+><B
+CLASS="COMMAND"
+>cleanup</B
+>: A script to clean up the log
+      files in /var/log</A
+></DT
+><DT
+>2-2. <A
+HREF="sha-bang.html#EX1A"
+><B
+CLASS="COMMAND"
+>cleanup</B
+>: An improved clean-up
+      script</A
+></DT
+><DT
+>2-3. <A
+HREF="sha-bang.html#EX2"
+><B
+CLASS="COMMAND"
+>cleanup</B
+>: An enhanced
+      and generalized version of above scripts.</A
+></DT
+><DT
+>3-1. <A
+HREF="special-chars.html#EX8"
+>Code blocks and I/O redirection</A
+></DT
+><DT
+>3-2. <A
+HREF="special-chars.html#RPMCHECK"
+>Saving the results of a code block to a file</A
+></DT
+><DT
+>3-3. <A
+HREF="special-chars.html#BGLOOP"
+>Running a loop in the background</A
+></DT
+><DT
+>3-4. <A
+HREF="special-chars.html#EX58"
+>Backup of all files changed in last day</A
+></DT
+><DT
+>4-1. <A
+HREF="variables.html#EX9"
+>Variable assignment and substitution</A
+></DT
+><DT
+>4-2. <A
+HREF="varassignment.html#EX15"
+>Plain Variable Assignment</A
+></DT
+><DT
+>4-3. <A
+HREF="varassignment.html#EX16"
+>Variable Assignment, plain and fancy</A
+></DT
+><DT
+>4-4. <A
+HREF="untyped.html#INTORSTRING"
+>Integer or string?</A
+></DT
+><DT
+>4-5. <A
+HREF="othertypesv.html#EX17"
+>Positional Parameters</A
+></DT
+>
+      <DT
+>4-6. <A
+HREF="othertypesv.html#EX18"
+><B
+CLASS="COMMAND"
+>wh</B
+>, <A
+HREF="communications.html#WHOISREF"
+>whois</A
+> domain name lookup</DT
+>
+      <DT
+>4-7. <A
+HREF="othertypesv.html#EX19"
+>Using <B
+CLASS="COMMAND"
+>shift</B
+></A
+></DT
+><DT
+>5-1. <A
+HREF="quoting.html#WEIRDVARS"
+>Echoing Weird Variables</A
+></DT
+><DT
+>5-2. <A
+HREF="escapingsection.html#ESCAPED"
+>Escaped Characters</A
+></DT
+><DT
+>6-1. <A
+HREF="exit-status.html#EX5"
+>exit / exit status</A
+></DT
+><DT
+>6-2. <A
+HREF="exit-status.html#NEGCOND"
+>Negating a condition using <SPAN
+CLASS="TOKEN"
+>!</SPAN
+></A
+></DT
+><DT
+>7-1. <A
+HREF="tests.html#EX10"
+>What is truth?</A
+></DT
+><DT
+>7-2. <A
+HREF="tests.html#EX11"
+>Equivalence of <SPAN
+CLASS="TOKEN"
+>test</SPAN
+>,
+	  <TT
+CLASS="FILENAME"
+>/usr/bin/test</TT
+>, <SPAN
+CLASS="TOKEN"
+>[ ]</SPAN
+>,
+	  and <TT
+CLASS="FILENAME"
+>/usr/bin/[</TT
+></A
+></DT
+><DT
+>7-3. <A
+HREF="tests.html#ARITHTESTS"
+>Arithmetic Tests using <SPAN
+CLASS="TOKEN"
+>(( ))</SPAN
+></A
+></DT
+><DT
+>7-4. <A
+HREF="fto.html#BROKENLINK"
+>Testing for broken links</A
+></DT
+><DT
+>7-5. <A
+HREF="comparison-ops.html#EX13"
+>Arithmetic and string comparisons</A
+></DT
+><DT
+>7-6. <A
+HREF="comparison-ops.html#STRTEST"
+>Testing whether a string is <I
+CLASS="EMPHASIS"
+>null</I
+></A
+></DT
+><DT
+>7-7. <A
+HREF="comparison-ops.html#EX14"
+><B
+CLASS="COMMAND"
+>zmore</B
+></A
+></DT
+><DT
+>8-1. <A
+HREF="operations.html#GCD"
+>Greatest common divisor</A
+></DT
+><DT
+>8-2. <A
+HREF="operations.html#ARITHOPS"
+>Using Arithmetic Operations</A
+></DT
+><DT
+>8-3. <A
+HREF="operations.html#ANDOR"
+>Compound Condition Tests Using &#38;&#38; and ||</A
+></DT
+><DT
+>8-4. <A
+HREF="numerical-constants.html#NUMBERS"
+>Representation of numerical constants</A
+></DT
+><DT
+>9-1. <A
+HREF="variables2.html#IFSH"
+>$IFS and whitespace</A
+></DT
+><DT
+>9-2. <A
+HREF="variables2.html#TMDIN"
+>Timed Input</A
+></DT
+><DT
+>9-3. <A
+HREF="variables2.html#TIMEOUT"
+>Once more, timed input</A
+></DT
+><DT
+>9-4. <A
+HREF="variables2.html#TOUT"
+>Timed <B
+CLASS="COMMAND"
+>read</B
+></A
+></DT
+><DT
+>9-5. <A
+HREF="variables2.html#AMIROOT"
+>Am I root?</A
+></DT
+><DT
+>9-6. <A
+HREF="variables2.html#ARGLIST"
+><B
+CLASS="COMMAND"
+>arglist</B
+>: Listing arguments with $* and $@</A
+></DT
+><DT
+>9-7. <A
+HREF="variables2.html#INCOMPAT"
+>Inconsistent <TT
+CLASS="VARNAME"
+>$*</TT
+> and <TT
+CLASS="VARNAME"
+>$@</TT
+> behavior</A
+></DT
+><DT
+>9-8. <A
+HREF="variables2.html#IFSEMPTY"
+><TT
+CLASS="VARNAME"
+>$*</TT
+> and <TT
+CLASS="VARNAME"
+>$@</TT
+> when
+	        <TT
+CLASS="VARNAME"
+>$IFS</TT
+> is empty</A
+></DT
+><DT
+>9-9. <A
+HREF="variables2.html#USCREF"
+>Underscore variable</A
+></DT
+><DT
+>9-10. <A
+HREF="string-manipulation.html#PARAGRAPHSPACE"
+>Inserting a blank line between paragraphs in a text file</A
+></DT
+><DT
+>9-11. <A
+HREF="string-manipulation.html#CVT"
+>Converting graphic file formats, with filename change</A
+></DT
+><DT
+>9-12. <A
+HREF="string-manipulation.html#GETOPTSIMPLE"
+>Emulating <I
+CLASS="EMPHASIS"
+>getopt</I
+></A
+></DT
+><DT
+>9-13. <A
+HREF="string-manipulation.html#SUBSTRINGEX"
+>Alternate ways of extracting substrings</A
+></DT
+><DT
+>9-14. <A
+HREF="parameter-substitution.html#EX6"
+>Using parameter substitution and error messages</A
+></DT
+><DT
+>9-15. <A
+HREF="parameter-substitution.html#USAGEMESSAGE"
+>Parameter substitution and <SPAN
+CLASS="QUOTE"
+>"usage"</SPAN
+> messages</A
+></DT
+><DT
+>9-16. <A
+HREF="parameter-substitution.html#LENGTH"
+>Length of a variable</A
+></DT
+><DT
+>9-17. <A
+HREF="parameter-substitution.html#PATTMATCHING"
+>Pattern matching in parameter substitution</A
+></DT
+><DT
+>9-18. <A
+HREF="parameter-substitution.html#RFE"
+>Renaming file extensions<SPAN
+CLASS="TOKEN"
+>:</SPAN
+></A
+></DT
+><DT
+>9-19. <A
+HREF="parameter-substitution.html#EX7"
+>Using pattern matching to parse arbitrary strings</A
+></DT
+><DT
+>9-20. <A
+HREF="parameter-substitution.html#VARMATCH"
+>Matching patterns at prefix or suffix of string</A
+></DT
+><DT
+>9-21. <A
+HREF="declareref.html#EX20"
+>Using <B
+CLASS="COMMAND"
+>declare</B
+> to type variables</A
+></DT
+><DT
+>9-22. <A
+HREF="ivr.html#INDREF"
+>Indirect References</A
+></DT
+><DT
+>9-23. <A
+HREF="ivr.html#COLTOTALER2"
+>Passing an indirect reference to <TT
+CLASS="REPLACEABLE"
+><I
+>awk</I
+></TT
+></A
+></DT
+><DT
+>9-24. <A
+HREF="randomvar.html#EX21"
+>Generating random numbers</A
+></DT
+><DT
+>9-25. <A
+HREF="randomvar.html#PICKCARD"
+>Picking a random card from a deck</A
+></DT
+><DT
+>9-26. <A
+HREF="randomvar.html#RANDOMBETWEEN"
+>Random between values</A
+></DT
+><DT
+>9-27. <A
+HREF="randomvar.html#RANDOMTEST"
+>Rolling a single die with RANDOM</A
+></DT
+><DT
+>9-28. <A
+HREF="randomvar.html#SEEDINGRANDOM"
+>Reseeding RANDOM</A
+></DT
+><DT
+>9-29. <A
+HREF="randomvar.html#RANDOM2"
+>Pseudorandom numbers, using <A
+HREF="awk.html#AWKREF"
+>awk</A
+></A
+></DT
+><DT
+>9-30. <A
+HREF="dblparens.html#CVARS"
+>C-type manipulation of variables</A
+></DT
+><DT
+>10-1. <A
+HREF="loops.html#EX22"
+>Simple <B
+CLASS="COMMAND"
+>for</B
+> loops</A
+></DT
+><DT
+>10-2. <A
+HREF="loops.html#EX22A"
+><B
+CLASS="COMMAND"
+>for</B
+> loop with two parameters in each
+	      [list] element</A
+></DT
+><DT
+>10-3. <A
+HREF="loops.html#FILEINFO"
+><I
+CLASS="EMPHASIS"
+>Fileinfo:</I
+> operating on a file list
+	        contained in a variable</A
+></DT
+><DT
+>10-4. <A
+HREF="loops.html#LISTGLOB"
+><B
+CLASS="COMMAND"
+>Operating on files with a for</B
+> loop</A
+></DT
+><DT
+>10-5. <A
+HREF="loops.html#EX23"
+>Missing <TT
+CLASS="USERINPUT"
+><B
+>in [list]</B
+></TT
+> in a
+		<B
+CLASS="COMMAND"
+>for</B
+> loop</A
+></DT
+><DT
+>10-6. <A
+HREF="loops.html#FORLOOPCMD"
+>Generating the [list] in a <B
+CLASS="COMMAND"
+>for</B
+>
+	        loop with command substitution</A
+></DT
+><DT
+>10-7. <A
+HREF="loops.html#BINGREP"
+>A <A
+HREF="textproc.html#GREPREF"
+>grep</A
+> replacement
+	        for binary files</A
+></DT
+><DT
+>10-8. <A
+HREF="loops.html#USERLIST"
+>Listing all users on the system</A
+></DT
+><DT
+>10-9. <A
+HREF="loops.html#FINDSTRING"
+>Checking all the binaries in a directory for
+	      authorship</A
+></DT
+><DT
+>10-10. <A
+HREF="loops.html#SYMLINKS"
+>Listing the <A
+HREF="external.html#SYMLINKREF"
+>symbolic
+	        links</A
+> in a directory</A
+></DT
+><DT
+>10-11. <A
+HREF="loops.html#SYMLINKS2"
+>Symbolic links in a directory, saved to a file</A
+></DT
+><DT
+>10-12. <A
+HREF="loops.html#FORLOOPC"
+>A C-like <B
+CLASS="COMMAND"
+>for</B
+> loop</A
+></DT
+><DT
+>10-13. <A
+HREF="loops.html#EX24"
+>Using <B
+CLASS="COMMAND"
+>efax</B
+> in batch mode</A
+></DT
+><DT
+>10-14. <A
+HREF="loops.html#EX25"
+>Simple <B
+CLASS="COMMAND"
+>while</B
+> loop</A
+></DT
+><DT
+>10-15. <A
+HREF="loops.html#EX26"
+>Another <B
+CLASS="COMMAND"
+>while</B
+> loop</A
+></DT
+><DT
+>10-16. <A
+HREF="loops.html#EX26A"
+><B
+CLASS="COMMAND"
+>while</B
+> loop with multiple conditions</A
+></DT
+><DT
+>10-17. <A
+HREF="loops.html#WHLOOPC"
+>C-like syntax in a <B
+CLASS="COMMAND"
+>while</B
+> loop</A
+></DT
+><DT
+>10-18. <A
+HREF="loops.html#EX27"
+><B
+CLASS="COMMAND"
+>until</B
+> loop</A
+></DT
+><DT
+>10-19. <A
+HREF="nestedloops.html#NESTEDLOOP"
+>Nested Loop</A
+></DT
+><DT
+>10-20. <A
+HREF="loopcontrol.html#EX28"
+>Effects of <B
+CLASS="COMMAND"
+>break</B
+> and
+		<B
+CLASS="COMMAND"
+>continue</B
+> in a loop</A
+></DT
+><DT
+>10-21. <A
+HREF="loopcontrol.html#BREAKLEVELS"
+>Breaking out of multiple loop levels</A
+></DT
+><DT
+>10-22. <A
+HREF="loopcontrol.html#CONTINUELEVELS"
+>Continuing at a higher loop level</A
+></DT
+><DT
+>10-23. <A
+HREF="loopcontrol.html#CONTINUENEX"
+>Using <SPAN
+CLASS="QUOTE"
+>"continue N"</SPAN
+> in an actual task</A
+></DT
+><DT
+>10-24. <A
+HREF="testbranch.html#EX29"
+>Using <B
+CLASS="COMMAND"
+>case</B
+></A
+></DT
+><DT
+>10-25. <A
+HREF="testbranch.html#EX30"
+>Creating menus using <B
+CLASS="COMMAND"
+>case</B
+></A
+></DT
+><DT
+>10-26. <A
+HREF="testbranch.html#CASECMD"
+>Using command substitution to generate the
+	        <B
+CLASS="COMMAND"
+>case</B
+> variable</A
+></DT
+><DT
+>10-27. <A
+HREF="testbranch.html#MATCHSTRING"
+>Simple string matching</A
+></DT
+><DT
+>10-28. <A
+HREF="testbranch.html#ISALPHA"
+>Checking for alphabetic input</A
+></DT
+><DT
+>10-29. <A
+HREF="testbranch.html#EX31"
+>Creating menus using <B
+CLASS="COMMAND"
+>select</B
+></A
+></DT
+><DT
+>10-30. <A
+HREF="testbranch.html#EX32"
+>Creating menus using <B
+CLASS="COMMAND"
+>select</B
+> in a function</A
+></DT
+><DT
+>11-1. <A
+HREF="internal.html#SPAWNSCR"
+>A script that forks off multiple instances of itself</A
+></DT
+><DT
+>11-2. <A
+HREF="internal.html#EX47"
+><B
+CLASS="COMMAND"
+>printf</B
+> in action</A
+></DT
+><DT
+>11-3. <A
+HREF="internal.html#EX36"
+>Variable assignment, using <B
+CLASS="COMMAND"
+>read</B
+></A
+></DT
+><DT
+>11-4. <A
+HREF="internal.html#READNOVAR"
+>What happens when <B
+CLASS="COMMAND"
+>read</B
+> has no
+	        variable</A
+></DT
+><DT
+>11-5. <A
+HREF="internal.html#READR"
+>Multi-line input to <B
+CLASS="COMMAND"
+>read</B
+></A
+></DT
+><DT
+>11-6. <A
+HREF="internal.html#ARROWDETECT"
+>Detecting the arrow keys</A
+></DT
+><DT
+>11-7. <A
+HREF="internal.html#READREDIR"
+>Using <B
+CLASS="COMMAND"
+>read</B
+> with
+	        <A
+HREF="io-redirection.html#IOREDIRREF"
+>file redirection</A
+></A
+></DT
+><DT
+>11-8. <A
+HREF="internal.html#READPIPE"
+>Problems reading from a pipe</A
+></DT
+><DT
+>11-9. <A
+HREF="internal.html#EX37"
+>Changing the current working directory</A
+></DT
+><DT
+>11-10. <A
+HREF="internal.html#EX46"
+>Letting <SPAN
+CLASS="QUOTE"
+>"let"</SPAN
+> do arithmetic.</A
+></DT
+><DT
+>11-11. <A
+HREF="internal.html#EX43"
+>Showing the effect of <B
+CLASS="COMMAND"
+>eval</B
+></A
+></DT
+><DT
+>11-12. <A
+HREF="internal.html#EX44"
+>Forcing a log-off</A
+></DT
+><DT
+>11-13. <A
+HREF="internal.html#ROT14"
+>A version of <SPAN
+CLASS="QUOTE"
+>"rot13"</SPAN
+></A
+></DT
+><DT
+>11-14. <A
+HREF="internal.html#EVALEX"
+>Using <B
+CLASS="COMMAND"
+>eval</B
+> to force variable
+	        substitution in a Perl script</A
+></DT
+><DT
+>11-15. <A
+HREF="internal.html#EX34"
+>Using <B
+CLASS="COMMAND"
+>set</B
+> with positional
+	        parameters</A
+></DT
+><DT
+>11-16. <A
+HREF="internal.html#SETPOS"
+>Reassigning the positional parameters</A
+></DT
+><DT
+>11-17. <A
+HREF="internal.html#UNS"
+><SPAN
+CLASS="QUOTE"
+>"Unsetting"</SPAN
+> a variable</A
+></DT
+><DT
+>11-18. <A
+HREF="internal.html#COLTOTALER3"
+>Using <B
+CLASS="COMMAND"
+>export</B
+> to pass a variable to an
+	      embedded <A
+HREF="awk.html#AWKREF"
+>awk</A
+> script</A
+></DT
+><DT
+>11-19. <A
+HREF="internal.html#EX33"
+>Using <B
+CLASS="COMMAND"
+>getopts</B
+> to read the
+	        options/arguments passed to a script</A
+></DT
+><DT
+>11-20. <A
+HREF="internal.html#EX38"
+><SPAN
+CLASS="QUOTE"
+>"Including"</SPAN
+> a data file</A
+></DT
+><DT
+>11-21. <A
+HREF="internal.html#SELFSOURCE"
+>A (useless) script that sources itself</A
+></DT
+><DT
+>11-22. <A
+HREF="internal.html#EX54"
+>Effects of <B
+CLASS="COMMAND"
+>exec</B
+></A
+></DT
+><DT
+>11-23. <A
+HREF="internal.html#SELFEXEC"
+>A script that <B
+CLASS="COMMAND"
+>exec's</B
+> itself</A
+></DT
+><DT
+>11-24. <A
+HREF="internal.html#EX39"
+>Waiting for a process to finish before proceeding</A
+></DT
+><DT
+>11-25. <A
+HREF="internal.html#SELFDESTRUCT"
+>A script that kills itself</A
+></DT
+><DT
+>12-1. <A
+HREF="external.html#EX40"
+>Using <B
+CLASS="COMMAND"
+>ls</B
+> to create a table of contents
+		for burning a <SPAN
+CLASS="ABBREV"
+>CDR</SPAN
+> disk</A
+></DT
+><DT
+>12-2. <A
+HREF="external.html#HELLOL"
+>Hello or Good-bye</A
+></DT
+><DT
+>12-3. <A
+HREF="moreadv.html#EX57"
+><B
+CLASS="COMMAND"
+>Badname</B
+>, eliminate file names
+		in current directory containing bad characters and <A
+HREF="special-chars.html#WHITESPACEREF"
+>whitespace</A
+>.</A
+></DT
+><DT
+>12-4. <A
+HREF="moreadv.html#IDELETE"
+>Deleting a file by its <I
+CLASS="EMPHASIS"
+>inode</I
+>
+	        number</A
+></DT
+><DT
+>12-5. <A
+HREF="moreadv.html#EX41"
+>Logfile: Using <B
+CLASS="COMMAND"
+>xargs</B
+> to monitor system log</A
+></DT
+><DT
+>12-6. <A
+HREF="moreadv.html#EX42"
+>Copying files in current directory to another</A
+></DT
+><DT
+>12-7. <A
+HREF="moreadv.html#KILLBYNAME"
+>Killing processes by name</A
+></DT
+><DT
+>12-8. <A
+HREF="moreadv.html#WF2"
+><B
+CLASS="COMMAND"
+>Word frequency analysis</B
+>
+		using <B
+CLASS="COMMAND"
+>xargs</B
+></A
+></DT
+><DT
+>12-9. <A
+HREF="moreadv.html#EX45"
+>Using <B
+CLASS="COMMAND"
+>expr</B
+></A
+></DT
+><DT
+>12-10. <A
+HREF="timedate.html#EX51"
+>Using <B
+CLASS="COMMAND"
+>date</B
+></A
+></DT
+><DT
+>12-11. <A
+HREF="textproc.html#WF"
+>Word Frequency Analysis</A
+></DT
+><DT
+>12-12. <A
+HREF="textproc.html#SCRIPTDETECTOR"
+>Which files are scripts?</A
+></DT
+><DT
+>12-13. <A
+HREF="textproc.html#RND"
+>Generating 10-digit random numbers</A
+></DT
+><DT
+>12-14. <A
+HREF="textproc.html#EX12"
+>Using <B
+CLASS="COMMAND"
+>tail</B
+> to monitor the system log</A
+></DT
+><DT
+>12-15. <A
+HREF="textproc.html#GRP"
+>Emulating <SPAN
+CLASS="QUOTE"
+>"grep"</SPAN
+> in a script</A
+></DT
+><DT
+>12-16. <A
+HREF="textproc.html#DICTLOOKUP"
+>Looking up definitions in Webster's 1913 Dictionary</A
+></DT
+><DT
+>12-17. <A
+HREF="textproc.html#LOOKUP"
+>Checking words in a list for validity</A
+></DT
+><DT
+>12-18. <A
+HREF="textproc.html#EX49"
+><B
+CLASS="COMMAND"
+>toupper</B
+>: Transforms a file to all uppercase.</A
+></DT
+><DT
+>12-19. <A
+HREF="textproc.html#LOWERCASE"
+><B
+CLASS="COMMAND"
+>lowercase</B
+>: Changes all filenames in working directory to lowercase.</A
+></DT
+><DT
+>12-20. <A
+HREF="textproc.html#DU"
+><B
+CLASS="COMMAND"
+>Du</B
+>: DOS to UNIX text file conversion.</A
+></DT
+><DT
+>12-21. <A
+HREF="textproc.html#ROT13"
+><B
+CLASS="COMMAND"
+>rot13</B
+>: rot13, ultra-weak encryption.</A
+></DT
+><DT
+>12-22. <A
+HREF="textproc.html#CRYPTOQUOTE"
+>Generating <SPAN
+CLASS="QUOTE"
+>"Crypto-Quote"</SPAN
+> Puzzles</A
+></DT
+><DT
+>12-23. <A
+HREF="textproc.html#EX50"
+>Formatted file listing.</A
+></DT
+><DT
+>12-24. <A
+HREF="textproc.html#COL"
+>Using <B
+CLASS="COMMAND"
+>column</B
+> to format a directory
+	        listing</A
+></DT
+><DT
+>12-25. <A
+HREF="textproc.html#LNUM"
+><B
+CLASS="COMMAND"
+>nl</B
+>: A self-numbering script.</A
+></DT
+><DT
+>12-26. <A
+HREF="textproc.html#MANVIEW"
+><B
+CLASS="COMMAND"
+>manview</B
+>: Viewing formatted manpages</A
+></DT
+><DT
+>12-27. <A
+HREF="filearchiv.html#EX48"
+>Using <B
+CLASS="COMMAND"
+>cpio</B
+> to move a directory tree</A
+></DT
+><DT
+>12-28. <A
+HREF="filearchiv.html#DERPM"
+>Unpacking an <I
+CLASS="EMPHASIS"
+>rpm</I
+> archive</A
+></DT
+><DT
+>12-29. <A
+HREF="filearchiv.html#STRIPC"
+>Stripping comments from C program files</A
+></DT
+><DT
+>12-30. <A
+HREF="filearchiv.html#WHAT"
+><B
+CLASS="COMMAND"
+>Exploring <TT
+CLASS="FILENAME"
+>/usr/X11R6/bin</TT
+></B
+></A
+></DT
+><DT
+>12-31. <A
+HREF="filearchiv.html#WSTRINGS"
+>An <SPAN
+CLASS="QUOTE"
+>"improved"</SPAN
+> <I
+CLASS="EMPHASIS"
+>strings</I
+>
+	        command</A
+></DT
+><DT
+>12-32. <A
+HREF="filearchiv.html#FILECOMP"
+>Using <B
+CLASS="COMMAND"
+>cmp</B
+> to compare two files
+	        within a script.</A
+></DT
+><DT
+>12-33. <A
+HREF="filearchiv.html#EX35"
+><B
+CLASS="COMMAND"
+>basename</B
+> and <B
+CLASS="COMMAND"
+>dirname</B
+></A
+></DT
+><DT
+>12-34. <A
+HREF="filearchiv.html#FILEINTEGRITY"
+>Checking file integrity</A
+></DT
+><DT
+>12-35. <A
+HREF="filearchiv.html#EX52"
+>Uudecoding encoded files</A
+></DT
+><DT
+>12-36. <A
+HREF="communications.html#SPAMLOOKUP"
+>Finding out where to report a spammer</A
+></DT
+><DT
+>12-37. <A
+HREF="communications.html#ISSPAMMER"
+>Analyzing a spam domain</A
+></DT
+><DT
+>12-38. <A
+HREF="communications.html#QUOTEFETCH"
+>Getting a stock quote</A
+></DT
+><DT
+>12-39. <A
+HREF="communications.html#FC4UPD"
+>Updating FC4</A
+></DT
+><DT
+>12-40. <A
+HREF="communications.html#REMOTE"
+>Using ssh</A
+></DT
+><DT
+>12-41. <A
+HREF="communications.html#SELFMAILER"
+>A script that mails itself</A
+></DT
+><DT
+>12-42. <A
+HREF="mathc.html#MONTHLYPMT"
+>Monthly Payment on a Mortgage</A
+></DT
+><DT
+>12-43. <A
+HREF="mathc.html#BASE"
+>Base Conversion</A
+></DT
+><DT
+>12-44. <A
+HREF="mathc.html#ALTBC"
+>Invoking <B
+CLASS="COMMAND"
+>bc</B
+> using a <SPAN
+CLASS="QUOTE"
+>"here
+	        document"</SPAN
+></A
+></DT
+><DT
+>12-45. <A
+HREF="mathc.html#CANNON"
+>Calculating PI</A
+></DT
+><DT
+>12-46. <A
+HREF="mathc.html#HEXCONVERT"
+>Converting a decimal number to hexadecimal</A
+></DT
+><DT
+>12-47. <A
+HREF="mathc.html#FACTR"
+>Factoring</A
+></DT
+><DT
+>12-48. <A
+HREF="mathc.html#HYPOT"
+>Calculating the hypotenuse of a triangle</A
+></DT
+><DT
+>12-49. <A
+HREF="extmisc.html#EX53"
+>Using <B
+CLASS="COMMAND"
+>seq</B
+> to generate loop arguments</A
+></DT
+><DT
+>12-50. <A
+HREF="extmisc.html#LETTERCOUNT"
+>Letter Count"</A
+></DT
+><DT
+>12-51. <A
+HREF="extmisc.html#EX33A"
+>Using <B
+CLASS="COMMAND"
+>getopt</B
+> to parse command-line
+	        options</A
+></DT
+><DT
+>12-52. <A
+HREF="extmisc.html#SELFCOPY"
+>A script that copies itself</A
+></DT
+><DT
+>12-53. <A
+HREF="extmisc.html#EXERCISINGDD"
+>Exercising <B
+CLASS="COMMAND"
+>dd</B
+></A
+></DT
+><DT
+>12-54. <A
+HREF="extmisc.html#DDKEYPRESS"
+>Capturing Keystrokes</A
+></DT
+><DT
+>12-55. <A
+HREF="extmisc.html#BLOTOUT"
+>Securely deleting a file</A
+></DT
+><DT
+>12-56. <A
+HREF="extmisc.html#TEMPFILENAME"
+>Filename generator</A
+></DT
+><DT
+>12-57. <A
+HREF="extmisc.html#UNITCONVERSION"
+>Converting meters to miles</A
+></DT
+><DT
+>12-58. <A
+HREF="extmisc.html#M4"
+>Using m4</A
+></DT
+><DT
+>13-1. <A
+HREF="system.html#SETNEWPW"
+>Setting a new password</A
+></DT
+><DT
+>13-2. <A
+HREF="system.html#ERASE"
+>Setting an erase character</A
+></DT
+><DT
+>13-3. <A
+HREF="system.html#SECRETPW"
+><B
+CLASS="COMMAND"
+>secret password</B
+>:
+	      Turning off terminal echoing</A
+></DT
+><DT
+>13-4. <A
+HREF="system.html#KEYPRESS"
+>Keypress detection</A
+></DT
+><DT
+>13-5. <A
+HREF="system.html#ISCAN"
+>Checking a remote server for <I
+CLASS="EMPHASIS"
+>identd</I
+></A
+></DT
+><DT
+>13-6. <A
+HREF="system.html#KILLPROCESS"
+><B
+CLASS="COMMAND"
+>pidof</B
+> helps kill a process</A
+></DT
+><DT
+>13-7. <A
+HREF="system.html#ISOMOUNTREF"
+>Checking a CD image</A
+></DT
+><DT
+>13-8. <A
+HREF="system.html#CREATEFS"
+>Creating a filesystem in a file</A
+></DT
+><DT
+>13-9. <A
+HREF="system.html#ADDDRV"
+>Adding a new hard drive</A
+></DT
+><DT
+>13-10. <A
+HREF="system.html#ROT13A"
+>Using <B
+CLASS="COMMAND"
+>umask</B
+> to hide an output file
+	        from prying eyes</A
+></DT
+><DT
+>13-11. <A
+HREF="system.html#EX55"
+><B
+CLASS="COMMAND"
+>killall</B
+>, from <TT
+CLASS="FILENAME"
+>/etc/rc.d/init.d</TT
+></A
+></DT
+><DT
+>14-1. <A
+HREF="commandsub.html#STUPSCR"
+>Stupid script tricks</A
+></DT
+><DT
+>14-2. <A
+HREF="commandsub.html#CSUBLOOP"
+>Generating a variable from a loop</A
+></DT
+><DT
+>14-3. <A
+HREF="commandsub.html#AGRAM2"
+>Finding anagrams</A
+></DT
+><DT
+>16-1. <A
+HREF="io-redirection.html#REDIR1"
+>Redirecting <TT
+CLASS="FILENAME"
+>stdin</TT
+> using
+	  <B
+CLASS="COMMAND"
+>exec</B
+></A
+></DT
+><DT
+>16-2. <A
+HREF="io-redirection.html#REASSIGNSTDOUT"
+>Redirecting <TT
+CLASS="FILENAME"
+>stdout</TT
+> using
+	  <B
+CLASS="COMMAND"
+>exec</B
+></A
+></DT
+><DT
+>16-3. <A
+HREF="io-redirection.html#UPPERCONV"
+>Redirecting both <TT
+CLASS="FILENAME"
+>stdin</TT
+> and
+	  <TT
+CLASS="FILENAME"
+>stdout</TT
+> in the same script with
+	  <B
+CLASS="COMMAND"
+>exec</B
+></A
+></DT
+><DT
+>16-4. <A
+HREF="io-redirection.html#AVOIDSUBSHELL"
+>Avoiding a subshell</A
+></DT
+><DT
+>16-5. <A
+HREF="redircb.html#REDIR2"
+>Redirected <I
+CLASS="EMPHASIS"
+>while</I
+> loop</A
+></DT
+><DT
+>16-6. <A
+HREF="redircb.html#REDIR2A"
+>Alternate form of redirected <I
+CLASS="EMPHASIS"
+>while</I
+> loop</A
+></DT
+><DT
+>16-7. <A
+HREF="redircb.html#REDIR3"
+>Redirected <I
+CLASS="EMPHASIS"
+>until</I
+> loop</A
+></DT
+><DT
+>16-8. <A
+HREF="redircb.html#REDIR4"
+>Redirected <I
+CLASS="EMPHASIS"
+>for</I
+> loop</A
+></DT
+><DT
+>16-9. <A
+HREF="redircb.html#REDIR4A"
+>Redirected <I
+CLASS="EMPHASIS"
+>for</I
+> loop (both
+	  <TT
+CLASS="FILENAME"
+>stdin</TT
+> and <TT
+CLASS="FILENAME"
+>stdout</TT
+>
+	  redirected)</A
+></DT
+><DT
+>16-10. <A
+HREF="redircb.html#REDIR5"
+>Redirected <I
+CLASS="EMPHASIS"
+>if/then</I
+> test</A
+></DT
+><DT
+>16-11. <A
+HREF="redircb.html#NAMESDATA"
+>Data file <SPAN
+CLASS="QUOTE"
+>"names.data"</SPAN
+> for above examples</A
+></DT
+><DT
+>16-12. <A
+HREF="redirapps.html#LOGEVENTS"
+>Logging events</A
+></DT
+><DT
+>17-1. <A
+HREF="here-docs.html#EX70"
+><B
+CLASS="COMMAND"
+>broadcast</B
+>: Sends message to everyone logged in</A
+></DT
+><DT
+>17-2. <A
+HREF="here-docs.html#EX69"
+><B
+CLASS="COMMAND"
+>dummyfile</B
+>: Creates a 2-line dummy file</A
+></DT
+><DT
+>17-3. <A
+HREF="here-docs.html#EX71"
+>Multi-line message using <B
+CLASS="COMMAND"
+>cat</B
+></A
+></DT
+><DT
+>17-4. <A
+HREF="here-docs.html#EX71A"
+>Multi-line message, with tabs suppressed</A
+></DT
+><DT
+>17-5. <A
+HREF="here-docs.html#EX71B"
+>Here document with parameter substitution</A
+></DT
+><DT
+>17-6. <A
+HREF="here-docs.html#EX72"
+>Upload a file pair to <SPAN
+CLASS="QUOTE"
+>"Sunsite"</SPAN
+> incoming
+	  directory</A
+></DT
+><DT
+>17-7. <A
+HREF="here-docs.html#EX71C"
+>Parameter substitution turned off</A
+></DT
+><DT
+>17-8. <A
+HREF="here-docs.html#GENERATESCRIPT"
+>A script that generates another script</A
+></DT
+><DT
+>17-9. <A
+HREF="here-docs.html#HF"
+>Here documents and functions</A
+></DT
+><DT
+>17-10. <A
+HREF="here-docs.html#ANONHEREDOC"
+><SPAN
+CLASS="QUOTE"
+>"Anonymous"</SPAN
+> Here Document</A
+></DT
+><DT
+>17-11. <A
+HREF="here-docs.html#COMMENTBLOCK"
+>Commenting out a block of code</A
+></DT
+><DT
+>17-12. <A
+HREF="here-docs.html#SELFDOCUMENT"
+>A self-documenting script</A
+></DT
+><DT
+>17-13. <A
+HREF="here-docs.html#PREPENDEX"
+>Prepending a line to a file</A
+></DT
+><DT
+>20-1. <A
+HREF="subshells.html#SUBSHELL"
+>Variable scope in a subshell</A
+></DT
+><DT
+>20-2. <A
+HREF="subshells.html#ALLPROFS"
+>List User Profiles</A
+></DT
+><DT
+>20-3. <A
+HREF="subshells.html#PARALLEL-PROCESSES"
+>Running parallel processes in subshells</A
+></DT
+><DT
+>21-1. <A
+HREF="restricted-sh.html#RESTRICTED"
+>Running a script in restricted mode</A
+></DT
+><DT
+>23-1. <A
+HREF="functions.html#EX59"
+>Simple functions</A
+></DT
+><DT
+>23-2. <A
+HREF="functions.html#EX60"
+>Function Taking Parameters</A
+></DT
+><DT
+>23-3. <A
+HREF="functions.html#FUNCCMDLINEARG"
+>Functions and command-line args passed to the script</A
+></DT
+><DT
+>23-4. <A
+HREF="functions.html#INDFUNC"
+>Passing an indirect reference to a function</A
+></DT
+><DT
+>23-5. <A
+HREF="functions.html#DEREFERENCECL"
+>Dereferencing a parameter passed to a function</A
+></DT
+><DT
+>23-6. <A
+HREF="functions.html#REFPARAMS"
+>Again, dereferencing a parameter passed to a function</A
+></DT
+><DT
+>23-7. <A
+HREF="functions.html#MAX"
+>Maximum of two numbers</A
+></DT
+><DT
+>23-8. <A
+HREF="functions.html#EX61"
+>Converting numbers to Roman numerals</A
+></DT
+><DT
+>23-9. <A
+HREF="functions.html#RETURNTEST"
+>Testing large return values in a function</A
+></DT
+><DT
+>23-10. <A
+HREF="functions.html#MAX2"
+>Comparing two large integers</A
+></DT
+><DT
+>23-11. <A
+HREF="functions.html#REALNAME"
+>Real name from username</A
+></DT
+><DT
+>23-12. <A
+HREF="localvar.html#EX62"
+>Local variable visibility</A
+></DT
+><DT
+>23-13. <A
+HREF="localvar.html#EX63"
+>Recursion, using a local variable</A
+></DT
+><DT
+>23-14. <A
+HREF="recurnolocvar.html#HANOI"
+>The Towers of Hanoi</A
+></DT
+><DT
+>24-1. <A
+HREF="aliases.html#AL"
+>Aliases within a script</A
+></DT
+><DT
+>24-2. <A
+HREF="aliases.html#UNAL"
+><B
+CLASS="COMMAND"
+>unalias</B
+>: Setting and unsetting an alias</A
+></DT
+><DT
+>25-1. <A
+HREF="list-cons.html#EX64"
+>Using an <SPAN
+CLASS="QUOTE"
+>"and list"</SPAN
+> to test for command-line arguments</A
+></DT
+><DT
+>25-2. <A
+HREF="list-cons.html#ANDLIST2"
+>Another command-line arg test using an <SPAN
+CLASS="QUOTE"
+>"and list"</SPAN
+></A
+></DT
+><DT
+>25-3. <A
+HREF="list-cons.html#EX65"
+>Using <SPAN
+CLASS="QUOTE"
+>"or lists"</SPAN
+> in combination with an <SPAN
+CLASS="QUOTE"
+>"and list"</SPAN
+></A
+></DT
+><DT
+>26-1. <A
+HREF="arrays.html#EX66"
+>Simple array usage</A
+></DT
+><DT
+>26-2. <A
+HREF="arrays.html#POEM"
+>Formatting a poem</A
+></DT
+><DT
+>26-3. <A
+HREF="arrays.html#ARRAYOPS"
+>Various array operations</A
+></DT
+><DT
+>26-4. <A
+HREF="arrays.html#ARRAYSTROPS"
+>String operations on arrays</A
+></DT
+><DT
+>26-5. <A
+HREF="arrays.html#SCRIPTARRAY"
+>Loading the contents of a script into an array</A
+></DT
+><DT
+>26-6. <A
+HREF="arrays.html#EX67"
+>Some special properties of arrays</A
+></DT
+><DT
+>26-7. <A
+HREF="arrays.html#EMPTYARRAY"
+>Of empty arrays and empty elements</A
+></DT
+><DT
+>26-8. <A
+HREF="arrays.html#ARRAYASSIGN"
+>Initializing arrays</A
+></DT
+><DT
+>26-9. <A
+HREF="arrays.html#COPYARRAY"
+>Copying and concatenating arrays</A
+></DT
+><DT
+>26-10. <A
+HREF="arrays.html#ARRAYAPPEND"
+>More on concatenating arrays</A
+></DT
+><DT
+>26-11. <A
+HREF="arrays.html#BUBBLE"
+>An old friend:
+             <I
+CLASS="EMPHASIS"
+>The Bubble Sort</I
+></A
+></DT
+><DT
+>26-12. <A
+HREF="arrays.html#EMBARR"
+>Embedded arrays and indirect references</A
+></DT
+><DT
+>26-13. <A
+HREF="arrays.html#EX68"
+>Complex array application:
+             <I
+CLASS="EMPHASIS"
+>Sieve of Eratosthenes</I
+></A
+></DT
+><DT
+>26-14. <A
+HREF="arrays.html#STACKEX"
+>Emulating a push-down stack</A
+></DT
+><DT
+>26-15. <A
+HREF="arrays.html#QFUNCTION"
+>Complex array application:
+             <I
+CLASS="EMPHASIS"
+>Exploring a weird mathematical series</I
+></A
+></DT
+><DT
+>26-16. <A
+HREF="arrays.html#TWODIM"
+>Simulating a two-dimensional array, then tilting it</A
+></DT
+><DT
+>27-1. <A
+HREF="devproc.html#DEVTCP"
+>Using <TT
+CLASS="FILENAME"
+>/dev/tcp</TT
+> for troubleshooting</A
+></DT
+><DT
+>27-2. <A
+HREF="procref1.html#PIDID"
+>Finding the process associated with a PID</A
+></DT
+><DT
+>27-3. <A
+HREF="procref1.html#CONSTAT"
+>On-line connect status</A
+></DT
+><DT
+>28-1. <A
+HREF="zeros.html#COOKIES"
+>Hiding the cookie jar</A
+></DT
+><DT
+>28-2. <A
+HREF="zeros.html#EX73"
+>Setting up a swapfile using <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+></A
+></DT
+><DT
+>28-3. <A
+HREF="zeros.html#RAMDISK"
+>Creating a ramdisk</A
+></DT
+><DT
+>29-1. <A
+HREF="debugging.html#EX74"
+>A buggy script</A
+></DT
+>
+             <DT
+>29-2. <A
+HREF="debugging.html#MISSINGKEYWORD"
+>Missing <A
+HREF="internal.html#KEYWORDREF"
+>keyword</A
+></DT
+>
+             <DT
+>29-3. <A
+HREF="debugging.html#EX75"
+>test24, another buggy script</A
+></DT
+><DT
+>29-4. <A
+HREF="debugging.html#ASSERT"
+>Testing a condition with an <SPAN
+CLASS="QUOTE"
+>"assert"</SPAN
+></A
+></DT
+><DT
+>29-5. <A
+HREF="debugging.html#EX76"
+>Trapping at exit</A
+></DT
+><DT
+>29-6. <A
+HREF="debugging.html#ONLINE"
+>Cleaning up after Control-C</A
+></DT
+><DT
+>29-7. <A
+HREF="debugging.html#VARTRACE"
+>Tracing a variable</A
+></DT
+><DT
+>29-8. <A
+HREF="debugging.html#MULTIPLEPROC"
+>Running multiple processes (on an SMP box)</A
+></DT
+><DT
+>31-1. <A
+HREF="gotchas.html#BADOP"
+>Numerical and string comparison are not equivalent</A
+></DT
+><DT
+>31-2. <A
+HREF="gotchas.html#SUBPIT"
+>Subshell Pitfalls</A
+></DT
+><DT
+>31-3. <A
+HREF="gotchas.html#BADREAD"
+>Piping the output of <B
+CLASS="COMMAND"
+>echo</B
+> to a <B
+CLASS="COMMAND"
+>read</B
+></A
+></DT
+><DT
+>33-1. <A
+HREF="wrapper.html#EX3"
+><B
+CLASS="COMMAND"
+>shell wrapper</B
+></A
+></DT
+><DT
+>33-2. <A
+HREF="wrapper.html#EX4"
+>A slightly more complex <B
+CLASS="COMMAND"
+>shell wrapper</B
+></A
+></DT
+><DT
+>33-3. <A
+HREF="wrapper.html#LOGGINGWRAPPER"
+>A generic <B
+CLASS="COMMAND"
+>shell wrapper</B
+> that writes to a logfile</A
+></DT
+><DT
+>33-4. <A
+HREF="wrapper.html#PRASC"
+>A <B
+CLASS="COMMAND"
+>shell wrapper</B
+> around an awk script</A
+></DT
+><DT
+>33-5. <A
+HREF="wrapper.html#COLTOTALER"
+>A <B
+CLASS="COMMAND"
+>shell wrapper</B
+> around another awk script</A
+></DT
+><DT
+>33-6. <A
+HREF="wrapper.html#EX56"
+>Perl embedded in a <B
+CLASS="COMMAND"
+>Bash</B
+> script</A
+></DT
+><DT
+>33-7. <A
+HREF="wrapper.html#BASHANDPERL"
+>Bash and Perl scripts combined</A
+></DT
+><DT
+>33-8. <A
+HREF="recursionsct.html#RECURSE"
+>A (useless) script that recursively calls itself</A
+></DT
+><DT
+>33-9. <A
+HREF="recursionsct.html#PBOOK"
+>A (useful) script that recursively calls itself</A
+></DT
+><DT
+>33-10. <A
+HREF="recursionsct.html#USRMNT"
+>Another (useful) script that recursively calls itself</A
+></DT
+><DT
+>33-11. <A
+HREF="colorizing.html#EX30A"
+>A <SPAN
+CLASS="QUOTE"
+>"colorized"</SPAN
+> address database</A
+></DT
+><DT
+>33-12. <A
+HREF="colorizing.html#DRAW-BOX"
+>Drawing a box</A
+></DT
+><DT
+>33-13. <A
+HREF="colorizing.html#COLORECHO"
+>Echoing colored text</A
+></DT
+><DT
+>33-14. <A
+HREF="colorizing.html#HORSERACE"
+>A <SPAN
+CLASS="QUOTE"
+>"horserace"</SPAN
+> game</A
+></DT
+><DT
+>33-15. <A
+HREF="assortedtips.html#MULTIPLICATION"
+>Return value trickery</A
+></DT
+><DT
+>33-16. <A
+HREF="assortedtips.html#SUMPRODUCT"
+>Even more return value trickery</A
+></DT
+><DT
+>33-17. <A
+HREF="assortedtips.html#ARRFUNC"
+>Passing and returning arrays</A
+></DT
+><DT
+>33-18. <A
+HREF="assortedtips.html#AGRAM"
+>Fun with anagrams</A
+></DT
+><DT
+>33-19. <A
+HREF="assortedtips.html#DIALOG"
+><B
+CLASS="COMMAND"
+>Widgets invoked from a shell script</B
+></A
+></DT
+><DT
+>34-1. <A
+HREF="bash2.html#EX77"
+>String expansion</A
+></DT
+><DT
+>34-2. <A
+HREF="bash2.html#EX78"
+>Indirect variable references - the new way</A
+></DT
+><DT
+>34-3. <A
+HREF="bash2.html#RESISTOR"
+>Simple database application, using indirect variable
+	  referencing</A
+></DT
+><DT
+>34-4. <A
+HREF="bash2.html#EX79"
+>Using arrays and other miscellaneous trickery
+	  to deal four random hands from a deck of cards</A
+></DT
+><DT
+>A-1. <A
+HREF="contributed-scripts.html#MAILFORMAT"
+><B
+CLASS="COMMAND"
+>mailformat</B
+>: Formatting an e-mail message</A
+></DT
+><DT
+>A-2. <A
+HREF="contributed-scripts.html#RN"
+><B
+CLASS="COMMAND"
+>rn</B
+>: A simple-minded file rename utility</A
+></DT
+><DT
+>A-3. <A
+HREF="contributed-scripts.html#BLANKRENAME"
+><B
+CLASS="COMMAND"
+>blank-rename</B
+>: renames filenames containing
+        blanks</A
+></DT
+><DT
+>A-4. <A
+HREF="contributed-scripts.html#ENCRYPTEDPW"
+><B
+CLASS="COMMAND"
+>encryptedpw</B
+>: Uploading to an ftp site,
+      using a locally encrypted password</A
+></DT
+><DT
+>A-5. <A
+HREF="contributed-scripts.html#COPYCD"
+><B
+CLASS="COMMAND"
+>copy-cd</B
+>: Copying a data CD</A
+></DT
+><DT
+>A-6. <A
+HREF="contributed-scripts.html#COLLATZ"
+>Collatz series</A
+></DT
+><DT
+>A-7. <A
+HREF="contributed-scripts.html#DAYSBETWEEN"
+><B
+CLASS="COMMAND"
+>days-between</B
+>: Calculate number of days
+        between two dates</A
+></DT
+><DT
+>A-8. <A
+HREF="contributed-scripts.html#MAKEDICT"
+>Make a <SPAN
+CLASS="QUOTE"
+>"dictionary"</SPAN
+></A
+></DT
+><DT
+>A-9. <A
+HREF="contributed-scripts.html#SOUNDEX"
+>Soundex conversion</A
+></DT
+><DT
+>A-10. <A
+HREF="contributed-scripts.html#LIFESLOW"
+><SPAN
+CLASS="QUOTE"
+>"Game of Life"</SPAN
+></A
+></DT
+><DT
+>A-11. <A
+HREF="contributed-scripts.html#GEN0DATA"
+>Data file for <SPAN
+CLASS="QUOTE"
+>"Game of Life"</SPAN
+></A
+></DT
+><DT
+>A-12. <A
+HREF="contributed-scripts.html#BEHEAD"
+><B
+CLASS="COMMAND"
+>behead</B
+>: Removing mail and news message headers</A
+></DT
+><DT
+>A-13. <A
+HREF="contributed-scripts.html#FTPGET"
+><B
+CLASS="COMMAND"
+>ftpget</B
+>: Downloading files via ftp</A
+></DT
+><DT
+>A-14. <A
+HREF="contributed-scripts.html#PW"
+><B
+CLASS="COMMAND"
+>password</B
+>: Generating random
+      8-character passwords</A
+></DT
+><DT
+>A-15. <A
+HREF="contributed-scripts.html#FIFO"
+><B
+CLASS="COMMAND"
+>fifo</B
+>: Making daily backups, using named pipes</A
+></DT
+><DT
+>A-16. <A
+HREF="contributed-scripts.html#PRIMES"
+>Generating prime numbers using the modulo operator</A
+></DT
+><DT
+>A-17. <A
+HREF="contributed-scripts.html#TREE"
+><B
+CLASS="COMMAND"
+>tree</B
+>: Displaying a directory tree</A
+></DT
+><DT
+>A-18. <A
+HREF="contributed-scripts.html#STRING"
+><B
+CLASS="COMMAND"
+>string functions</B
+>: C-like string functions</A
+></DT
+><DT
+>A-19. <A
+HREF="contributed-scripts.html#DIRECTORYINFO"
+>Directory information</A
+></DT
+><DT
+>A-20. <A
+HREF="contributed-scripts.html#OBJORIENTED"
+>Object-oriented database</A
+></DT
+><DT
+>A-21. <A
+HREF="contributed-scripts.html#HASHLIB"
+>Library of hash functions</A
+></DT
+><DT
+>A-22. <A
+HREF="contributed-scripts.html#HASHEXAMPLE"
+>Colorizing text using hash functions</A
+></DT
+><DT
+>A-23. <A
+HREF="contributed-scripts.html#USBINST"
+>Mounting USB keychain storage devices</A
+></DT
+><DT
+>A-24. <A
+HREF="contributed-scripts.html#ARCHIVWEBLOGS"
+>Preserving weblogs</A
+></DT
+><DT
+>A-25. <A
+HREF="contributed-scripts.html#PROTECTLITERAL"
+>Protecting literal strings</A
+></DT
+><DT
+>A-26. <A
+HREF="contributed-scripts.html#UNPROTECTLITERAL"
+>Unprotecting literal strings</A
+></DT
+><DT
+>A-27. <A
+HREF="contributed-scripts.html#ISSPAMMER2"
+>Spammer Identification</A
+></DT
+><DT
+>A-28. <A
+HREF="contributed-scripts.html#WHX"
+>Spammer Hunt</A
+></DT
+><DT
+>A-29. <A
+HREF="contributed-scripts.html#WGETTER2"
+>Making <B
+CLASS="COMMAND"
+>wget</B
+> easier to use</A
+></DT
+><DT
+>A-30. <A
+HREF="contributed-scripts.html#BASHPODDER"
+>A <SPAN
+CLASS="QUOTE"
+>"podcasting"</SPAN
+> script</A
+></DT
+><DT
+>A-31. <A
+HREF="contributed-scripts.html#BASICSREVIEWED"
+>Basics Reviewed</A
+></DT
+><DT
+>A-32. <A
+HREF="contributed-scripts.html#CDLL"
+>An expanded <B
+CLASS="COMMAND"
+>cd</B
+> command</A
+></DT
+><DT
+>C-1. <A
+HREF="awk.html#LETTERCOUNT2"
+>Counting Letter Occurrences</A
+></DT
+><DT
+>K-1. <A
+HREF="sample-bashrc.html#BASHRC"
+>Sample <TT
+CLASS="FILENAME"
+>.bashrc</TT
+> file</A
+></DT
+><DT
+>L-1. <A
+HREF="dosbatch.html#VIEWDAT"
+>VIEWDATA.BAT: DOS Batch File</A
+></DT
+><DT
+>L-2. <A
+HREF="dosbatch.html#VIEWDATA"
+>viewdata.sh: Shell Script Conversion of VIEWDATA.BAT</A
+></DT
+><DT
+>P-1. <A
+HREF="todolist.html#TESTCGI"
+>Print the server environment</A
+></DT
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="part1.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Introduction</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

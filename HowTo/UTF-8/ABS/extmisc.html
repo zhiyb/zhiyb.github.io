@@ -1,0 +1,1893 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Miscellaneous Commands</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="External Filters, Programs and Commands"
+HREF="external.html"><LINK
+REL="PREVIOUS"
+TITLE="Math Commands"
+HREF="mathc.html"><LINK
+REL="NEXT"
+TITLE="System and Administrative Commands"
+HREF="system.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default">
+</HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="mathc.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. External Filters, Programs and Commands</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="system.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="EXTMISC"
+>12.9. 混杂命令</A
+></H1
+>
+  <DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="MISCCOMMANDLISTING1"
+></A
+>一些不好归类的命令</B
+></P
+>
+    <DL
+><DT
+><B
+CLASS="COMMAND"
+>jot</B
+>, <B
+CLASS="COMMAND"
+>seq</B
+></DT
+><DD
+>
+      <P
+>这些工具通过用户指定的范围和增量来产生一系列的整数.</P
+>
+      <P
+>每个产生出来的整数一般都占一行, 但是可以使用 -s 选项来改变这种设置.</P
+>
+      <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>seq 5</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1
+ 2
+ 3
+ 4
+ 5</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>seq -s : 5</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1:2:3:4:5</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+>
+	    <P
+><B
+CLASS="COMMAND"
+>jot</B
+> 和 <B
+CLASS="COMMAND"
+>seq</B
+>
+	      命令都经常用在 <A
+HREF="loops.html#FORLOOPREF1"
+>for
+	      循环</A
+>中.</P
+>
+	    <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX53"
+></A
+>
+        <P
+><B
+>Example 12-49. 使用 <B
+CLASS="COMMAND"
+>seq</B
+> 来产生循环参数</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 使用 "seq"
+   3&nbsp;
+   4&nbsp;echo
+   5&nbsp;
+   6&nbsp;for a in `seq 80`  # 或者   for a in $( seq 80 )
+   7&nbsp;# 与  &quot; for a in 1 2 3 4 5 ... 80 &quot;相同  (少敲了好多字!).
+   8&nbsp;# 也可以使用 'jot' (如果系统上有的话).
+   9&nbsp;do
+  10&nbsp;  echo -n "$a "
+  11&nbsp;done      # 1 2 3 4 5 ... 80
+  12&nbsp;# 这也是一个通过使用命令的输出
+  13&nbsp;# 来产生 &quot;for&quot;循环中 [list] 列表的例子.
+  14&nbsp;
+  15&nbsp;echo; echo
+  16&nbsp;
+  17&nbsp;
+  18&nbsp;COUNT=80  # 当然, 'seq' 也可以使用一个可替换的参数.
+  19&nbsp;
+  20&nbsp;for a in `seq $COUNT`  # 或者   for a in $( seq $COUNT )
+  21&nbsp;do
+  22&nbsp;  echo -n "$a "
+  23&nbsp;done      # 1 2 3 4 5 ... 80
+  24&nbsp;
+  25&nbsp;echo; echo
+  26&nbsp;
+  27&nbsp;BEGIN=75
+  28&nbsp;END=80
+  29&nbsp;
+  30&nbsp;for a in `seq $BEGIN $END`
+  31&nbsp;#  传给 "seq" 两个参数, 从第一个参数开始增长,
+  32&nbsp;#+ 一直增长到第二个参数为止.
+  33&nbsp;do
+  34&nbsp;  echo -n "$a "
+  35&nbsp;done      # 75 76 77 78 79 80
+  36&nbsp;
+  37&nbsp;echo; echo
+  38&nbsp;
+  39&nbsp;BEGIN=45
+  40&nbsp;INTERVAL=5
+  41&nbsp;END=80
+  42&nbsp;
+  43&nbsp;for a in `seq $BEGIN $INTERVAL $END`
+  44&nbsp;#  传给 "seq" 三个参数从第一个参数开始增长,
+  45&nbsp;#+ 并以第二个参数作为增量,
+  46&nbsp;#+ 一直增长到第三个参数为止.
+  47&nbsp;do
+  48&nbsp;  echo -n "$a "
+  49&nbsp;done      # 45 50 55 60 65 70 75 80
+  50&nbsp;
+  51&nbsp;echo; echo
+  52&nbsp;
+  53&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+	    <P
+>一个简单些的例子:
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#  产生10个连续扩展名的文件,
+   2&nbsp;#+ 名字分别是 file.1, file.2 . . . file.10.
+   3&nbsp;COUNT=10
+   4&nbsp;PREFIX=file
+   5&nbsp;
+   6&nbsp;for filename in `seq $COUNT`
+   7&nbsp;do
+   8&nbsp;  touch $PREFIX.$filename
+   9&nbsp;  #  或者, 你可以做一些其他的操作,
+  10&nbsp;  #+ 比如 rm, grep, 等等.
+  11&nbsp;done</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="LETTERCOUNT"
+></A
+>
+  <P
+><B
+>Example 12-50. 字母统计</B
+></P
+>
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# letter-count.sh: 统计一个文本文件中字母出现的次数.
+   3&nbsp;# 由 Stefano Palmeri 编写.
+   4&nbsp;# 经过授权使用在本书中.
+   5&nbsp;# 本书作者做了少许修改.
+   6&nbsp;
+   7&nbsp;MINARGS=2          # 本脚本至少需要2个参数.
+   8&nbsp;E_BADARGS=65
+   9&nbsp;FILE=$1
+  10&nbsp;
+  11&nbsp;let LETTERS=$#-1   # 制定了多少个字母 (作为命令行参数).
+  12&nbsp;                   # (从命令行参数的个数中减1.)
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;show_help(){
+  16&nbsp;	   echo
+  17&nbsp;           echo Usage: `basename $0` file letters  
+  18&nbsp;           echo Note: `basename $0` arguments are case sensitive.
+  19&nbsp;           echo Example: `basename $0` foobar.txt G n U L i N U x.
+  20&nbsp;	   echo
+  21&nbsp;}
+  22&nbsp;
+  23&nbsp;# 检查参数个数.
+  24&nbsp;if [ $# -lt $MINARGS ]; then
+  25&nbsp;   echo
+  26&nbsp;   echo "Not enough arguments."
+  27&nbsp;   echo
+  28&nbsp;   show_help
+  29&nbsp;   exit $E_BADARGS
+  30&nbsp;fi  
+  31&nbsp;
+  32&nbsp;
+  33&nbsp;# 检查文件是否存在.
+  34&nbsp;if [ ! -f $FILE ]; then
+  35&nbsp;    echo "File \"$FILE\" does not exist."
+  36&nbsp;    exit $E_BADARGS
+  37&nbsp;fi
+  38&nbsp;
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;# 统计字母出现的次数.
+  42&nbsp;for n in `seq $LETTERS`; do
+  43&nbsp;      shift
+  44&nbsp;      if [[ `echo -n "$1" | wc -c` -eq 1 ]]; then             #  检查参数.
+  45&nbsp;             echo "$1" -\&#62; `cat $FILE | tr -cd  "$1" | wc -c` #  统计.
+  46&nbsp;      else
+  47&nbsp;             echo "$1 is not a  single char."
+  48&nbsp;      fi  
+  49&nbsp;done
+  50&nbsp;
+  51&nbsp;exit $?
+  52&nbsp;
+  53&nbsp;#  这个脚本在功能上与 letter-count2.sh 完全相同,
+  54&nbsp;#+ 但是运行得更快.
+  55&nbsp;#  为什么?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="GETOPTY"
+></A
+><B
+CLASS="COMMAND"
+>getopt</B
+></DT
+><DD
+>
+	      <P
+><B
+CLASS="COMMAND"
+>getopt</B
+> 命令将会分析以<A
+HREF="special-chars.html#DASHREF"
+>破折号</A
+>开头的命令行选项. 这个外部命令与Bash的内建命令 <A
+HREF="internal.html#GETOPTSX"
+>getopts</A
+> 作用相同. 通过使用 -l 标志, <B
+CLASS="COMMAND"
+>getopt</B
+> 可以处理长(多字符)选项, 并且也允许参数重置.</P
+>
+	      <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX33A"
+></A
+>
+	        <P
+><B
+>Example 12-51. 使用<B
+CLASS="COMMAND"
+>getopt来分析命令行选项</B
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 使用 getopt.
+   3&nbsp;
+   4&nbsp;# 尝试使用下边的不同的方法来调用这脚本:
+   5&nbsp;#   sh ex33a.sh -a
+   6&nbsp;#   sh ex33a.sh -abc
+   7&nbsp;#   sh ex33a.sh -a -b -c
+   8&nbsp;#   sh ex33a.sh -d
+   9&nbsp;#   sh ex33a.sh -dXYZ
+  10&nbsp;#   sh ex33a.sh -d XYZ
+  11&nbsp;#   sh ex33a.sh -abcd
+  12&nbsp;#   sh ex33a.sh -abcdZ
+  13&nbsp;#   sh ex33a.sh -z
+  14&nbsp;#   sh ex33a.sh a
+  15&nbsp;# 解释上面每一次调用的结果.
+  16&nbsp;
+  17&nbsp;E_OPTERR=65
+  18&nbsp;
+  19&nbsp;if [ "$#" -eq 0 ]
+  20&nbsp;then   # 脚本需要至少一个命令行参数.
+  21&nbsp;  echo "Usage $0 -[options a,b,c]"
+  22&nbsp;  exit $E_OPTERR
+  23&nbsp;fi  
+  24&nbsp;
+  25&nbsp;set -- `getopt "abcd:" "$@"`
+  26&nbsp;# 为命令行参数设置位置参数.
+  27&nbsp;# 如果使用 &quot;$*&quot; 来代替 &quot;$@&quot; 的话会发生什么?
+  28&nbsp;
+  29&nbsp;while [ ! -z "$1" ]
+  30&nbsp;do
+  31&nbsp;  case "$1" in
+  32&nbsp;    -a) echo "Option \"a\"";;
+  33&nbsp;    -b) echo "Option \"b\"";;
+  34&nbsp;    -c) echo "Option \"c\"";;
+  35&nbsp;    -d) echo "Option \"d\" $2";;
+  36&nbsp;     *) break;;
+  37&nbsp;  esac
+  38&nbsp;
+  39&nbsp;  shift
+  40&nbsp;done
+  41&nbsp;
+  42&nbsp;#  通常来说在脚本中使用内建的 'getopts' 命令,
+  43&nbsp;#+ 会比使用 'getopt' 好一些.
+  44&nbsp;#  参见 "ex33.sh".
+  45&nbsp;
+  46&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+	      <P
+>参见 <A
+HREF="string-manipulation.html#GETOPTSIMPLE"
+>Example 9-12</A
+> , 这是对 <B
+CLASS="COMMAND"
+>getopt</B
+> 命令的一个简单模拟.</P
+>
+  </DD
+><DT
+><A
+NAME="RUNPARTSREF"
+></A
+><B
+CLASS="COMMAND"
+>run-parts</B
+></DT
+><DD
+>
+    <P
+><B
+CLASS="COMMAND"
+>run-parts</B
+> 命令
+
+		<A
+NAME="AEN10374"
+HREF="#FTN.AEN10374"
+>[1]</A
+>
+	      
+	      将会执行目标目录中所有的脚本, 这些将本会以 ASCII 的循序进行排列. 当然, 这些脚本都需要具有可执行权限.</P
+>
+    <P
+><A
+HREF="system.html#CRONREF"
+>cron</A
+> <A
+HREF="communications.html#DAEMONREF"
+>幽灵进程</A
+> 会调用
+	      <B
+CLASS="COMMAND"
+>run-parts</B
+> 来运行 <TT
+CLASS="FILENAME"
+>/etc/cron.*</TT
+> 下的所有脚本.</P
+>
+  </DD
+><DT
+><B
+CLASS="COMMAND"
+>yes</B
+></DT
+><DD
+>
+	      <P
+><strong>yes</strong> 命令的默认行为是向 stdout 中连续不断的输出字符 y,每个y占一行.使用<B
+CLASS="KEYCAP"
+>control</B
+>-<B
+CLASS="KEYCAP"
+>c</B
+>来结束运行. 如果想换一个输出字符的话, 可以使用 <TT
+CLASS="USERINPUT"
+><B
+>yes 其他的字符串</B
+></TT
+>, 这样就会连续不同的输出你指定的字符串.  那么这样的命令究竟能做什么呢？ 在命令行或者脚本中, <strong>yes</strong>的输出可以通过重定向或管道来传递给一些需要用户输入进行交互的命令. 事实上, 这个命令可以说是 <strong>expect</strong> 命令(译者注: 这个命令本书未介绍, 一个自动实现交互的命令)的一个简化版本.</P
+>
+	      <P
+><TT
+CLASS="USERINPUT"
+><B
+>yes | fsck /dev/hda1</B
+></TT
+> 将会以非交互的形式运行<B
+CLASS="COMMAND"
+>fsck</B
+>(因为需要用户输入的 y  全由<strong>yes</strong>命令搞定了)(小心使用!).</P
+>
+	      <P
+><TT
+CLASS="USERINPUT"
+><B
+>yes | rm -r dirname</B
+></TT
+> 与
+	     <TT
+CLASS="USERINPUT"
+><B
+>rm -rf dirname</B
+></TT
+> 效果相同(小心使用!).</P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/warning.png"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>当用 <strong>yes</strong> 的管道形式来使用一些可能具有潜在危险的系统命令的时候一定要深思熟虑, 比如 <A
+HREF="system.html#FSCKREF"
+>fsck</A
+> 或 <A
+HREF="system.html#FDISKREF"
+>fdisk</A
+>. 可能会产生一些意外的副作用.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>banner</B
+></DT
+><DD
+>
+	       <P
+>将会把字符串用一个 ASCII 字符(默认是 '#')来画出来(就是将多个'#'拼出一副字符的图形).可以作为硬拷贝重定向到打印机上(译者注: 可以使用-w 选项设置宽度).</P
+>
+	     </DD
+><DT
+><B
+CLASS="COMMAND"
+>printenv</B
+></DT
+><DD
+>
+	        <P
+>对于某个特定的用户, 显示出所有的 <A
+HREF="othertypesv.html#ENVREF"
+>环境变量</A
+>.</P
+>
+	        <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>printenv | grep HOME</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>HOME=/home/bozo</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>lp</B
+></DT
+><DD
+>
+	      <P
+><B
+CLASS="COMMAND"
+>lp</B
+> 和 <B
+CLASS="COMMAND"
+>lpr</B
+>
+	      命令将会把文件发送到打印队列中, 并且作为硬拷贝来打印.
+
+	      <A
+NAME="AEN10452"
+HREF="#FTN.AEN10452"
+>[2]</A
+>
+
+	      这些命令会纪录它们名字的起始位置并传递到行打印机的另一个位置.&lt;rojy bug&gt;</P
+>
+	      <P
+><TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>lp file1.txt</B
+></TT
+> 或者 <TT
+CLASS="PROMPT"
+>bash </TT
+><TT
+CLASS="USERINPUT"
+><B
+>lp
+		&#60;file1.txt</B
+></TT
+></P
+>
+	      <P
+>通常情况下都是将<strong>pr</strong>的格式化的输出传递到 <strong>lp</strong>.</P
+><P
+><TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>pr -options file1.txt | lp</B
+></TT
+>
+	        </P
+>
+	      <P
+>格式化的包, 比如 groff 和 <em>Ghostscript</em> 就可以将它们的输出直接发送给 <strong>lp</strong>.</P
+><P
+><TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>groff -Tascii file.tr | lp</B
+></TT
+>
+	        </P
+><P
+><TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>gs -options | lp file.ps</B
+></TT
+>
+	        </P
+>
+          <P
+>还有一些相关的命令, 比如 <B
+CLASS="COMMAND"
+>lpq</B
+>, 可以查看打印队列, <strong>lprm</strong>, 可以用来从打印队列中删除作业.</P
+>
+	    </DD
+><DT
+><A
+NAME="TEEREF"
+></A
+><B
+CLASS="COMMAND"
+>tee</B
+></DT
+><DD
+>
+		  <P
+>[UNIX 从管道行业借来的主意.]</P
+>
+		  <P
+>这是一个重定向操作, 但是有些不同. 就像管道中的&quot;三通&quot;一样, 这个命令可以将命令或者管道命令的输出抽出到一个文件中,而且并不影响结果. 当你想将一个正在运行的进程的输出保存到文件中时, 或者为了debug而保存输出记录的时候, 这个命令就非常有用了.</P
+>
+		  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>                              (重定向)
+                             |----&#62; to file
+                             |
+   ==========================|====================
+   command ---&#62; command ---&#62; |tee ---&#62; command ---&#62; ---&#62; output of pipe
+   ===============================================
+ 	      </PRE
+></TD
+></TR
+></TABLE
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat listfile* | sort | tee check.file | uniq &#62; result.file</PRE
+></TD
+></TR
+></TABLE
+>
+	      (在对排序的结果进行 <A
+HREF="textproc.html#UNIQREF"
+>uniq</A
+> (去掉重复行) 之前,文件 <TT
+CLASS="FILENAME"
+>check.file</TT
+> 中保存了排过序的&quot;listfiles&quot;.)</DD
+><DT
+><B
+CLASS="COMMAND"
+>mkfifo</B
+></DT
+><DD
+>
+	        <P
+><A
+NAME="NAMEDPIPEREF"
+></A
+>这个不大引人注意的命令可以创建一个<em>命名管道</em>, 并产生一个临时的<em>先进先出</em>的buffer用来在两个进程间传输数据.
+
+		<A
+NAME="AEN10514"
+HREF="#FTN.AEN10514"
+>[3]</A
+>
+
+	      典型的使用是一个进程向FIFO中写数据, 另一个进程读出来. 参见 <A
+HREF="contributed-scripts.html#FIFO"
+>Example A-15</A
+>.</P
+>
+	      </DD
+><DT
+><B
+CLASS="COMMAND"
+>pathchk</B
+></DT
+><DD
+>
+	        <P
+>这个命令用来检查文件名的有效性. 如果文件名超过了最大允许长度(255 个字符), 或者它所在的一个或多个路径搜索不到, 那么就会产生一个错误结果.</P
+>
+	        <P
+>不幸的是,并不能够返回一个可识别的错误码, 因此它在脚本中几乎没有什么用. 一般都使用<A
+HREF="fto.html#RTIF"
+>文件测试操作</A
+>.</P
+>
+	      </DD
+><DT
+><A
+NAME="DDREF"
+></A
+><B
+CLASS="COMMAND"
+>dd</B
+></DT
+><DD
+>
+	      <P
+>这也是一个不太出名的工具, 但却是一个令人恐惧的 &quot;数据复制&quot; 命令.  最开始, 这个命令是被用来在UNIX 微机和IBM大型机之间通过磁带来交换数据, 这个命令现在仍然有它的用途.   <B
+CLASS="COMMAND"
+>dd</B
+> 命令只不过是简单的拷贝一个文件 (或者 <TT
+CLASS="FILENAME"
+>stdin/stdout</TT
+>), 但是它会做一些转换. 下边是一些可能的转换, 比如 ASCII/EBCDIC,
+	        
+		<A
+NAME="AEN10547"
+HREF="#FTN.AEN10547"
+>[4]</A
+>
+
+	      大写/小写, 在输入和输出之间的字节对的交换, 还有对输入文件做一些截头去尾的工作.  <TT
+CLASS="USERINPUT"
+><B
+>dd --help</B
+></TT
+>
+	      列出了所有转换, 还有这个强力工具的一些其他选项.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 将一个文件转换为大写:
+   2&nbsp;
+   3&nbsp;dd if=$filename conv=ucase &#62; $filename.uppercase
+   4&nbsp;#                    lcase   # 转换为小写</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SELFCOPY"
+></A
+>
+              <P
+><B
+>Example 12-52. 一个拷贝自身的脚本</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# self-copy.sh
+   3&nbsp;
+   4&nbsp;# 这个脚本将会拷贝自身.
+   5&nbsp;
+   6&nbsp;file_subscript=copy
+   7&nbsp;
+   8&nbsp;dd if=$0 of=$0.$file_subscript 2&#62;/dev/null
+   9&nbsp;# 阻止dd产生的消息:            ^^^^^^^^^^^
+  10&nbsp;
+  11&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EXERCISINGDD"
+></A
+>
+    <P
+><B
+>Example 12-53. 练习 dd</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# exercising-dd.sh
+   3&nbsp;
+   4&nbsp;# 由Stephane Chazelas编写.
+   5&nbsp;# 本文作者做了少量修改.
+   6&nbsp;
+   7&nbsp;input_file=$0   # 脚本本身.
+   8&nbsp;output_file=log.txt
+   9&nbsp;n=3
+  10&nbsp;p=5
+  11&nbsp;
+  12&nbsp;dd if=$input_file of=$output_file bs=1 skip=$((n-1)) count=$((p-n+1)) 2&#62; /dev/null
+  13&nbsp;# 从脚本中把位置n到p的字符提取出来.
+  14&nbsp;
+  15&nbsp;# -------------------------------------------------------
+  16&nbsp;
+  17&nbsp;echo -n "hello world" | dd cbs=1 conv=unblock 2&#62; /dev/null
+  18&nbsp;# 垂直的 echo "hello world" .
+  19&nbsp;
+  20&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+  <P
+>为了展示<strong>dd</strong>的多种用途, 让我们使用它来记录按键.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="DDKEYPRESS"
+></A
+>
+    <P
+><B
+>Example 12-54. 记录按键</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# dd-keypress.sh: 记录按键, 不需要按回车.
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;keypresses=4                      # 记录按键的个数.
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;old_tty_setting=$(stty -g)        # 保存老的终端设置.
+   9&nbsp;
+  10&nbsp;echo "Press $keypresses keys."
+  11&nbsp;stty -icanon -echo                # 禁用标准模式.
+  12&nbsp;                                  # 禁用本地 echo.
+  13&nbsp;keys=$(dd bs=1 count=$keypresses 2&#62; /dev/null)
+  14&nbsp;# 如果不指定输入文件的话, 'dd' 使用标准输入.
+  15&nbsp;
+  16&nbsp;stty "$old_tty_setting"           # 恢复老的终端设置.
+  17&nbsp;
+  18&nbsp;echo "You pressed the \"$keys\" keys."
+  19&nbsp;
+  20&nbsp;# 感谢 Stephane Chazelas, 演示了这种方法.
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+	     <P
+><B
+CLASS="COMMAND"
+>dd</B
+> 命令可以在数据流上做随即存取.
+	     <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo -n . | dd bs=1 seek=4 of=file conv=notrunc
+   2&nbsp;# "conv=notrunc" 选项意味着输出文件不能被截短.
+   3&nbsp;
+   4&nbsp;# Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+>
+            <P
+><B
+CLASS="COMMAND"
+>dd</B
+> 命令可以将数据或磁盘镜像拷贝到设备中, 也可以从设备中拷贝数据或磁盘镜像, 比如说磁盘或磁带设备都可以 (<A
+HREF="contributed-scripts.html#COPYCD"
+>Example A-5</A
+>). 通常用来创建启动盘.</P
+>
+            <P
+>		<TT
+CLASS="USERINPUT"
+><B
+>dd if=kernel-image of=/dev/fd0H1440</B
+></TT
+>
+            </P
+>
+            <P
+>同样的, <B
+CLASS="COMMAND"
+>dd</B
+> 可以拷贝软盘的整个内容(甚至是其他操作系统的磁盘格式) 到硬盘驱动器上(以镜像文件的形式).</P
+>
+            <P
+>		<TT
+CLASS="USERINPUT"
+><B
+>dd if=/dev/fd0 of=/home/bozo/projects/floppy.img</B
+></TT
+>
+            </P
+>
+            <P
+><B
+CLASS="COMMAND"
+>dd</B
+> 命令还有一些其他用途, 包括可以初始化临时交换文件 (<A
+HREF="zeros.html#EX73"
+>Example 28-2</A
+>)
+	      和 ramdisks(内存虚拟硬盘) (<A
+HREF="zeros.html#RAMDISK"
+>Example 28-3</A
+>). 它甚至可以做一些对整个硬盘分区的底层拷贝, 虽然不建议这么做.</P
+>
+            <P
+>一些(可能是比较无聊的)人总会想一些关于 <strong>dd</strong> 命令的有趣的应用.</P
+>
+            <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BLOTOUT"
+></A
+>
+	        <P
+><B
+>Example 12-55. 安全的删除一个文件</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# blot-out.sh: 删除一个文件所有的记录.
+   3&nbsp;
+   4&nbsp;#  这个脚本会使用随即字节交替的覆盖
+   5&nbsp;#+ 目标文件, 并且在最终删除这个文件之前清零.
+   6&nbsp;#  这么做之后, 即使你通过传统手段来检查磁盘扇区
+   7&nbsp;#+ 也不能把文件原始数据重新恢复.
+   8&nbsp;
+   9&nbsp;PASSES=7         #  破坏文件的次数.
+  10&nbsp;                 #  提高这个数字会减慢脚本运行的速度，
+  11&nbsp;                 #+ 尤其是对尺寸比较大的目标文件进行操作的时候.
+  12&nbsp;BLOCKSIZE=1      #  带有 /dev/urandom 的 I/O 需要单位块尺寸,
+  13&nbsp;                 #+ 否则你可能会获得奇怪的结果.
+  14&nbsp;E_BADARGS=70     #  不同的错误退出码.
+  15&nbsp;E_NOT_FOUND=71
+  16&nbsp;E_CHANGED_MIND=72
+  17&nbsp;
+  18&nbsp;if [ -z "$1" ]   # 没指定文件名.
+  19&nbsp;then
+  20&nbsp;  echo "Usage: `basename $0` filename"
+  21&nbsp;  exit $E_BADARGS
+  22&nbsp;fi
+  23&nbsp;
+  24&nbsp;file=$1
+  25&nbsp;
+  26&nbsp;if [ ! -e "$file" ]
+  27&nbsp;then
+  28&nbsp;  echo "File \"$file\" not found."
+  29&nbsp;  exit $E_NOT_FOUND
+  30&nbsp;fi  
+  31&nbsp;
+  32&nbsp;echo; echo -n "Are you absolutely sure you want to blot out \"$file\" (y/n)? "
+  33&nbsp;read answer
+  34&nbsp;case "$answer" in
+  35&nbsp;[nN]) echo "Changed your mind, huh?"
+  36&nbsp;      exit $E_CHANGED_MIND
+  37&nbsp;      ;;
+  38&nbsp;*)    echo "Blotting out file \"$file\".";;
+  39&nbsp;esac
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;flength=$(ls -l "$file" | awk '{print $5}')  # 5 是文件长度.
+  43&nbsp;pass_count=1
+  44&nbsp;
+  45&nbsp;chmod u+w "$file"   # Allow overwriting/deleting the file.
+  46&nbsp;
+  47&nbsp;echo
+  48&nbsp;
+  49&nbsp;while [ "$pass_count" -le "$PASSES" ]
+  50&nbsp;do
+  51&nbsp;  echo "Pass #$pass_count"
+  52&nbsp;  sync         # 刷新buffer.
+  53&nbsp;  dd if=/dev/urandom of=$file bs=$BLOCKSIZE count=$flength
+  54&nbsp;               # 使用随机字节进行填充.
+  55&nbsp;  sync         # 再刷新buffer.
+  56&nbsp;  dd if=/dev/zero of=$file bs=$BLOCKSIZE count=$flength
+  57&nbsp;               # 用0填充.
+  58&nbsp;  sync         # 再刷新buffer.
+  59&nbsp;  let "pass_count += 1"
+  60&nbsp;  echo
+  61&nbsp;done  
+  62&nbsp;
+  63&nbsp;
+  64&nbsp;rm -f $file    # 最后, 删除这个已经被破坏得不成样子的文件.
+  65&nbsp;sync           # 最后一次刷新buffer.
+  66&nbsp;
+  67&nbsp;echo "File \"$file\" blotted out and deleted."; echo
+  68&nbsp;
+  69&nbsp;
+  70&nbsp;exit 0
+  71&nbsp;
+  72&nbsp;#  这是一种真正安全的删除文件的办法,
+  73&nbsp;#+ 但是效率比较低, 运行比较慢.
+  74&nbsp;#  GNU 的文件工具包中的 "shred" 命令,
+  75&nbsp;#+ 也可以完成相同的工作, 不过更有效率.
+  76&nbsp;
+  77&nbsp;#  使用普通的方法是不可能重新恢复这个文件了.
+  78&nbsp;#  然而 . . .
+  79&nbsp;#+ 这个简单的例子是不能够抵抗
+  80&nbsp;#+ 那些经验丰富并且正规的分析.
+  81&nbsp;
+  82&nbsp;#  这个脚本可能不会很好的运行在日志文件系统上.(译者注: JFS)
+  83&nbsp;#  练习 (很难): 像它做的那样修正这个问题.
+  84&nbsp;
+  85&nbsp;
+  86&nbsp;
+  87&nbsp;#  Tom Vier的文件删除包可以更加彻底
+  88&nbsp;#+ 的删除文件, 比这个简单的例子厉害得多.
+  89&nbsp;#     http://www.ibiblio.org/pub/Linux/utils/file/wipe-2.0.0.tar.bz2
+  90&nbsp;
+  91&nbsp;#  如果想对安全删除文件这一论题进行深度的分析,
+  92&nbsp;#+ 可以参见Peter Gutmann的页面,
+  93&nbsp;#+     "Secure Deletion of Data From Magnetic and Solid-State Memory".
+  94&nbsp;#       http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="ODREF"
+></A
+><B
+CLASS="COMMAND"
+>od</B
+></DT
+><DD
+>
+    <P
+><B
+CLASS="COMMAND"
+>od</B
+>(<em>octal dump</em>)过滤器, 将会把输入(或文件)转换为8进制或者其他进制. 在你需要查看或处理一些二进制数据文件或者一个不可读的系统设备文件的时候, 这个命令非常有用, 比如/dev/urandom，或者是一个二进制数据过滤器. 参见 <A
+HREF="randomvar.html#SEEDINGRANDOM"
+>Example 9-28</A
+> 和 <A
+HREF="textproc.html#RND"
+>Example 12-13</A
+>.</P
+>
+  </DD
+><DT
+><B
+CLASS="COMMAND"
+>hexdump</B
+></DT
+><DD
+>
+    <P
+>对二进制文件进行 16进制, 8进制, 10进制, 或者 ASCII 码的查阅动作. 这个命令大体上与上边的<strong>od</strong>命令作用相同, 但是远不及 <strong>od</strong> 命令有用.</P
+>
+  </DD
+><DT
+><B
+CLASS="COMMAND"
+>objdump</B
+></DT
+><DD
+>
+    <P
+>显示编译后的2进制文件或2进制可执行文件的信息, 以16进制的形式显示, 或者显示反汇编列表(使用-d选项).	      </P
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>objdump -d /bin/ls</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/ls:     file format elf32-i386
+
+ Disassembly of section .init:
+
+ 080490bc &#60;.init&#62;:
+  80490bc:       55                      push   %ebp
+  80490bd:       89 e5                   mov    %esp,%ebp
+  . . .</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>mcookie</B
+></DT
+><DD
+>
+	      <P
+>这个命令会产生一个<SPAN
+CLASS="QUOTE"
+>"magic cookie"</SPAN
+>, 这是一个128-bit (32-字符) 的伪随机16进制数字, 这个数字一般都用来作为X server的鉴权&quot;签名&quot;. 这个命令还可以用来在脚本中作为一种生成随机数的手段, 当然这是一种&quot;小吃店&quot;(虽然不太正统, 但是很方便)的风格.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;random000=$(mcookie)</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+>
+	    <P
+>当然, 完成同样的目的还可以使用 <A
+HREF="filearchiv.html#MD5SUMREF"
+>md5</A
+> 命令.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# 产生关于脚本本身的 md5 checksum.
+   2&nbsp;random001=`md5sum $0 | awk '{print $1}'`
+   3&nbsp;# 使用 'awk' 来去掉文件名.</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+>
+	    <P
+><B
+CLASS="COMMAND"
+>mcookie</B
+> 还给出了产生&quot;唯一&quot;文件名的另一种方法.</P
+>
+	    <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="TEMPFILENAME"
+></A
+>
+	    <P
+><B
+>Example 12-56. 文件名产生器</B
+></P
+>
+	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# tempfile-name.sh:  临时文件名产生器
+   3&nbsp;
+   4&nbsp;BASE_STR=`mcookie`   # 32-字符的 magic cookie.
+   5&nbsp;POS=11               # 字符串中随便的一个位置.
+   6&nbsp;LEN=5                # 取得 $LEN 长度连续的字符串.
+   7&nbsp;
+   8&nbsp;prefix=temp          #  最终的一个临时文件.
+   9&nbsp;                     #  如果想让这个文件更加唯一,
+  10&nbsp;                     #+ 可以对这个前缀也使用下边的方法来生成.
+  11&nbsp;
+  12&nbsp;suffix=${BASE_STR:POS:LEN}
+  13&nbsp;                     # 提取从第11个字符之后的长度为5的字符串.
+  14&nbsp;
+  15&nbsp;temp_filename=$prefix.$suffix
+  16&nbsp;                     # 构造文件名.
+  17&nbsp;
+  18&nbsp;echo "Temp filename = "$temp_filename""
+  19&nbsp;
+  20&nbsp;# sh tempfile-name.sh
+  21&nbsp;# Temp filename = temp.e19ea
+  22&nbsp;
+  23&nbsp;#  与使用 'date' 命令(参考 ex51.sh)来创建唯一文件名
+  24&nbsp;#+ 的方法相比较.
+  25&nbsp;
+  26&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>units</B
+></DT
+><DD
+>
+    <P
+>这个工具用来在不同的计量单位之间互相转换. 当你在交互模式下正常调用时, 会发现在脚本中 <strong>units</strong> 也很有用.</P
+>
+    <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="UNITCONVERSION"
+></A
+>
+	      <P
+><B
+>Example 12-57. 将米转换为英里</B
+></P
+>
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# unit-conversion.sh
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;convert_units ()  # 通过参数取得需要转换的单位.
+   6&nbsp;{
+   7&nbsp;  cf=$(units "$1" "$2" | sed --silent -e '1p' | awk '{print $2}')
+   8&nbsp;  # 除了真正需要转换的部分保留下来外,其他的部分都去掉.
+   9&nbsp;  echo "$cf"
+  10&nbsp;}  
+  11&nbsp;
+  12&nbsp;Unit1=miles
+  13&nbsp;Unit2=meters
+  14&nbsp;cfactor=`convert_units $Unit1 $Unit2`
+  15&nbsp;quantity=3.73
+  16&nbsp;
+  17&nbsp;result=$(echo $quantity*$cfactor | bc)
+  18&nbsp;
+  19&nbsp;echo "There are $result $Unit2 in $quantity $Unit1."
+  20&nbsp;
+  21&nbsp;#  如果你传递了两个不匹配的单位会发生什么?
+  22&nbsp;#+ 比如分别传入英亩和英里?
+  23&nbsp;
+  24&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>m4</B
+></DT
+><DD
+>
+    <P
+>一个隐藏的财宝,  <B
+CLASS="COMMAND"
+>m4</B
+> 是一个强力的宏处理过滤器,
+		 <A
+NAME="AEN10682"
+HREF="#FTN.AEN10682"
+>[5]</A
+>
+	      差不多可以说是一种语言了. 虽然最开始这个工具是用来作为 <em>RatFor</em> 的预处理器而编写的, 但是后来证明 <B
+CLASS="COMMAND"
+>m4</B
+>
+	      作为独立的工具也是非常有用的. 事实上, <B
+CLASS="COMMAND"
+>m4</B
+> 结合了许多工具的功能, 比如  <A
+HREF="internal.html#EVALREF"
+>eval</A
+>,
+	      <A
+HREF="textproc.html#TRREF"
+>tr</A
+>, 和 <A
+HREF="awk.html#AWKREF"
+>awk</A
+>, 除此之外, 它还使得宏扩展变得容易.</P
+>
+    <P
+>在 2004年4月的 <A
+HREF="http://www.linuxjournal.com"
+TARGET="_top"
+><I
+CLASS="CITETITLE"
+>Linux Journal</I
+></A
+>
+	      的问题列表中有一篇关于 <strong>m4</strong> 命令用法得非常好的文章.</P
+>
+    <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="M4"
+></A
+>
+	      <P
+><B
+>Example 12-58. 使用 m4</B
+></P
+>
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# m4.sh: 使用 m4 宏处理器
+   3&nbsp;
+   4&nbsp;# 字符操作
+   5&nbsp;string=abcdA01
+   6&nbsp;echo "len($string)" | m4                           # 7
+   7&nbsp;echo "substr($string,4)" | m4                      # A01
+   8&nbsp;echo "regexp($string,[0-1][0-1],\&#38;Z)" | m4         # 01Z
+   9&nbsp;
+  10&nbsp;# 算术操作
+  11&nbsp;echo "incr(22)" | m4                               # 23
+  12&nbsp;echo "eval(99 / 3)" | m4                           # 33
+  13&nbsp;
+  14&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>doexec</B
+></DT
+><DD
+>
+    <P
+><B
+CLASS="COMMAND"
+>doexec</B
+> 命令允许将一个随便的参数列表传递到一个<em>二进制可执行文件</em>中. 特别的, 甚至可以传递 arg[0] (相当于脚本中的 <A
+HREF="othertypesv.html#POSPARAMREF1"
+>$0</A
+> ), 这样可以使用不同的名字来调用这个可执行文件, 并且通过不同的调用的名字, 可以让这个可执行文件执行不同的动作. 这也可以说是一种将参数传递到可执行文件中的比较绕圈子的做法.</P
+>
+    <P
+>比如, <TT
+CLASS="FILENAME"
+>/usr/local/bin</TT
+> 目录可能包含一个 &quot;aaa&quot; 的二进制文件.  使用
+	      <B
+CLASS="COMMAND"
+>doexec /usr/local/bin/aaa list</B
+>
+	      可以<I
+CLASS="EMPHASIS"
+> 列出</I
+> 当前工作目录下所有以 &quot;a&quot; 开头的的文件, 而使用 <B
+CLASS="COMMAND"
+>doexec /usr/local/bin/aaa delete </B
+>
+	      将会<em>删除</em>这些文件.</P
+>
+    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>可执行文件的不同行为必须定义在可执行文件自身的代码中, 可以使用如下的shell脚本作类比:
+	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;case `basename $0` in
+   2&nbsp;"name1" ) do_something;;
+   3&nbsp;"name2" ) do_something_else;;
+   4&nbsp;"name3" ) do_yet_another_thing;;
+   5&nbsp;*       ) bail_out;;
+   6&nbsp;esac</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><B
+CLASS="COMMAND"
+>dialog</B
+></DT
+><DD
+>
+     <P
+><A
+HREF="assortedtips.html#DIALOGREF"
+>dialog</A
+> 工具集提供了一种从脚本中调用交互对话框的方法.  <B
+CLASS="COMMAND"
+>dialog</B
+> 的更好的变种版本是  --
+	      <B
+CLASS="COMMAND"
+>gdialog</B
+>, <B
+CLASS="COMMAND"
+>Xdialog</B
+>,
+	      和 <B
+CLASS="COMMAND"
+>kdialog</B
+> -- 事实上是调用的 X-Windows
+	      的界面工具集. 参见 <A
+HREF="assortedtips.html#DIALOG"
+>Example 33-19</A
+>.</P
+>
+   </DD
+><DT
+><B
+CLASS="COMMAND"
+>sox</B
+></DT
+><DD
+>
+   <P
+><B
+CLASS="COMMAND"
+>sox</B
+> 命令, <SPAN
+CLASS="QUOTE"
+>"<I
+CLASS="EMPHASIS"
+>so</I
+>und
+	      e<I
+CLASS="EMPHASIS"
+>x</I
+>change"</SPAN
+> (声音转换)命令, 可以进行声音文件的转换. 事实上,可执行文件          <TT
+CLASS="FILENAME"
+>/usr/bin/play</TT
+>	      (现在不建议使用) 只不过是 <em>sox</em> 的一个 shell 包装器而已.</P
+>
+   <P
+>举个例子, <B
+CLASS="COMMAND"
+>sox soundfile.wav
+	      soundfile.au</B
+> 将会把一个 WAV 声音文件转换成一个
+	      (Sun 音频格式) AU 声音文件.</P
+>
+   <P
+>Shell 脚本非常适合于使用 <strong>sox</strong> 的声音操作来批处理声音文件. 比如, 参见 <A
+HREF="http://osl.iu.edu/~tveldhui/radio/"
+TARGET="_top"
+> Linux Radio
+	      Timeshift HOWTO</A
+> 和 <A
+HREF="http://savannah.nongnu.org/projects/audiodo"
+TARGET="_top"
+>MP3do
+	      Project</A
+>.</P
+>
+   </DD
+></DL
+>
+  </DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注意事项:</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN10374"
+HREF="extmisc.html#AEN10374"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>这个工具事实上是从 Debian Linux 发行版中的一个脚本借鉴过来的.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN10452"
+HREF="extmisc.html#AEN10452"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><I
+CLASS="EMPHASIS"
+>打印队列</I
+> 就是&quot;在线等待&quot;打印的作业组.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN10514"
+HREF="extmisc.html#AEN10514"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>对于本话题的一个完美的介绍, 请参见 Andy Vaught 的文章, <A
+HREF="http://www2.linuxjournal.com/lj-issues/issue41/2156.html"
+TARGET="_top"
+>命名管道的介绍</A
+>, (http://www2.linuxjournal.com/lj-issues/issue41/2156.html), 这是<A
+HREF="http://www.linuxjournal.com"
+TARGET="_top"
+><I
+CLASS="CITETITLE"
+>Linux
+		  Journal</I
+></A
+> (http://www.linuxjournal.com/)1997年9月的一个问题.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN10547"
+HREF="extmisc.html#AEN10547"
+>[4]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><SPAN
+CLASS="ACRONYM"
+>EBCDIC</SPAN
+> (发音是
+		  <SPAN
+CLASS="QUOTE"
+>"ebb-sid-ick"</SPAN
+>) 是单词 (Extended
+		  Binary Coded Decimal Interchange Code) 的首字母缩写. 这是 IBM
+		  的数据格式, 现在已经不常见了. dd 命令的 conv=ebcdic 选项的一个比较奇异的使用方法是对一个文件进行快速而且容易但不太安全的编码.
+		  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat $file | dd conv=swab,ebcdic &#62; $file_encrypted
+   2&nbsp;# 编码 (看起来好像没什么用).		    
+   3&nbsp;# 应该交换字节(swab), 有点晦涩.
+   4&nbsp;
+   5&nbsp;cat $file_encrypted | dd conv=swab,ascii &#62; $file_plaintext
+   6&nbsp;# 解码.</PRE
+></TD
+></TR
+></TABLE
+>
+                </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN10682"
+HREF="extmisc.html#AEN10682"
+>[5]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><I
+CLASS="EMPHASIS"
+>宏</I
+> 是一个符号常量, 将会被扩展成一个命令字符串或者一系列的参数操作.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="mathc.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="system.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Math Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="external.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>System and Administrative Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

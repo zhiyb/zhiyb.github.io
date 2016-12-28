@@ -1,0 +1,494 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Of Zeros and Nulls</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="/proc"
+HREF="procref1.html"><LINK
+REL="NEXT"
+TITLE="Debugging"
+HREF="debugging.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="procref1.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="debugging.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="ZEROS"
+>第28章. 关于Zeros和Nulls</A
+></H1
+>
+  <P
+><A
+NAME="ZEROSREF"
+></A
+></P
+><DIV
+CLASS="VARIABLELIST"
+>
+    <P
+><B
+><A
+NAME="ZERONULL1"
+></A
+><TT
+CLASS="FILENAME"
+>/dev/zero</TT
+>和<TT
+CLASS="FILENAME"
+>/dev/null</TT
+></B
+></P
+>
+    <DL
+>
+      <DT
+>使用<TT
+CLASS="FILENAME"
+>/dev/null</TT
+></DT
+>
+      <DD
+> 
+        <P
+>把<TT
+CLASS="FILENAME"
+>/dev/null</TT
+>看作<SPAN
+CLASS="QUOTE"
+>"黑洞"</SPAN
+><span
+class="QUOTE"
+>.</span
+> 它非常等价于一个只写文件. 所有写入它的内容都会永远丢失. 而尝试从它那儿读取内容则什么也读不到. 然而, <TT
+CLASS="FILENAME"
+>/dev/null</TT
+>对命令行和脚本都非常的有用.</P
+>
+        <P
+>禁止<TT
+CLASS="FILENAME"
+>标准输出</TT
+>. 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+>
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat $filename &#62;/dev/null
+   2&nbsp;# 文件内容丢失，而不会输出到标准输出.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>禁止<TT
+CLASS="FILENAME"
+>标准错误</TT
+> (来自<A
+HREF="moreadv.html#EX57"
+>例子 12-3</A
+>). 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+>
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;rm $badname 2&#62;/dev/null
+   2&nbsp;#           这样错误信息[标准错误]就被丢到太平洋去了.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>禁止标准输出和标准错误的输出. 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+>
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat $filename 2&#62;/dev/null &#62;/dev/null
+   2&nbsp;# 如果"$filename"不存在，将不会有任何错误信息提示.
+   3&nbsp;# 如果"$filename"存在, 文件的内容不会打印到标准输出.
+   4&nbsp;# 因此Therefore, 上面的代码根本不会输出任何信息.
+   5&nbsp;#
+   6&nbsp;#  当只想测试命令的退出码而不想有任何输出时非常有用。
+   7&nbsp;#
+   8&nbsp;#
+   9&nbsp;# cat $filename &#38;&#62;/dev/null
+  10&nbsp;#     也可以, 由 Baris Cicek 指出.</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>Deleting contents of a file, but preserving the file itself, with all attendant 
+          permissions (from <A
+HREF="sha-bang.html#EX1"
+>Example 2-1</A
+> and <A
+HREF="sha-bang.html#EX2"
+>Example 2-3</A
+>): 
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+          <TR
+>
+            <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat /dev/null &#62; /var/log/messages
+   2&nbsp;#  : &#62; /var/log/messages   有同样的效果, 但不会产生新的进程.（因为:是内建的）
+   3&nbsp;
+   4&nbsp;cat /dev/null &#62; /var/log/wtmp</PRE
+></TD
+>
+          </TR
+>
+        </TABLE
+></P
+>
+        <P
+>自动清空日志文件的内容 (特别适合处理这些由商业Web站点发送的讨厌的<SPAN
+CLASS="QUOTE"
+>"cookies"</SPAN
+>):</P
+>
+        <DIV
+CLASS="EXAMPLE"
+>
+          <HR>
+          <A
+NAME="COOKIES"
+></A
+>
+          <P
+><B
+>例子 28-1. 隐藏cookie而不再使用</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+>
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ -f ~/.netscape/cookies ]  # 如果存在则删除.
+   2&nbsp;then
+   3&nbsp;  rm -f ~/.netscape/cookies
+   4&nbsp;fi
+   5&nbsp;
+   6&nbsp;ln -s /dev/null ~/.netscape/cookies
+   7&nbsp;# 现在所有的cookies都会丢入黑洞而不会保存在磁盘上了.</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+      </DD
+>
+      <DT
+><A
+NAME="ZEROSREF1"
+></A
+>使用<TT
+CLASS="FILENAME"
+>/dev/zero</TT
+></DT
+>
+      <DD
+>
+        <P
+>像<TT
+CLASS="FILENAME"
+>/dev/null</TT
+>一样, <TT
+CLASS="FILENAME"
+>/dev/zero也是一个伪文件</TT
+>, 但它实际上产生连续不断的null的流（二进制的零流，而不是ASCII型的）. 写入它的输出会丢失不见, 而从<TT
+CLASS="FILENAME"
+>/dev/zero</TT
+>读出一连串的null也比较困难, 虽然这也能通过<A
+HREF="extmisc.html#ODREF"
+>od</A
+>或一个十六进制编辑器来做到. <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+>主要的用处是用来创建一个指定长度用于初始化的空文件，就像临时交换文件.</P
+>
+        <DIV
+CLASS="EXAMPLE"
+>
+          <HR>
+          <A
+NAME="EX73"
+></A
+>
+          <P
+><B
+>例子 28-2. <TT
+CLASS="FILENAME"
+>用/dev/zero创建一个交换临时文件</TT
+></B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+>
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# 创建一个交换文件.
+   3&nbsp;
+   4&nbsp;ROOT_UID=0         # Root 用户的 $UID 是 0.
+   5&nbsp;E_WRONG_USER=65    # 不是 root?
+   6&nbsp;
+   7&nbsp;FILE=/swap
+   8&nbsp;BLOCKSIZE=1024
+   9&nbsp;MINBLOCKS=40
+  10&nbsp;SUCCESS=0
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;# 这个脚本必须用root来运行.
+  14&nbsp;if [ "$UID" -ne "$ROOT_UID" ]
+  15&nbsp;then
+  16&nbsp;  echo; echo "You must be root to run this script."; echo
+  17&nbsp;  exit $E_WRONG_USER
+  18&nbsp;fi  
+  19&nbsp;  
+  20&nbsp;
+  21&nbsp;blocks=${1:-$MINBLOCKS}          #  如果命令行没有指定，
+  22&nbsp;                                 #+ 则设置为默认的40块.
+  23&nbsp;# 上面这句等同如：
+  24&nbsp;# --------------------------------------------------
+  25&nbsp;# if [ -n "$1" ]
+  26&nbsp;# then
+  27&nbsp;#   blocks=$1
+  28&nbsp;# else
+  29&nbsp;#   blocks=$MINBLOCKS
+  30&nbsp;# fi
+  31&nbsp;# --------------------------------------------------
+  32&nbsp;
+  33&nbsp;
+  34&nbsp;if [ "$blocks" -lt $MINBLOCKS ]
+  35&nbsp;then
+  36&nbsp;  blocks=$MINBLOCKS              # 最少要有 40 个块长.
+  37&nbsp;fi  
+  38&nbsp;
+  39&nbsp;
+  40&nbsp;echo "Creating swap file of size $blocks blocks (KB)."
+  41&nbsp;dd if=/dev/zero of=$FILE bs=$BLOCKSIZE count=$blocks  # 把零写入文件.
+  42&nbsp;
+  43&nbsp;mkswap $FILE $blocks             # 将此文件建为交换文件（或称交换分区）.
+  44&nbsp;swapon $FILE                     # 激活交换文件.
+  45&nbsp;
+  46&nbsp;echo "Swap file created and activated."
+  47&nbsp;
+  48&nbsp;exit $SUCCESS</PRE
+></TD
+>
+            </TR
+>
+          </TABLE
+>
+          <HR>
+        </DIV
+>
+        <P
+>关于 <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+> 的另一个应用是为特定的目的而用零去填充一个指定大小的文件, 如挂载一个文件系统到<A
+HREF="devproc.html#LOOPBACKREF"
+>环回设备 （loopback device）</A
+> (参考<A
+HREF="system.html#CREATEFS"
+>例子 13-8</A
+>) 或<SPAN
+CLASS="QUOTE"
+>"安全地"</SPAN
+> 删除一个文件(参考<A
+HREF="extmisc.html#BLOTOUT"
+>例子 12-55</A
+>).</P
+>
+        <DIV
+CLASS="EXAMPLE"
+>
+          <HR>
+          <A
+NAME="RAMDISK"
+></A
+>
+          <P
+><B
+>例子 28-3. 创建ramdisk</B
+></P
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+>
+            <TR
+>
+              <TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ramdisk.sh
+   3&nbsp;
+   4&nbsp;#  "ramdisk"是系统RAM内存的一段，
+   5&nbsp;#+ 它可以被当成是一个文件系统来操作.
+   6&nbsp;#  它的优点是存取速度非常快 (包括读和写).
+   7&nbsp;#  缺点: 易失性, 当计算机重启或关机时会丢失数据.
+   8&nbsp;#+       会减少系统可用的RAM.
+   9&nbsp;#
+  10&nbsp;#  那么ramdisk有什么作用呢?
+  11&nbsp;#  保存一个较大的数据集在ramdisk, 比如一张表或字典,
+  12&nbsp;#+ 这样可以加速数据查询, 因为在内存里查找比在磁盘里查找快得多.
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;E_NON_ROOT_USER=70             # 必须用root来运行.
+  16&nbsp;ROOTUSER_NAME=root
+  17&nbsp;
+  18&nbsp;MOUNTPT=/mnt/ramdisk
+  19&nbsp;SIZE=2000                      # 2K 个块 (可以合适的做修改)
+  20&nbsp;BLOCKSIZE=1024                 # 每块有1K (1024 byte) 的大小
+  21&nbsp;DEVICE=/dev/ram0               # 第一个 ram 设备
+  22&nbsp;
+  23&nbsp;username=`id -nu`
+  24&nbsp;if [ "$username" != "$ROOTUSER_NAME" ]
+  25&nbsp;then
+  26&nbsp;  echo "Must be root to run \"`basename $0`\"."
+  27&nbsp;  exit $E_NON_ROOT_USER
+  28&nbsp;fi
+  29&nbsp;
+  30&nbsp;if [ ! -d "$MOUNTPT" ]         #  测试挂载点是否已经存在了,
+  31&nbsp;then                           #+ 如果这个脚本已经运行了好几次了就不会再建这个目录了
+  32&nbsp;  mkdir $MOUNTPT               #+ 因为前面已经建立了.
+  33&nbsp;fi
+  34&nbsp;
+  35&nbsp;dd if=/dev/zero of=$DEVICE count=$SIZE bs=$BLOCKSIZE  # 把RAM设备的内容用零填充.
+  36&nbsp;                                                      # 为何需要这么做?
+  37&nbsp;mke2fs $DEVICE                 # 在RAM设备上创建一个ext2文件系统.
+  38&nbsp;mount $DEVICE $MOUNTPT         # 挂载设备.
+  39&nbsp;chmod 777 $MOUNTPT             # 使普通用户也可以存取这个ramdisk.
+  40&nbsp;                               # 但是, 只能由root来

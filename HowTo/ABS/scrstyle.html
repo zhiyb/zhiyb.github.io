@@ -1,0 +1,557 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Scripting With Style</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part4.html"><LINK
+REL="PREVIOUS"
+TITLE="Gotchas"
+HREF="gotchas.html"><LINK
+REL="NEXT"
+TITLE="Miscellany"
+HREF="miscellany.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="gotchas.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="miscellany.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+>
+  <H1
+><A
+NAME="SCRSTYLE"
+>第32章. 脚本编程风格</A
+></H1
+>
+  <P
+>写脚本时养成结构化和系统方法的习惯. 即使你在信封背后随便做一下草稿也是有益的，要养成在写代码前花几分钟来规划和组织你的想法.</P
+>
+  <P
+>这儿是一些风格的指南. 注意这节文档不是想成为一个<I
+CLASS="EMPHASIS"
+>官方Shell编程风格</I
+>.</P
+>
+  <DIV
+CLASS="SECT1"
+>
+    <H1
+CLASS="SECT1"
+><A
+NAME="UNOFFICIALST"
+>32.1. 非官方的Shell脚本风格</A
+></H1
+>
+    <UL
+><LI
+>
+      <P
+>注释你的代码.这会使你的代码更容易让别人理解和赏识，同时也便于你维护.
+	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;PASS="$PASS${MATRIX:$(($RANDOM%${#MATRIX})):1}"
+   2&nbsp;# 当你去年写下这句代码时非常的了解它在干什么事,但现在它完全是一个谜.
+   3&nbsp;# (摘自 Antek Sawicki的"pw.sh" 脚本.)</PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+>
+	  <P
+>给脚本和函数加上描述性的头部信息.
+	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#************************************************#
+   4&nbsp;#                   xyz.sh                       #
+   5&nbsp;#           written by Bozo Bozeman              #
+   6&nbsp;#                July 05, 2001                   #
+   7&nbsp;#                                                #
+   8&nbsp;#                   清除项目文件.                #
+   9&nbsp;#************************************************#
+  10&nbsp;
+  11&nbsp;E_BADDIR=65                       # 没有那样的目录.
+  12&nbsp;projectdir=/home/bozo/projects    # 要清除的目录.
+  13&nbsp;
+  14&nbsp;# --------------------------------------------------------- #
+  15&nbsp;# cleanup_pfiles ()                                         #
+  16&nbsp;# 删除指定目录里的所有文件.                                 #
+  17&nbsp;# 参数: $target_directory                                   #
+  18&nbsp;# 返回: 成功返回0 , 失败返回$E_BADDIR值.                    #
+  19&nbsp;# --------------------------------------------------------- #
+  20&nbsp;cleanup_pfiles ()
+  21&nbsp;{
+  22&nbsp;  if [ ! -d "$1" ]  # 测试目标目录是否存在.
+  23&nbsp;  then
+  24&nbsp;    echo "$1 is not a directory."
+  25&nbsp;    return $E_BADDIR
+  26&nbsp;  fi
+  27&nbsp;
+  28&nbsp;  rm -f "$1"/*
+  29&nbsp;  return 0   # 成功.
+  30&nbsp;}  
+  31&nbsp;
+  32&nbsp;cleanup_pfiles $projectdir
+  33&nbsp;
+  34&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+>
+
+	    确认 <I
+CLASS="EMPHASIS"
+>#!/bin/bash</I
+> 在脚本的第一行，在任何头部注释行之前.
+	    </P
+></LI
+>
+      <LI
+>
+        <P
+>避免使用 <SPAN
+CLASS="QUOTE"
+>"魔数,"</SPAN
+>
+
+	     <A
+NAME="AEN15251"
+HREF="#FTN.AEN15251"
+>[1]</A
+>
+
+	    它是硬编码的字符常量. 用有意义的变量名来代替. 这使脚本更容易理解并允许在不破坏应用的情况下做改变和更新.
+
+	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ -f /var/log/messages ]
+   2&nbsp;then
+   3&nbsp;  ...
+   4&nbsp;fi
+   5&nbsp;# 一年以后，你决定让脚本改为检查 /var/log/syslog.
+   6&nbsp;# 那么现在就需要你手动修改脚本里每一处的要改动的代码,
+   7&nbsp;# 希望不要有你疏漏的地方.
+   8&nbsp;
+   9&nbsp;# 更好的办法是:
+  10&nbsp;LOGFILE=/var/log/messages  # 只需要改动一行.
+  11&nbsp;if [ -f "$LOGFILE" ]
+  12&nbsp;then
+  13&nbsp;  ...
+  14&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+>
+          </P
+></LI
+><LI
+>
+            <P
+>为变量和函数选择描述性的名字.
+	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;fl=`ls -al $dirname`                 # 含义含糊.
+   2&nbsp;file_listing=`ls -al $dirname`       # 更好的名字.
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;MAXVAL=10   # 同一个脚本所有程序代码使用脚本常量.
+   6&nbsp;while [ "$index" -le "$MAXVAL" ]
+   7&nbsp;...
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;E_NOTFOUND=75                        #  把错误代码的代表的变量名大写U,
+  11&nbsp;                                     # +并以"E_"开头.
+  12&nbsp;if [ ! -e "$filename" ]
+  13&nbsp;then
+  14&nbsp;  echo "File $filename not found."
+  15&nbsp;  exit $E_NOTFOUND
+  16&nbsp;fi  
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;MAIL_DIRECTORY=/var/spool/mail/bozo  # 环境变量名用大写.
+  20&nbsp;export MAIL_DIRECTORY
+  21&nbsp;
+  22&nbsp;
+  23&nbsp;GetAnswer ()                         # 函数名用适当的大小写混合组成.
+  24&nbsp;{
+  25&nbsp;  prompt=$1
+  26&nbsp;  echo -n $prompt
+  27&nbsp;  read answer
+  28&nbsp;  return $answer
+  29&nbsp;}  
+  30&nbsp;
+  31&nbsp;GetAnswer "What is your favorite number? "
+  32&nbsp;favorite_number=$?
+  33&nbsp;echo $favorite_number
+  34&nbsp;
+  35&nbsp;
+  36&nbsp;_uservariable=23                     # 语法允许, 但不推荐.
+  37&nbsp;# 用户定义的变量最好不要用下划线开头.
+  38&nbsp;# 把这个留给系统变量使用更好.</PRE
+></TD
+></TR
+></TABLE
+>
+          </P
+></LI
+><LI
+>
+            <P
+>用有含义和系统的方法来使用<A
+HREF="exit-status.html#EXITCOMMANDREF"
+>退出代码（exit codes）</A
+>.
+
+	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;E_WRONG_ARGS=65
+   2&nbsp;...
+   3&nbsp;...
+   4&nbsp;exit $E_WRONG_ARGS</PRE
+></TD
+></TR
+></TABLE
+>
+            也参考<A
+HREF="exitcodes.html"
+>附录 D</A
+>.</P
+>
+            <P
+><I
+CLASS="EMPHASIS"
+>最后</I
+> 建议在脚本中使用<TT
+CLASS="FILENAME"
+>/usr/include/sysexits.h</TT
+>的退出码, 虽然它们主要由 C 和 C++
+	    语言编程时使用.</P
+>
+          </LI
+><LI
+>
+            <P
+>使用标准的参数选项.
+	     <I
+CLASS="EMPHASIS"
+>最后</I
+> 建议使用下面一组参数标志.</P
+>
+            <P
+>             <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;-a      All: Return all information (including hidden file info).
+   2&nbsp;-b      Brief: Short version, usually for other scripts.
+   3&nbsp;-c      Copy, concatenate, etc.
+   4&nbsp;-d      Daily: Use information from the whole day, and not merely
+   5&nbsp;        information for a specific instance/user.
+   6&nbsp;-e      Extended/Elaborate: (often does not include hidden file info).
+   7&nbsp;-h      Help: Verbose usage w/descs, aux info, discussion, help.
+   8&nbsp;        See also -V.
+   9&nbsp;-l      Log output of script.
+  10&nbsp;-m      Manual: Launch man-page for base command.
+  11&nbsp;-n      Numbers: Numerical data only.
+  12&nbsp;-r      Recursive: All files in a directory (and/or all sub-dirs).
+  13&nbsp;-s      Setup &#38; File Maintenance: Config files for this script.
+  14&nbsp;-u      Usage: List of invocation flags for the script.
+  15&nbsp;-v      Verbose: Human readable output, more or less formatted.
+  16&nbsp;-V      Version / License / Copy(right|left) / Contribs (email too).</PRE
+></TD
+></TR
+></TABLE
+>
+           </P
+>
+           <P
+>也参考<A
+HREF="standard-options.html"
+>附录 F</A
+>.</P
+>
+	    </LI
+><LI
+>
+             <P
+>把复杂的脚本分割成简单一些的模块. 用合适的函数来实现各个功能. 参考<A
+HREF="bash2.html#EX79"
+>例子 34-4</A
+>.</P
+>
+           </LI
+><LI
+>
+	      <P
+>如果有简单的结构可以使用，不要使用复杂的结构.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;COMMAND
+   2&nbsp;if [ $? -eq 0 ]
+   3&nbsp;...
+   4&nbsp;# 多余的并且也不直接明了.
+   5&nbsp;
+   6&nbsp;if COMMAND
+   7&nbsp;...
+   8&nbsp;# 更简练 (或者可能会损失一些可读性).</PRE
+></TD
+></TR
+></TABLE
+>
+          </P
+></LI
+></UL
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>... reading the UNIX source code to the Bourne shell (/bin/sh). I
+        was shocked at how much simple algorithms could be made cryptic, and
+	therefore useless, by a poor choice of code style. I asked myself,
+	<SPAN
+CLASS="QUOTE"
+>"Could someone be proud of this code?"</SPAN
+></I
+></P
+></I
+></TD
+></TR
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+><SPAN
+CLASS="ATTRIBUTION"
+>Landon Noll</SPAN
+></I
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN15251"
+HREF="scrstyle.html#AEN15251"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>在上下文, <SPAN
+CLASS="QUOTE"
+>"魔数"</SPAN
+> 和用来指明文件类型的 <a
+href="sha-bang.html#MAGNUMREF"
+>魔数（magic numbers）</a
+>有完全不同的意思.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="gotchas.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Gotchas</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part4.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Miscellany</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

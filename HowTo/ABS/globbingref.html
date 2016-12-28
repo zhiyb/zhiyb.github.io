@@ -1,0 +1,481 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Globbing</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Regular Expressions"
+HREF="regexp.html"><LINK
+REL="PREVIOUS"
+TITLE="Regular Expressions"
+HREF="regexp.html"><LINK
+REL="NEXT"
+TITLE="Subshells"
+HREF="subshells.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=gb2312"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-size:18px;
+font-family:"黑体", Arial;
+font-weight:bolder;
+line-height:200%;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="regexp.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 19. Regular Expressions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="subshells.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+>
+  <H1
+CLASS="SECT1"
+><A
+NAME="GLOBBINGREF"
+>19.2. 通配</A
+></H1
+>
+  <P
+>Bash本身没有正则表达式的功能.在脚本里，使用正则表达式的是命令和软件包 -- 例如<A
+HREF="sedawk.html#SEDREF"
+>sed</A
+>和<A
+HREF="awk.html#AWKREF"
+>awk</A
+> -- 它们可以解释正则表达式.</P
+>
+  <P
+>Bash所做的是展开文件名扩展 <A
+NAME="AEN13843"
+HREF="#FTN.AEN13843"
+>[1]</A
+> -- 这就是所谓的通配<I
+CLASS="FIRSTTERM"
+>(globbing</I
+>) -- 但它不是使用标准的正则表达式. 而是使用通配符. 通配解释标准的通配符：<SPAN
+CLASS="TOKEN"
+>*和</SPAN
+><SPAN
+CLASS="TOKEN"
+>?</SPAN
+>, 方括号括起来的字符,还有其他的一些特殊的字符(比如说^用来表示取反匹配).然而通配机制的通配符有很大的局限性. 包含有*号的字符串将不会匹配以点开头的文件，例如<TT
+CLASS="FILENAME"
+>.bashrc</TT
+>. <A
+NAME="AEN13856"
+HREF="#FTN.AEN13856"
+>[2]</A
+> 另外,通配机制的<TT
+CLASS="REPLACEABLE"
+><I
+>?</I
+></TT
+> 字符和正则表达式中表示的意思不一样.</P
+>
+  <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>total 2
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 a.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1
+ -rw-rw-r--    1 bozo  bozo       466 Aug  6 17:48 t2.sh
+ -rw-rw-r--    1 bozo  bozo       758 Jul 30 09:02 test1.txt</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l t?.sh</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-rw-r--    1 bozo  bozo       466 Aug  6 17:48 t2.sh</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l [ab]*</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 a.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l [a-c]*</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 a.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l [^ab]*</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1
+ -rw-rw-r--    1 bozo  bozo       466 Aug  6 17:48 t2.sh
+ -rw-rw-r--    1 bozo  bozo       758 Jul 30 09:02 test1.txt</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l {b*,c*,*est*}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1
+ -rw-rw-r--    1 bozo  bozo       758 Jul 30 09:02 test1.txt</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+>
+  <P
+>Bash会对命令行中没有引号引起来的字符尝试文件名扩展. <A
+HREF="internal.html#ECHOREF"
+>echo</A
+> 命令可以印证这一点.</P
+>
+  <P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo *</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>a.1 b.1 c.1 t2.sh test1.txt</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo t*</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>t2.sh test1.txt</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	   </P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>可以改变Bash对通配字符进行解释的行为. <B
+CLASS="COMMAND"
+>set -f</B
+> 命令可以禁止通配机制, 并且<a
+href="internal.html#SHOPTREF"
+>shopt</a
+>的选项<TT
+CLASS="OPTION"
+>nocaseglob</TT
+>和<TT
+CLASS="OPTION"
+>nullglob</TT
+> 能改变通配的行为.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+  <P
+>参考<A
+HREF="loops.html#LISTGLOB"
+>例子 10-4</A
+>.</P
+>
+</DIV
+>
+<H3
+CLASS="FOOTNOTES"
+>注</H3
+>
+<TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN13843"
+HREF="globbingref.html#AEN13843"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><I
+CLASS="FIRSTTERM"
+>文件名扩展</I
+>意思是扩展包含有特殊字符的文件名模式和模板. 例如，<TT
+CLASS="FILENAME"
+>example.???</TT
+>可能扩展成<TT
+CLASS="FILENAME"
+>example.001</TT
+>和/或<TT
+CLASS="FILENAME"
+>example.txt</TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN13856"
+HREF="globbingref.html#AEN13856"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+> 文件名扩展能匹配点开头的文件，但仅在模式字串明确地包含字面意思的点(.)时才扩展. 
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;~/[.]bashrc    #  不会扩展成 ~/.bashrc
+   2&nbsp;~/?bashrc      #  也不会扩展.
+   3&nbsp;               #  通配机制中的通配符和元字符不会扩展点文件
+   4&nbsp;               #
+   5&nbsp;
+   6&nbsp;~/.[b]ashrc    #  会扩展成 ~/.bashrc
+   7&nbsp;~/.ba?hrc      #  也会.
+   8&nbsp;~/.bashr*      #  也会.
+   9&nbsp;
+  10&nbsp;# 可以使用"dotglob"选项把这个特性禁用.
+  11&nbsp;
+  12&nbsp;# 多谢, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="regexp.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="subshells.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Regular Expressions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="regexp.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Subshells</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

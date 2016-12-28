@@ -1,0 +1,1469 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Internal Commands and Builtins</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="PREVIOUS"
+TITLE="Testing and Branching"
+HREF="testbranch.html"><LINK
+REL="NEXT"
+TITLE="External Filters, Programs and Commands"
+HREF="external.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="testbranch.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="external.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="INTERNAL"
+>Chapter 11. Internal Commands and Builtins</A
+></H1
+><P
+><A
+NAME="BUILTINREF"
+></A
+>A <I
+CLASS="FIRSTTERM"
+>builtin</I
+>
+	is a <B
+CLASS="COMMAND"
+>command</B
+> contained within the Bash tool
+	set, literally <I
+CLASS="EMPHASIS"
+>built in</I
+>. This is either
+	for performance reasons -- builtins execute faster than external
+	commands, which usually require forking off a separate process
+	-- or because a particular builtin needs direct access to the
+	shell internals.</P
+><P
+><A
+NAME="FORKREF"
+></A
+></P
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN5779"
+></A
+><P
+>When a command or
+		   the shell itself initiates (or
+		   <I
+CLASS="FIRSTTERM"
+>spawns</I
+>) a new
+		   subprocess to carry out a task, this is called
+		   <I
+CLASS="FIRSTTERM"
+>forking</I
+>. This new process
+		   is the <I
+CLASS="FIRSTTERM"
+>child</I
+>, and the process
+		   that <I
+CLASS="EMPHASIS"
+>forked</I
+> it off is the
+		   <I
+CLASS="FIRSTTERM"
+>parent</I
+>. While the <I
+CLASS="FIRSTTERM"
+>child
+		   process</I
+> is doing its work, the
+		   <I
+CLASS="FIRSTTERM"
+>parent process</I
+> is still
+		   executing.</P
+><P
+>Note that while a <I
+CLASS="EMPHASIS"
+>parent process</I
+>
+		   gets the <I
+CLASS="FIRSTTERM"
+>process ID</I
+> of the
+		   <I
+CLASS="EMPHASIS"
+>child process</I
+>, and can thus
+		   pass arguments to it, <I
+CLASS="EMPHASIS"
+>the reverse is not
+		   true</I
+>. <A
+HREF="gotchas.html#PARCHILDPROBREF"
+>This
+		   can create problems that are subtle and hard to track
+		   down.</A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SPAWNSCR"
+></A
+><P
+><B
+>Example 11-1. A script that forks off multiple instances of itself</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# spawn.sh
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;PIDS=$(pidof sh $0)  # Process IDs of the various instances of this script.
+   6&nbsp;P_array=( $PIDS )    # Put them in an array (why?).
+   7&nbsp;echo $PIDS           # Show process IDs of parent and child processes.
+   8&nbsp;let "instances = ${#P_array[*]} - 1"  # Count elements, less 1.
+   9&nbsp;                                      # Why subtract 1?
+  10&nbsp;echo "$instances instance(s) of this script running."
+  11&nbsp;echo "[Hit Ctl-C to exit.]"; echo
+  12&nbsp;
+  13&nbsp;
+  14&nbsp;sleep 1              # Wait.
+  15&nbsp;sh $0                # Play it again, Sam.
+  16&nbsp;
+  17&nbsp;exit 0               # Not necessary; script will never get to here.
+  18&nbsp;                     # Why not?
+  19&nbsp;
+  20&nbsp;#  After exiting with a Ctl-C,
+  21&nbsp;#+ do all the spawned instances of the script die?
+  22&nbsp;#  If so, why?
+  23&nbsp;
+  24&nbsp;# Note:
+  25&nbsp;# ----
+  26&nbsp;# Be careful not to run this script too long.
+  27&nbsp;# It will eventually eat up too many system resources.
+  28&nbsp;
+  29&nbsp;#  Is having a script spawn multiple instances of itself
+  30&nbsp;#+ an advisable scripting technique.
+  31&nbsp;#  Why or why not?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Generally, a Bash <I
+CLASS="EMPHASIS"
+>builtin</I
+>
+		   does not fork a subprocess when it executes within
+		   a script. An external system command or filter in
+		   a script usually <I
+CLASS="EMPHASIS"
+>will</I
+> fork a
+		   subprocess.</P
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>A builtin may be a synonym to a system command of the same
+	name, but Bash reimplements it internally.  For example,
+	the Bash <B
+CLASS="COMMAND"
+>echo</B
+> command is not the same as
+	<TT
+CLASS="FILENAME"
+>/bin/echo</TT
+>, although their behavior is
+	almost identical.
+	   <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo "This line uses the \"echo\" builtin."
+   4&nbsp;/bin/echo "This line uses the /bin/echo system command."</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+><P
+><A
+NAME="KEYWORDREF"
+></A
+>A <I
+CLASS="FIRSTTERM"
+>keyword</I
+>
+	is a <I
+CLASS="EMPHASIS"
+>reserved</I
+> word, token or
+	operator. Keywords have a special meaning to the shell,
+	and indeed are the building blocks of the shell's
+	syntax. As examples, <SPAN
+CLASS="QUOTE"
+>"<SPAN
+CLASS="TOKEN"
+>for</SPAN
+>"</SPAN
+>,
+	<SPAN
+CLASS="QUOTE"
+>"<SPAN
+CLASS="TOKEN"
+>while</SPAN
+>"</SPAN
+>, <SPAN
+CLASS="QUOTE"
+>"do"</SPAN
+>, and
+	<SPAN
+CLASS="QUOTE"
+>"<SPAN
+CLASS="TOKEN"
+>!</SPAN
+>"</SPAN
+> are keywords. Similar to a <A
+HREF="internal.html#BUILTINREF"
+>builtin</A
+>, a keyword is hard-coded into
+	Bash, but unlike a <I
+CLASS="EMPHASIS"
+>builtin</I
+>, a keyword is
+	not by itself a command, but part of a larger command structure.
+
+	   <A
+NAME="AEN5817"
+HREF="#FTN.AEN5817"
+>[1]</A
+>
+
+	</P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="INTIO1"
+></A
+>I/O</B
+></P
+><DL
+><DT
+><A
+NAME="ECHOREF"
+></A
+><B
+CLASS="COMMAND"
+>echo</B
+></DT
+><DD
+><P
+>prints (to <TT
+CLASS="FILENAME"
+>stdout</TT
+>) an expression
+	      or variable (see <A
+HREF="variables.html#EX9"
+>Example 4-1</A
+>). 
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo Hello
+   2&nbsp;echo $a</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>An <B
+CLASS="COMMAND"
+>echo</B
+> requires the
+	      <TT
+CLASS="OPTION"
+>-e</TT
+> option to print escaped characters. See
+	      <A
+HREF="escapingsection.html#ESCAPED"
+>Example 5-2</A
+>.</P
+><P
+>Normally, each <B
+CLASS="COMMAND"
+>echo</B
+> command prints
+	      a terminal newline, but the <TT
+CLASS="OPTION"
+>-n</TT
+> option
+	      suppresses this.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>An <B
+CLASS="COMMAND"
+>echo</B
+> can be used to feed a
+	      sequence of commands down a pipe.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if echo "$VAR" | grep -q txt   # if [[ $VAR = *txt* ]]
+   2&nbsp;then
+   3&nbsp;  echo "$VAR contains the substring sequence \"txt\""
+   4&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>An <B
+CLASS="COMMAND"
+>echo</B
+>, in combination with
+	      <A
+HREF="commandsub.html#COMMANDSUBREF"
+>command substitution</A
+>
+	      can set a variable.</P
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>a=`echo
+	      "HELLO" | tr A-Z a-z`</B
+></TT
+></P
+><P
+>See also <A
+HREF="textproc.html#LOWERCASE"
+>Example 12-19</A
+>, <A
+HREF="moreadv.html#EX57"
+>Example 12-3</A
+>, <A
+HREF="mathc.html#MONTHLYPMT"
+>Example 12-42</A
+>, and <A
+HREF="mathc.html#BASE"
+>Example 12-43</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Be aware that <B
+CLASS="COMMAND"
+>echo `command`</B
+>
+	      deletes any linefeeds that the output
+	      of <TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>
+	      generates.</P
+><P
+>The <A
+HREF="variables2.html#IFSREF"
+>$IFS</A
+> (internal field
+	      separator) variable normally contains
+	      <SPAN
+CLASS="TOKEN"
+>\n</SPAN
+> (linefeed) as one of its set of
+	      <A
+HREF="special-chars.html#WHITESPACEREF"
+>whitespace</A
+>
+	      characters. Bash therefore splits the output of
+	      <TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+> at linefeeds
+	      into arguments to <B
+CLASS="COMMAND"
+>echo</B
+>.  Then
+	      <B
+CLASS="COMMAND"
+>echo</B
+> outputs these arguments,
+	      separated by spaces.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -l /usr/share/apps/kjezz/sounds</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>-rw-r--r--    1 root     root         1407 Nov  7  2000 reflect.au
+ -rw-r--r--    1 root     root          362 Nov  7  2000 seconds.au</TT
+>
+ 
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo `ls -l /usr/share/apps/kjezz/sounds`</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>total 40 -rw-r--r-- 1 root root 716 Nov 7 2000 reflect.au -rw-r--r-- 1 root root 362 Nov 7 2000 seconds.au</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>              So, how can we embed a linefeed within an
+	      <I
+CLASS="EMPHASIS"
+>echoed</I
+> character string?
+
+	     <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Embedding a linefeed?
+   2&nbsp;echo "Why doesn't this string \n split on two lines?"
+   3&nbsp;# Doesn't split.
+   4&nbsp;
+   5&nbsp;# Let's try something else.
+   6&nbsp;
+   7&nbsp;echo
+   8&nbsp;	     
+   9&nbsp;echo $"A line of text containing
+  10&nbsp;a linefeed."
+  11&nbsp;# Prints as two distinct lines (embedded linefeed).
+  12&nbsp;# But, is the "$" variable prefix really necessary?
+  13&nbsp;
+  14&nbsp;echo
+  15&nbsp;
+  16&nbsp;echo "This string splits
+  17&nbsp;on two lines."
+  18&nbsp;# No, the "$" is not needed.
+  19&nbsp;
+  20&nbsp;echo
+  21&nbsp;echo "---------------"
+  22&nbsp;echo
+  23&nbsp;
+  24&nbsp;echo -n $"Another line of text containing
+  25&nbsp;a linefeed."
+  26&nbsp;# Prints as two distinct lines (embedded linefeed).
+  27&nbsp;# Even the -n option fails to suppress the linefeed here.
+  28&nbsp;
+  29&nbsp;echo
+  30&nbsp;echo
+  31&nbsp;echo "---------------"
+  32&nbsp;echo
+  33&nbsp;echo
+  34&nbsp;
+  35&nbsp;# However, the following doesn't work as expected.
+  36&nbsp;# Why not? Hint: Assignment to a variable.
+  37&nbsp;string1=$"Yet another line of text containing
+  38&nbsp;a linefeed (maybe)."
+  39&nbsp;
+  40&nbsp;echo $string1
+  41&nbsp;# Yet another line of text containing a linefeed (maybe).
+  42&nbsp;#                                    ^
+  43&nbsp;# Linefeed becomes a space.
+  44&nbsp;
+  45&nbsp;# Thanks, Steve Parker, for pointing this out.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>This command is a shell builtin, and not the same as
+	      <TT
+CLASS="FILENAME"
+>/bin/echo</TT
+>, although its behavior is
+	      similar.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>type -a echo</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>echo is a shell builtin
+ echo is /bin/echo</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="PRINTFREF"
+></A
+><B
+CLASS="COMMAND"
+>printf</B
+></DT
+><DD
+><P
+>The <B
+CLASS="COMMAND"
+>printf</B
+>, formatted print, command is an
+	      enhanced <B
+CLASS="COMMAND"
+>echo</B
+>.  It is a limited variant
+	      of the C language <TT
+CLASS="FUNCTION"
+>printf()</TT
+> library
+	      function, and its syntax is somewhat different.</P
+><P
+><B
+CLASS="COMMAND"
+>printf</B
+>   <TT
+CLASS="REPLACEABLE"
+><I
+>format-string</I
+></TT
+>...   <TT
+CLASS="REPLACEABLE"
+><I
+>parameter</I
+></TT
+>... </P
+><P
+>This is the Bash builtin version
+	      of the <TT
+CLASS="FILENAME"
+>/bin/printf</TT
+> or
+	      <TT
+CLASS="FILENAME"
+>/usr/bin/printf</TT
+> command. See the
+	      <B
+CLASS="COMMAND"
+>printf</B
+> manpage (of the system command)
+	      for in-depth coverage.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Older versions of Bash may not support
+	      <B
+CLASS="COMMAND"
+>printf</B
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX47"
+></A
+><P
+><B
+>Example 11-2. <B
+CLASS="COMMAND"
+>printf</B
+> in action</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# printf demo
+   3&nbsp;
+   4&nbsp;PI=3.14159265358979
+   5&nbsp;DecimalConstant=31373
+   6&nbsp;Message1="Greetings,"
+   7&nbsp;Message2="Earthling."
+   8&nbsp;
+   9&nbsp;echo
+  10&nbsp;
+  11&nbsp;printf "Pi to 2 decimal places = %1.2f" $PI
+  12&nbsp;echo
+  13&nbsp;printf "Pi to 9 decimal places = %1.9f" $PI  # It even rounds off correctly.
+  14&nbsp;
+  15&nbsp;printf "\n"                                  # Prints a line feed,
+  16&nbsp;                                             # Equivalent to 'echo' . . .
+  17&nbsp;
+  18&nbsp;printf "Constant = \t%d\n" $DecimalConstant  # Inserts tab (\t).
+  19&nbsp;
+  20&nbsp;printf "%s %s \n" $Message1 $Message2
+  21&nbsp;
+  22&nbsp;echo
+  23&nbsp;
+  24&nbsp;# ==========================================#
+  25&nbsp;# Simulation of C function, sprintf().
+  26&nbsp;# Loading a variable with a formatted string.
+  27&nbsp;
+  28&nbsp;echo 
+  29&nbsp;
+  30&nbsp;Pi12=$(printf "%1.12f" $PI)
+  31&nbsp;echo "Pi to 12 decimal places = $Pi12"
+  32&nbsp;
+  33&nbsp;Msg=`printf "%s %s \n" $Message1 $Message2`
+  34&nbsp;echo $Msg; echo $Msg
+  35&nbsp;
+  36&nbsp;#  As it happens, the 'sprintf' function can now be accessed
+  37&nbsp;#+ as a loadable module to Bash,
+  38&nbsp;#+ but this is not portable.
+  39&nbsp;
+  40&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Formatting error messages is a useful application of
+	      <B
+CLASS="COMMAND"
+>printf</B
+></P
+><P
+>	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;E_BADDIR=65
+   2&nbsp;
+   3&nbsp;var=nonexistent_directory
+   4&nbsp;
+   5&nbsp;error()
+   6&nbsp;{
+   7&nbsp;  printf "$@" &#62;&#38;2
+   8&nbsp;  # Formats positional params passed, and sends them to stderr.
+   9&nbsp;  echo
+  10&nbsp;  exit $E_BADDIR
+  11&nbsp;}
+  12&nbsp;
+  13&nbsp;cd $var || error $"Can't cd to %s." "$var"
+  14&nbsp;
+  15&nbsp;# Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+></DD
+><DT
+><A
+NAME="READREF"
+></A
+><B
+CLASS="COMMAND"
+>read</B
+></DT
+><DD
+><P
+><SPAN
+CLASS="QUOTE"
+>"Reads"</SPAN
+> the value
+	    of a variable from <TT
+CLASS="FILENAME"
+>stdin</TT
+>, that
+	    is, interactively fetches input from the keyboard. The
+	    <TT
+CLASS="OPTION"
+>-a</TT
+> option lets <B
+CLASS="COMMAND"
+>read</B
+>
+	    get array variables (see <A
+HREF="arrays.html#EX67"
+>Example 26-6</A
+>).</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX36"
+></A
+><P
+><B
+>Example 11-3. Variable assignment, using <B
+CLASS="COMMAND"
+>read</B
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# "Reading" variables.
+   3&nbsp;
+   4&nbsp;echo -n "Enter the value of variable 'var1': "
+   5&nbsp;# The -n option to echo suppresses newline.
+   6&nbsp;
+   7&nbsp;read var1
+   8&nbsp;# Note no '$' in front of var1, since it is being set.
+   9&nbsp;
+  10&nbsp;echo "var1 = $var1"
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;# A single 'read' statement can set multiple variables.
+  16&nbsp;echo -n "Enter the values of variables 'var2' and 'var3' (separated by a space or tab): "
+  17&nbsp;read var2 var3
+  18&nbsp;echo "var2 = $var2      var3 = $var3"
+  19&nbsp;# If you input only one value, the other variable(s) will remain unset (null).
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>A <B
+CLASS="COMMAND"
+>read</B
+> without an associated variable
+	      assigns its input to the dedicated variable <A
+HREF="variables2.html#REPLYREF"
+>$REPLY</A
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="READNOVAR"
+></A
+><P
+><B
+>Example 11-4. What happens when <B
+CLASS="COMMAND"
+>read</B
+> has no
+	        variable</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# read-novar.sh
+   3&nbsp;
+   4&nbsp;echo
+   5&nbsp;
+   6&nbsp;# -------------------------- #
+   7&nbsp;echo -n "Enter a value: "
+   8&nbsp;read var
+   9&nbsp;echo "\"var\" = "$var""
+  10&nbsp;# Everything as expected here.
+  11&nbsp;# -------------------------- #
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;# ------------------------------------------------------------------- #
+  16&nbsp;echo -n "Enter another value: "
+  17&nbsp;read           #  No variable supplied for 'read', therefore...
+  18&nbsp;               #+ Input to 'read' assigned to default variable, $REPLY.
+  19&nbsp;var="$REPLY"
+  20&nbsp;echo "\"var\" = "$var""
+  21&nbsp;# This is equivalent to the first code block.
+  22&nbsp;# ------------------------------------------------------------------- #
+  23&nbsp;
+  24&nbsp;echo
+  25&nbsp;
+  26&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Normally, inputting a <TT
+CLASS="USERINPUT"
+><B
+>\</B
+></TT
+>
+	      suppresses a newline during input to
+	      a <B
+CLASS="COMMAND"
+>read</B
+>. The <TT
+CLASS="OPTION"
+>-r</TT
+>
+	      option causes an inputted <TT
+CLASS="USERINPUT"
+><B
+>\</B
+></TT
+> to be
+	      interpreted literally.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="READR"
+></A
+><P
+><B
+>Example 11-5. Multi-line input to <B
+CLASS="COMMAND"
+>read</B
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo
+   4&nbsp;
+   5&nbsp;echo "Enter a string terminated by a \\, then press &#60;ENTER&#62;."
+   6&nbsp;echo "Then, enter a second string, and again press &#60;ENTER&#62;."
+   7&nbsp;read var1     # The "\" suppresses the newline, when reading $var1.
+   8&nbsp;              #     first line \
+   9&nbsp;              #     second line
+  10&nbsp;
+  11&nbsp;echo "var1 = $var1"
+  12&nbsp;#     var1 = first line second line
+  13&nbsp;
+  14&nbsp;#  For each line terminated by a "\"
+  15&nbsp;#+ you get a prompt on the next line to continue feeding characters into var1.
+  16&nbsp;
+  17&nbsp;echo; echo
+  18&nbsp;
+  19&nbsp;echo "Enter another string terminated by a \\ , then press &#60;ENTER&#62;."
+  20&nbsp;read -r var2  # The -r option causes the "\" to be read literally.
+  21&nbsp;              #     first line \
+  22&nbsp;
+  23&nbsp;echo "var2 = $var2"
+  24&nbsp;#     var2 = first line \
+  25&nbsp;
+  26&nbsp;# Data entry terminates with the first &#60;ENTER&#62;.
+  27&nbsp;
+  28&nbsp;echo 
+  29&nbsp;
+  30&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>The <B
+CLASS="COMMAND"
+>read</B
+> command has some interesting
+	      options that permit echoing a prompt and even reading keystrokes
+	      without hitting <B
+CLASS="KEYCAP"
+>ENTER</B
+>.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Read a keypress without hitting ENTER.
+   2&nbsp;
+   3&nbsp;read -s -n1 -p "Hit a key " keypress
+   4&nbsp;echo; echo "Keypress was "\"$keypress\""."
+   5&nbsp;
+   6&nbsp;# -s option means do not echo input.
+   7&nbsp;# -n N option means accept only N characters of input.
+   8&nbsp;# -p option means echo the following prompt before reading input.
+   9&nbsp;
+  10&nbsp;# Using these options is tricky, since they need to be in the correct order.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The <TT
+CLASS="OPTION"
+>-n</TT
+> option to <B
+CLASS="COMMAND"
+>read</B
+>
+	      also allows detection of the <I
+CLASS="EMPHASIS"
+>arrow keys</I
+>
+	      and certain of the other unusual keys.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ARROWDETECT"
+></A
+><P
+><B
+>Example 11-6. Detecting the arrow keys</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# arrow-detect.sh: Detects the arrow keys, and a few more.
+   3&nbsp;# Thank you, Sandro Magi, for showing me how.
+   4&nbsp;
+   5&nbsp;# --------------------------------------------
+   6&nbsp;# Character codes generated by the keypresses.
+   7&nbsp;arrowup='\[A'
+   8&nbsp;arrowdown='\[B'
+   9&nbsp;arrowrt='\[C'
+  10&nbsp;arrowleft='\[D'
+  11&nbsp;insert='\[2'
+  12&nbsp;delete='\[3'
+  13&nbsp;# --------------------------------------------
+  14&nbsp;
+  15&nbsp;SUCCESS=0
+  16&nbsp;OTHER=65
+  17&nbsp;
+  18&nbsp;echo -n "Press a key...  "
+  19&nbsp;# May need to also press ENTER if a key not listed above pressed.
+  20&nbsp;read -n3 key                      # Read 3 characters.
+  21&nbsp;
+  22&nbsp;echo -n "$key" | grep "$arrowup"  #Check if character code detected.
+  23&nbsp;if [ "$?" -eq $SUCCESS ]
+  24&nbsp;then
+  25&nbsp;  echo "Up-arrow key pressed."
+  26&nbsp;  exit $SUCCESS
+  27&nbsp;fi
+  28&nbsp;
+  29&nbsp;echo -n "$key" | grep "$arrowdown"
+  30&nbsp;if [ "$?" -eq $SUCCESS ]
+  31&nbsp;then
+  32&nbsp;  echo "Down-arrow key pressed."
+  33&nbsp;  exit $SUCCESS
+  34&nbsp;fi
+  35&nbsp;
+  36&nbsp;echo -n "$key" | grep "$arrowrt"
+  37&nbsp;if [ "$?" -eq $SUCCESS ]
+  38&nbsp;then
+  39&nbsp;  echo "Right-arrow key pressed."
+  40&nbsp;  exit $SUCCESS
+  41&nbsp;fi
+  42&nbsp;
+  43&nbsp;echo -n "$key" | grep "$arrowleft"
+  44&nbsp;if [ "$?" -eq $SUCCESS ]
+  45&nbsp;then
+  46&nbsp;  echo "Left-arrow key pressed."
+  47&nbsp;  exit $SUCCESS
+  48&nbsp;fi
+  49&nbsp;
+  50&nbsp;echo -n "$key" | grep "$insert"
+  51&nbsp;if [ "$?" -eq $SUCCESS ]
+  52&nbsp;then
+  53&nbsp;  echo "\"Insert\" key pressed."
+  54&nbsp;  exit $SUCCESS
+  55&nbsp;fi
+  56&nbsp;
+  57&nbsp;echo -n "$key" | grep "$delete"
+  58&nbsp;if [ "$?" -eq $SUCCESS ]
+  59&nbsp;then
+  60&nbsp;  echo "\"Delete\" key pressed."
+  61&nbsp;  exit $SUCCESS
+  62&nbsp;fi
+  63&nbsp;
+  64&nbsp;
+  65&nbsp;echo " Some other key pressed."
+  66&nbsp;
+  67&nbsp;exit $OTHER
+  68&nbsp;
+  69&nbsp;#  Exercises:
+  70&nbsp;#  ---------
+  71&nbsp;#  1) Simplify this script by rewriting the multiple "if" tests
+  72&nbsp;#+    as a 'case' construct.
+  73&nbsp;#  2) Add detection of the "Home," "End," "PgUp," and "PgDn" keys.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <TT
+CLASS="OPTION"
+>-n</TT
+> option to <B
+CLASS="COMMAND"
+>read</B
+>
+	      will not detect the <B
+CLASS="KEYCAP"
+>ENTER</B
+> (newline)
+	      key.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>The <TT
+CLASS="OPTION"
+>-t</TT
+> option to <B
+CLASS="COMMAND"
+>read</B
+>
+	      permits timed input (see <A
+HREF="variables2.html#TOUT"
+>Example 9-4</A
+>).</P
+><P
+>The <B
+CLASS="COMMAND"
+>read</B
+> command may also
+	      <SPAN
+CLASS="QUOTE"
+>"read"</SPAN
+> its variable value from a file
+	      <A
+HREF="io-redirection.html#IOREDIRREF"
+>redirected</A
+> to
+	      <TT
+CLASS="FILENAME"
+>stdin</TT
+>.  If the file contains
+	      more than one line, only the first line is assigned
+	      to the variable. If <B
+CLASS="COMMAND"
+>read</B
+>
+	      has more than one parameter, then each of
+	      these variables gets assigned a successive <A
+HREF="special-chars.html#WHITESPACEREF"
+>whitespace-delineated</A
+>
+	      string. Caution!</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="READREDIR"
+></A
+><P
+><B
+>Example 11-7. Using <B
+CLASS="COMMAND"
+>read</B
+> with
+	        <A
+HREF="io-redirection.html#IOREDIRREF"
+>file redirection</A
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;read var1 &#60;data-file
+   4&nbsp;echo "var1 = $var1"
+   5&nbsp;# var1 set to the entire first line of the input file "data-file"
+   6&nbsp;
+   7&nbsp;read var2 var3 &#60;data-file
+   8&nbsp;echo "var2 = $var2   var3 = $var3"
+   9&nbsp;# Note non-intuitive behavior of "read" here.
+  10&nbsp;# 1) Rewinds back to the beginning of input file.
+  11&nbsp;# 2) Each variable is now set to a corresponding string,
+  12&nbsp;#    separated by whitespace, rather than to an entire line of text.
+  13&nbsp;# 3) The final variable gets the remainder of the line.
+  14&nbsp;# 4) If there are more variables to be set than whitespace-terminated strings
+  15&nbsp;#    on the first line of the file, then the excess variables remain empty.
+  16&nbsp;
+  17&nbsp;echo "------------------------------------------------"
+  18&nbsp;
+  19&nbsp;# How to resolve the above problem with a loop:
+  20&nbsp;while read line
+  21&nbsp;do
+  22&nbsp;  echo "$line"
+  23&nbsp;done &#60;data-file
+  24&nbsp;# Thanks, Heiner Steven for pointing this out.
+  25&nbsp;
+  26&nbsp;echo "------------------------------------------------"
+  27&nbsp;
+  28&nbsp;# Use $IFS (Internal Field Separator variable) to split a line of input to
+  29&nbsp;# "read", if you do not want the default to be whitespace.
+  30&nbsp;
+  31&nbsp;echo "List of all users:"
+  32&nbsp;OIFS=$IFS; IFS=:       # /etc/passwd uses ":" for field separator.
+  33&nbsp;while read name passwd uid gid fullname ignore
+  34&nbsp;do
+  35&nbsp;  echo "$name ($fullname)"
+  36&nbsp;done &#60;/etc/passwd   # I/O redirection.
+  37&nbsp;IFS=$OIFS              # Restore original $IFS.
+  38&nbsp;# This code snippet also by Heiner Steven.
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;#  Setting the $IFS variable within the loop itself
+  43&nbsp;#+ eliminates the need for storing the original $IFS
+  44&nbsp;#+ in a temporary variable.
+  45&nbsp;#  Thanks, Dim Segebart, for pointing this out.
+  46&nbsp;echo "------------------------------------------------"
+  47&nbsp;echo "List of all users:"
+  48&nbsp;
+  49&nbsp;while IFS=: read name passwd uid gid fullname ignore
+  50&nbsp;do
+  51&nbsp;  echo "$name ($fullname)"
+  52&nbsp;done &#60;/etc/passwd   # I/O redirection.
+  53&nbsp;
+  54&nbsp;echo
+  55&nbsp;echo "\$IFS still $IFS"
+  56&nbsp;
+  57&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><A
+HREF="special-chars.html#PIPEREF"
+>Piping</A
+> output
+	      to a <B
+CLASS="COMMAND"
+>read</B
+>, using <A
+HREF="internal.html#ECHOREF"
+>echo</A
+> to set variables <A
+HREF="gotchas.html#BADREAD0"
+>will fail</A
+>.</P
+><P
+><A
+NAME="READPIPEREF"
+></A
+>Yet, piping the output of <A
+HREF="external.html#CATREF"
+>cat</A
+> <I
+CLASS="EMPHASIS"
+>seems</I
+> to
+	      work.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat file1 file2 |
+   2&nbsp;while read line
+   3&nbsp;do
+   4&nbsp;echo $line
+   5&nbsp;done</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>However, as Bj
